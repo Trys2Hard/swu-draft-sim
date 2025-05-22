@@ -18,8 +18,8 @@ export default function Deck({ deckLeaders, deckCards }) {
             <Typography variant='h3' component='h2'>Deck</Typography>
             <Box>
                 <Typography variant='h4' component='h3'>Leaders</Typography>
-                {deckLeaders.map((card) => {
-                    return <Box key={card.id} sx={styles.card}>{card.name}</Box>
+                {deckLeaders.map((image) => {
+                    return <Box component='img' src={image} sx={{ width: '200px' }}></Box>
                 })}
             </Box>
             <Box>

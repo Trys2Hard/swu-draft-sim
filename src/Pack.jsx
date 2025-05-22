@@ -1,75 +1,54 @@
-import { useState, useEffect } from 'react';
-import { List, ListItem, ListItemText } from '@mui/material';
+import { v4 as uuid } from 'uuid';
+import { useState, useEffect, useRef } from 'react';
+import { List, ListItem, Box } from '@mui/material';
 import Deck from './Deck';
-
-const leaders = [
-    { id: 0, name: 'Han Solo' },
-    { id: 1, name: 'Luke Skywalker' },
-    { id: 2, name: 'Ahoska Tano' },
-    { id: 3, name: 'Obi-wan Kenobi' },
-    { id: 4, name: 'Anakin Skywalker' },
-    { id: 5, name: 'Kit Fisto' },
-];
-
-const cards = [
-    { id: 0, name: 'Direct Hit' },
-    { id: 1, name: 'Vanquish' },
-    { id: 2, name: 'Dogfight' },
-    { id: 3, name: 'For A Cause I Believe In' },
-    { id: 4, name: 'Takedown' },
-    { id: 5, name: 'Surprise Strike' },
-    { id: 6, name: 'Direct Hit' },
-    { id: 7, name: 'Vanquish' },
-    { id: 8, name: 'Dogfight' },
-    { id: 9, name: 'For A Cause I Believe In' },
-    { id: 10, name: 'Takedown' },
-    { id: 11, name: 'Surprise Strike' },
-    { id: 12, name: 'Direct Hit' },
-    { id: 13, name: 'Vanquish' },
-];
-
-function shuffle(array) {
-    let currentIndex = array.length;
-    while (currentIndex != 0) {
-        let randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
-    };
-    return array;
-};
 
 export default function Pack() {
     const [leaderNum, setLeaderNum] = useState(3);
     const [cardNum, setCardNum] = useState(14);
     const [pack, setPack] = useState([]);
-    const [deckLeaders, setDeck] = useState([]);
+    const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
 
+    let didRun = useRef(false);
+
     useEffect(() => {
-        if (leaderNum > 0) {
-            const shuffledLeaders = shuffle([...leaders]);
-            const leaderPack = shuffledLeaders.slice(0, leaderNum);
-            setPack(leaderPack);
-        } else {
-            const shuffledCards = shuffle([...cards]);
-            const cardPack = shuffledCards.slice(0, cardNum);
-            setPack(cardPack);
+        if (didRun.current) return;
+        didRun.current = true;
+        for (let i = 0; i < leaderNum; i++) {
+            async function getCardData() {
+                const randNum = Math.floor(Math.random() * 18) + 1;
+                const response = await fetch(`https://api.swu-db.com/cards/jtl/${randNum}`);
+                const data = await response.json();
+                const card = { ...data, id: uuid() }
+                setPack((prevPack) => [...prevPack, card])
+            }
+            getCardData();
         }
-    }, [leaderNum, cardNum]);
+    }, [leaderNum]);
 
     const pickCard = (id) => {
-        const pickedCard = pack.find((p) => p.id === id);
+        const pickedCard = pack.find((card) => card.id === id);
+        const pickedCardImage = pickedCard.FrontArt;
+
         if (deckLeaders.length < 3) {
-            setDeck((prevDeck) => [...prevDeck, pickedCard]);
+            setDeckLeaders((prevDeckLeaders) => [...prevDeckLeaders, pickedCardImage]);
         } else {
-            setDeckCards((prevDeckCards => [...prevDeckCards, pickedCard]))
+            setDeckCards((prevDeckCards => [...prevDeckCards, pickedCardImage]))
         }
-        setPack((prevPack) => prevPack.filter((p) => p.id !== id));
+
+        pack.length = 0;
+
         if (leaderNum > 0) {
+            didRun.current = false;
             setLeaderNum((prevLeaderNum) => prevLeaderNum - 1);
-        } else {
+
+            console.log(leaderNum)
+        }
+        else if (cardNum > 0) {
             setCardNum((prevCardNum) => prevCardNum - 1);
+        } else {
+            console.log('pack is done');
         };
     };
 
@@ -80,8 +59,8 @@ export default function Pack() {
                     const labelId = `card-id-${card.id}`;
                     return (
                         <>
-                            <ListItem key={card.id} onClick={() => pickCard(card.id)} sx={{ border: '2px solid blue', m: '1rem', width: '7rem', height: '9rem' }}>
-                                <ListItemText id={labelId} primary={card.name} />
+                            <ListItem key={card.id} onClick={() => pickCard(card.id)} sx={{ border: '2px solid blue', width: '25%', height: '9rem' }}>
+                                <Box component='img' src={card.FrontArt} id={labelId} sx={{ width: '200px', p: '1rem' }}></Box>
                             </ListItem>
                         </>
                     );
