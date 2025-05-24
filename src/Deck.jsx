@@ -1,33 +1,69 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, List, ListItem } from '@mui/material';
 
 const styles = {
     deck: {
-        border: '2px dashed blue',
+        color: 'white',
+        backgroundColor: 'rgba(55, 55, 55, 1)',
         width: '80%',
         height: '100%',
         m: '0 auto 0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        borderRadius: '5px',
     },
-    card: {
-        border: '1px dashed green',
+    leaders: {
+        display: 'flex',
+        justifyContent: 'center',
     },
+    leaderCards: {
+        width: '20%',
+        m: '0.2rem',
+        p: '0',
+    },
+    cards: {
+        display: 'flex',
+        flexWrap: 'wrap',
+
+    },
+    nonLeaderCards: {
+        width: '10%',
+        m: '0.2rem',
+        p: '0',
+    },
+    cardImage: {
+        width: '100%',
+        borderRadius: '10px',
+    }
 };
 
 export default function Deck({ deckLeaders, deckCards }) {
     return (
         <Box sx={styles.deck}>
-            <Typography variant='h3' component='h2'>Deck</Typography>
-            <Box>
-                <Typography variant='h4' component='h3'>Leaders</Typography>
+            <Typography variant='h3' component='h2' sx={{ mb: '1rem' }}>Deck</Typography>
+            <Typography variant='h4' component='h3' sx={{ mb: '1rem' }}>Leaders</Typography>
+
+            <List sx={styles.leaders}>
                 {deckLeaders.map((image) => {
-                    return <Box component='img' src={image} sx={{ width: '200px' }}></Box>
+                    return (
+                        <ListItem sx={styles.leaderCards}>
+                            <Box component='img' src={image} sx={styles.cardImage}></Box>
+                        </ListItem>
+                    )
                 })}
-            </Box>
-            <Box>
-                <Typography variant='h4' component='h3'>Cards</Typography>
+            </List>
+
+            <Typography variant='h4' component='h3' sx={{ mb: '1rem' }}>Cards</Typography>
+
+            <List sx={styles.cards}>
                 {deckCards.map((image) => {
-                    return <Box component='img' src={image} key={image.id} sx={{ width: '200px' }}></Box>
+                    return (
+                        <ListItem sx={styles.nonLeaderCards}>
+                            <Box component='img' src={image} key={image.id} sx={styles.cardImage}></Box>
+                        </ListItem>
+                    )
                 })}
-            </Box>
+            </List>
         </Box>
     );
 };

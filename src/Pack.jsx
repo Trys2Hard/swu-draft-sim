@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { useState, useEffect, useRef } from 'react';
-import { List, ListItem, Box } from '@mui/material';
+import { List, ListItem, Box, Typography } from '@mui/material';
 import Deck from './Deck';
 
 export default function Pack() {
@@ -63,20 +63,57 @@ export default function Pack() {
         };
     };
 
+    const styles = {
+        packBox: {
+            width: '50%',
+            height: '100%',
+            m: '8rem auto 8rem auto',
+            p: '1rem',
+            backgroundColor: 'rgba(55, 55, 55, 1)',
+            borderRadius: '5px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            color: 'white',
+        },
+        pack: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
+        },
+        card: {
+            width: '15%',
+            p: '0rem',
+            '&: hover': {
+                cursor: 'pointer',
+                transform: 'translate(0, -10px)',
+            },
+            transition: 'transform 0.3s ease-in-out',
+        },
+        cardImage: {
+            width: '100%',
+            borderRadius: '10px',
+        },
+    };
+
     return (
         <>
-            <List sx={{ width: '80%', height: '100%', m: '8rem auto 8rem auto', display: 'flex', flexWrap: 'wrap', outline: '2px solid red' }}>
-                {pack.map((card) => {
-                    const labelId = `card-id-${card.id}`;
-                    return (
-                        <>
-                            <ListItem key={card.id} onClick={() => pickCard(card.id)} sx={{ border: '2px solid blue', width: '25%', height: '9rem' }}>
-                                <Box component='img' src={card.FrontArt} id={labelId} sx={{ width: '200px', p: '1rem' }}></Box>
-                            </ListItem>
-                        </>
-                    );
-                })}
-            </List>
+            <Typography variant='h2' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }} >Star Wars Unlimited Draft Simulator</Typography>
+            <Box sx={styles.packBox}>
+                <Typography variant='h3' component='h2' sx={{ mb: '1rem' }}>Pack 1</Typography>
+                <List sx={styles.pack}>
+                    {pack.map((card) => {
+                        const labelId = `card-id-${card.id}`;
+                        return (
+                            <>
+                                <ListItem key={card.id} onClick={() => pickCard(card.id)} sx={styles.card}>
+                                    <Box component='img' src={card.FrontArt} id={labelId} sx={styles.cardImage}></Box>
+                                </ListItem>
+                            </>
+                        );
+                    })}
+                </List>
+            </Box>
             <Deck deckLeaders={deckLeaders} deckCards={deckCards} />
         </>
     );
