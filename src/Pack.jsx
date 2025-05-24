@@ -27,6 +27,21 @@ export default function Pack() {
         }
     }, [leaderNum]);
 
+    useEffect(() => {
+        async function getNonLeaders() {
+            const randNum = Math.floor(Math.random() * 231) + 32;
+            const response = await fetch(`https://api.swu-db.com/cards/jtl/${randNum}`);
+            const data = await response.json();
+            const card = { ...data, id: uuid() }
+            setPack((prevPack) => [...prevPack, card])
+        }
+        if (cardNum > 0 && leaderNum === 0) {
+            for (let i = 0; i < cardNum; i++) {
+                getNonLeaders();
+            }
+        }
+    }, [leaderNum, cardNum])
+
     const pickCard = (id) => {
         const pickedCard = pack.find((card) => card.id === id);
         const pickedCardImage = pickedCard.FrontArt;
@@ -42,13 +57,9 @@ export default function Pack() {
         if (leaderNum > 0) {
             didRun.current = false;
             setLeaderNum((prevLeaderNum) => prevLeaderNum - 1);
-
-            console.log(leaderNum)
-        }
-        else if (cardNum > 0) {
+        } else if (cardNum > 0) {
+            didRun.current = false;
             setCardNum((prevCardNum) => prevCardNum - 1);
-        } else {
-            console.log('pack is done');
         };
     };
 
