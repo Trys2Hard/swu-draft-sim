@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+// import { v4 as uuid } from 'uuid';
 import { useState, useEffect, useRef } from 'react';
 import { List, ListItem, Box, Typography } from '@mui/material';
 import Deck from './Deck';
@@ -19,8 +19,8 @@ export default function Pack() {
             async function getCardData() {
                 const randNum = Math.floor(Math.random() * 18) + 1;
                 const response = await fetch(`https://api.swu-db.com/cards/jtl/${randNum}`);
-                const data = await response.json();
-                const card = { ...data, id: uuid() }
+                const card = await response.json();
+                // const card = { ...data, id: uuid() }
                 setPack((prevPack) => [...prevPack, card])
             }
             getCardData();
@@ -31,8 +31,8 @@ export default function Pack() {
         async function getNonLeaders() {
             const randNum = Math.floor(Math.random() * 231) + 32;
             const response = await fetch(`https://api.swu-db.com/cards/jtl/${randNum}`);
-            const data = await response.json();
-            const card = { ...data, id: uuid() }
+            const card = await response.json();
+            // const card = { ...data, id: uuid() }
             setPack((prevPack) => [...prevPack, card])
         }
         if (cardNum > 0 && leaderNum === 0) {
@@ -95,7 +95,7 @@ export default function Pack() {
             borderRadius: '10px',
         },
     };
-
+    // console.log(pack)
     return (
         <>
             <Typography variant='h2' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }} >Star Wars Unlimited Draft Simulator</Typography>
