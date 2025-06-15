@@ -10,9 +10,50 @@ const app = express()
 app.use(express.json())
 
 // routes
-app.get('/', async (req, res) => {
-    const myCard = (await Card.aggregate([{ $sample: { size: 1 } }]))[0];
-    res.json({ mssg: myCard })
+app.get('/leader', async (req, res) => {
+    const findLeader = await Card.aggregate([
+        { $match: { Type: 'Leader' } },
+        { $sample: { size: 1 } }
+    ]);
+    const randomLeader = findLeader[0];
+    res.json({ cardData: randomLeader });
+})
+
+app.get('/rare', async (req, res) => {
+    const findRare = await Card.aggregate([
+        {
+            $match: {
+                Type: { $ne: 'Leader' },
+                Rarity: { $in: ['Rare', 'Legendary'] }
+            }
+        },
+        { $sample: { size: 1 } }
+    ]);
+    const randomRare = findRare[0];
+    res.json({ cardData: randomRare });
+})
+
+app.get('/uncommon', async (req, res) => {
+    const findUncommonCard = await Card.aggregate([
+        { $match: { Rarity: 'Uncommon' } },
+        { $sample: { size: 1 } }
+    ]);
+    const randomUncommon = findUncommonCard[0];
+    res.json({ cardData: randomUncommon });
+})
+
+app.get('/common', async (req, res) => {
+    const findCommonCard = await Card.aggregate([
+        {
+            $match: {
+                Type: { $nin: ['Leader', 'Base'] },
+                Rarity: 'Common'
+            }
+        },
+        { $sample: { size: 1 } }
+    ]);
+    const randomCommon = findCommonCard[0];
+    res.json({ cardData: randomCommon });
 })
 
 app.post('/', async (req, res) => {

@@ -1,67 +1,107 @@
-// import { v4 as uuid } from 'uuid';
 import { useState, useEffect, useRef } from 'react';
 import { List, ListItem, Box, Typography } from '@mui/material';
 import Deck from './Deck';
 
 export default function Pack() {
     const [leaderNum, setLeaderNum] = useState(3);
-    const [cardNum, setCardNum] = useState(14);
     const [pack, setPack] = useState([]);
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
+    const [rareNum, setRareNum] = useState(1);
+    const [uncommonNum, setUncommonNum] = useState(3);
+    const [commonNum, setCommonNum] = useState(10);
 
     let didRun = useRef(false);
 
     useEffect(() => {
         if (didRun.current) return;
         didRun.current = true;
-        for (let i = 0; i < leaderNum; i++) {
-            async function getCardData() {
-                const randNum = Math.floor(Math.random() * 18) + 1;
-                const response = await fetch(`https://api.swu-db.com/cards/jtl/${randNum}`);
-                const card = await response.json();
-                // const card = { ...data, id: uuid() }
-                setPack((prevPack) => [...prevPack, card])
-            }
-            getCardData();
+        async function fetchCard() {
+            const res = await fetch('http://localhost:3000/leader');
+            const card = await res.json();
+            setPack((prevPack) => [...prevPack, card]);
         }
-    }, [leaderNum]);
 
-    useEffect(() => {
-        async function getNonLeaders() {
-            const randNum = Math.floor(Math.random() * 231) + 32;
-            const response = await fetch(`https://api.swu-db.com/cards/jtl/${randNum}`);
-            const card = await response.json();
-            // const card = { ...data, id: uuid() }
-            setPack((prevPack) => [...prevPack, card])
+        for (let i = 0; i < leaderNum; i++) {
+            fetchCard();
         }
-        if (cardNum > 0 && leaderNum === 0) {
-            for (let i = 0; i < cardNum; i++) {
-                getNonLeaders();
-            }
-        }
-    }, [leaderNum, cardNum])
+    })
 
     const pickCard = (id) => {
-        const pickedCard = pack.find((card) => card.id === id);
-        const pickedCardImage = pickedCard.FrontArt;
+        const pickedCard = pack.find((card) => card.cardData?._id === id);
+        if (!pickedCard) return;
+
+        const pickedCardData = pickedCard.cardData;
 
         if (deckLeaders.length < 3) {
-            setDeckLeaders((prevDeckLeaders) => [...prevDeckLeaders, pickedCardImage]);
+            setDeckLeaders((prev) => [...prev, pickedCardData]);
         } else {
-            setDeckCards((prevDeckCards => [...prevDeckCards, pickedCardImage]))
+            setDeckCards((prev) => [...prev, pickedCardData]);
         }
 
-        pack.length = 0;
+        setPack([]);
 
         if (leaderNum > 0) {
             didRun.current = false;
             setLeaderNum((prevLeaderNum) => prevLeaderNum - 1);
-        } else if (cardNum > 0) {
-            didRun.current = false;
-            setCardNum((prevCardNum) => prevCardNum - 1);
-        };
+            return;
+        }
+
+        const availableRarities = [];
+        if (rareNum > 0) availableRarities.push('rare');
+        if (uncommonNum > 0) availableRarities.push('uncommon');
+        if (commonNum > 0) availableRarities.push('common');
+
+        if (availableRarities.length === 0) return;
+
+        const rarity = availableRarities[Math.floor(Math.random() * availableRarities.length)];
+
+        if (rarity === 'rare') {
+            setRareNum((prev) => prev - 1);
+        } else if (rarity === 'uncommon') {
+            setUncommonNum((prev) => prev - 1);
+        } else if (rarity === 'common') {
+            setCommonNum((prev) => prev - 1);
+        }
     };
+
+    useEffect(() => {
+        const fetchCards = async () => {
+            async function fetchRareCard() {
+                const res = await fetch('http://localhost:3000/rare');
+                const card = await res.json();
+                setPack((prevPack) => [...prevPack, card]);
+            }
+
+            async function fetchUncommonCards() {
+                const res = await fetch('http://localhost:3000/uncommon');
+                const card = await res.json();
+                setPack((prevPack) => [...prevPack, card]);
+            }
+
+            async function fetchCommonCards() {
+                const res = await fetch('http://localhost:3000/common');
+                const card = await res.json();
+                setPack((prevPack) => [...prevPack, card]);
+            }
+
+            if (leaderNum === 0) {
+                for (let i = 0; i < rareNum; i++) {
+                    await fetchRareCard();
+                }
+
+                for (let i = 0; i < uncommonNum; i++) {
+                    await fetchUncommonCards();
+                }
+
+                for (let i = 0; i < commonNum; i++) {
+                    await fetchCommonCards();
+                }
+            }
+        };
+
+        fetchCards();
+    }, [leaderNum, rareNum, uncommonNum, commonNum]);
 
     const styles = {
         packBox: {
@@ -95,7 +135,7 @@ export default function Pack() {
             borderRadius: '10px',
         },
     };
-    // console.log(pack)
+
     return (
         <>
             <Typography variant='h2' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }} >Star Wars Unlimited Draft Simulator</Typography>
@@ -103,11 +143,11 @@ export default function Pack() {
                 <Typography variant='h3' component='h2' sx={{ mb: '1rem' }}>Pack 1</Typography>
                 <List sx={styles.pack}>
                     {pack.map((card) => {
-                        const labelId = `card-id-${card.id}`;
+                        const labelId = `card-id-${card.cardData._id}`;
                         return (
                             <>
-                                <ListItem key={card.id} onClick={() => pickCard(card.id)} sx={styles.card}>
-                                    <Box component='img' src={card.FrontArt} id={labelId} sx={styles.cardImage}></Box>
+                                <ListItem key={card.cardData._id} onClick={() => pickCard(card.cardData._id)} sx={styles.card}>
+                                    <Box component='img' src={card.cardData.FrontArt} id={labelId} sx={styles.cardImage}></Box>
                                 </ListItem>
                             </>
                         );

@@ -44,10 +44,10 @@ export default function Deck({ deckLeaders, deckCards }) {
             <Typography variant='h4' component='h3' sx={{ mb: '1rem' }}>Leaders</Typography>
 
             <List sx={styles.leaders}>
-                {deckLeaders.map((image) => {
+                {deckLeaders.map((card) => {
                     return (
-                        <ListItem sx={styles.leaderCards}>
-                            <Box component='img' src={image} sx={styles.cardImage}></Box>
+                        <ListItem key={card.id} sx={styles.leaderCards}>
+                            <Box component='img' src={card.FrontArt} sx={styles.cardImage}></Box>
                         </ListItem>
                     )
                 })}
@@ -56,10 +56,10 @@ export default function Deck({ deckLeaders, deckCards }) {
             <Typography variant='h4' component='h3' sx={{ mb: '1rem' }}>Cards</Typography>
 
             <List sx={styles.cards}>
-                {deckCards.map((image) => {
+                {deckCards.map((card) => {
                     return (
-                        <ListItem sx={styles.nonLeaderCards}>
-                            <Box component='img' src={image} key={image.id} sx={styles.cardImage}></Box>
+                        <ListItem key={card.id} sx={styles.nonLeaderCards}>
+                            <Box component='img' src={card.FrontArt} sx={styles.cardImage}></Box>
                         </ListItem>
                     )
                 })}
