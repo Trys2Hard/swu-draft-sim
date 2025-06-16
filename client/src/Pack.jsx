@@ -143,8 +143,8 @@ export default function Pack() {
         addCard((prev) => [...prev, pickedCardData]);
 
         if (leaderNum === 0) {
-            const randPackNum = Math.floor(Math.random() * pack.length);
-            pack.splice(randPackNum, 1);
+            const pickedCardIndex = pack.findIndex((item) => item.cardData._id === pickedCardData._id);
+            pack.splice(pickedCardIndex, 1);
             setSavedPacks((prev) => [...prev, pack]);
         }
 
