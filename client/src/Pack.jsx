@@ -64,16 +64,32 @@ export default function Pack() {
                 setPack((prevPack) => [...prevPack, card]);
             }
 
-            async function fetchUncommonCards() {
+            let uncommonIds = [];
+
+            async function fetchUncommonCard() {
                 const res = await fetch('http://localhost:3000/uncommon');
                 const card = await res.json();
-                setPack((prevPack) => [...prevPack, card]);
+                const uncommonDuplicate = uncommonIds.some((id) => id === card.cardData._id);
+                uncommonIds.push(card.cardData._id);
+                if (uncommonDuplicate) {
+                    return fetchUncommonCard()
+                } else {
+                    setPack((prevPack) => [...prevPack, card]);
+                }
             }
 
-            async function fetchCommonCards() {
+            let commonIds = [];
+
+            async function fetchCommonCard() {
                 const res = await fetch('http://localhost:3000/common');
                 const card = await res.json();
-                setPack((prevPack) => [...prevPack, card]);
+                const commonDuplicate = commonIds.some((id) => id === card.cardData._id);
+                commonIds.push(card.cardData._id);
+                if (commonDuplicate) {
+                    return fetchCommonCard()
+                } else {
+                    setPack((prevPack) => [...prevPack, card]);
+                }
             }
 
             if (rareNum === 0 && uncommonNum === 0 && commonNum === 0) {
@@ -92,11 +108,11 @@ export default function Pack() {
                 }
 
                 for (let i = 0; i < uncommonNum; i++) {
-                    await fetchUncommonCards();
+                    await fetchUncommonCard();
                 }
 
                 for (let i = 0; i < commonNum; i++) {
-                    await fetchCommonCards();
+                    await fetchCommonCard();
                 }
             }
             didRunCreateCards.current = false;
