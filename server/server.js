@@ -11,8 +11,11 @@ app.use(express.json())
 
 // routes
 app.get('/leader', async (req, res) => {
+    const rareLeaderChance = Math.random() < 0.2;
+    const leaderRarity = rareLeaderChance ? 'Rare' : 'Common';
+
     const findLeader = await Card.aggregate([
-        { $match: { Type: 'Leader' } },
+        { $match: { Type: 'Leader', Rarity: leaderRarity } },
         { $sample: { size: 1 } }
     ]);
     const randomLeader = findLeader[0];
@@ -20,13 +23,11 @@ app.get('/leader', async (req, res) => {
 })
 
 app.get('/rare', async (req, res) => {
+    const legendaryChance = Math.random() < 0.35;
+    const rareSlotRarity = legendaryChance ? 'Legendary' : 'Rare';
+
     const findRare = await Card.aggregate([
-        {
-            $match: {
-                Type: { $ne: 'Leader' },
-                Rarity: { $in: ['Rare', 'Legendary'] }
-            }
-        },
+        { $match: { Type: { $ne: 'Leader' }, Rarity: rareSlotRarity } },
         { $sample: { size: 1 } }
     ]);
     const randomRare = findRare[0];
