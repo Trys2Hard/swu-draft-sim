@@ -14,6 +14,7 @@ export default function Pack() {
     const [packNum, setPackNum] = useState(1);
     const [title, setTitle] = useState('Leaders');
     const [isFetching, setIsFetching] = useState(false);
+    const [savedPacks, setSavedPacks] = useState([]);
 
     let didRun = useRef(false);
     let didRunCreateCards = useRef(false);
@@ -42,6 +43,9 @@ export default function Pack() {
         }
     }, [leaderNum]);
 
+    useEffect(() => {
+        setSavedPacks([]);
+    }, [packNum])
 
     useEffect(() => {
         if (didRunCreateCards.current || leaderNum !== 0) return;
@@ -65,7 +69,6 @@ export default function Pack() {
             }
 
             let uncommonIds = [];
-
             async function fetchUncommonCard() {
                 const res = await fetch('http://localhost:3000/uncommon');
                 const card = await res.json();
@@ -79,7 +82,6 @@ export default function Pack() {
             }
 
             let commonIds = [];
-
             async function fetchCommonCard() {
                 const res = await fetch('http://localhost:3000/common');
                 const card = await res.json();
@@ -102,6 +104,13 @@ export default function Pack() {
                 setCommonNum(10);
             }
 
+            if (pickNum > 8) {
+                didRunCreateCards.current = false;
+                setIsFetching(false);
+                const wheelPack = savedPacks.shift();
+                return setPack(wheelPack);
+            }
+
             if ((leaderNum === 0) && (packNum < 4 && packNum !== null)) {
                 for (let i = 0; i < rareNum; i++) {
                     await fetchRareCard();
@@ -120,7 +129,6 @@ export default function Pack() {
         };
 
         createCardPack();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [leaderNum, packNum, rareNum, uncommonNum, commonNum, setTitle, setPackNum, setPickNum, setPack, pickNum])
 
     const pickCard = (id) => {
@@ -133,6 +141,12 @@ export default function Pack() {
 
         const addCard = deckLeaders.length < 3 ? setDeckLeaders : setDeckCards;
         addCard((prev) => [...prev, pickedCardData]);
+
+        if (leaderNum === 0) {
+            const randPackNum = Math.floor(Math.random() * pack.length);
+            pack.splice(randPackNum, 1);
+            setSavedPacks((prev) => [...prev, pack]);
+        }
 
         setPack([]);
 
@@ -159,6 +173,11 @@ export default function Pack() {
         } else if (rarity === 'common') {
             setCommonNum((prev) => prev - 1);
         }
+
+        savedPacks.map((pack) => {
+            const randPackNum = Math.floor(Math.random() * pack.length);
+            pack.splice(randPackNum, 1);
+        })
 
         setPickNum(prev => (prev >= 14 ? 1 : prev + 1));
     };
