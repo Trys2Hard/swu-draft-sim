@@ -18,19 +18,35 @@ export default function Pack() {
 
     let didRun = useRef(false);
     let didRunCreateCards = useRef(false);
+    let errorCount = 0;
 
     useEffect(() => {
         if (didRun.current) return;
         didRun.current = true;
+
         const createLeaderPack = async () => {
             async function fetchLeaders() {
-                const res = await fetch('http://localhost:3000/leader');
-                const card = await res.json();
-                setPack((prevPack) => [...prevPack, card]);
+                try {
+                    const res = await fetch('http://localhost:3000/leader');
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.error || 'Failed to fetch leader');
+                    }
+
+                    setPack((prevPack) => [...prevPack, data]);
+                } catch (error) {
+                    errorCount++;
+                    console.error('Error fetching leader', error);
+                }
             }
 
             for (let i = 0; i < leaderNum; i++) {
-                fetchLeaders();
+                await fetchLeaders();
+            }
+
+            if (errorCount > 0) {
+                alert(`${errorCount} leader${errorCount > 1 ? 's' : ''} failed to load.`);
             }
         }
         createLeaderPack();
@@ -63,34 +79,66 @@ export default function Pack() {
             }
 
             async function fetchRareCard() {
-                const res = await fetch('http://localhost:3000/rare');
-                const card = await res.json();
-                setPack((prevPack) => [...prevPack, card]);
+                try {
+                    const res = await fetch('http://localhost:3000/rare');
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.error || 'Failed to fetch rare card');
+                    }
+
+                    setPack((prevPack) => [...prevPack, data]);
+                } catch (error) {
+                    console.error('Error fetching rare card', error);
+                    alert('Rare card failed to load');
+                }
             }
 
             let uncommonIds = [];
             async function fetchUncommonCard() {
-                const res = await fetch('http://localhost:3000/uncommon');
-                const card = await res.json();
-                const uncommonDuplicate = uncommonIds.some((id) => id === card.cardData._id);
-                uncommonIds.push(card.cardData._id);
-                if (uncommonDuplicate) {
-                    return fetchUncommonCard()
-                } else {
-                    setPack((prevPack) => [...prevPack, card]);
+                try {
+                    const res = await fetch('http://localhost:3000/uncommon');
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.error || 'Failed to fetch uncommon card');
+                    }
+
+                    const uncommonDuplicate = uncommonIds.some((id) => id === data.cardData._id);
+                    uncommonIds.push(data.cardData._id);
+
+                    if (uncommonDuplicate) {
+                        return fetchUncommonCard()
+                    } else {
+                        setPack((prevPack) => [...prevPack, data]);
+                    }
+                } catch (error) {
+                    errorCount++;
+                    console.error('Error fetching uncommon cards', error);
                 }
             }
 
             let commonIds = [];
             async function fetchCommonCard() {
-                const res = await fetch('http://localhost:3000/common');
-                const card = await res.json();
-                const commonDuplicate = commonIds.some((id) => id === card.cardData._id);
-                commonIds.push(card.cardData._id);
-                if (commonDuplicate) {
-                    return fetchCommonCard()
-                } else {
-                    setPack((prevPack) => [...prevPack, card]);
+                try {
+                    const res = await fetch('http://localhost:3000/common');
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.error || 'Failed to fetch common card');
+                    }
+
+                    const commonDuplicate = commonIds.some((id) => id === data.cardData._id);
+                    commonIds.push(data.cardData._id);
+
+                    if (commonDuplicate) {
+                        return fetchCommonCard()
+                    } else {
+                        setPack((prevPack) => [...prevPack, data]);
+                    }
+                } catch (error) {
+                    errorCount++;
+                    console.error('Error fetching common cards', error);
                 }
             }
 
@@ -120,8 +168,16 @@ export default function Pack() {
                     await fetchUncommonCard();
                 }
 
+                if (errorCount > 0) {
+                    alert(`${errorCount} uncommon card${errorCount > 1 ? 's' : ''} failed to load.`);
+                }
+
                 for (let i = 0; i < commonNum; i++) {
                     await fetchCommonCard();
+                }
+
+                if (errorCount > 0) {
+                    alert(`${errorCount} common card${errorCount > 1 ? 's' : ''} failed to load.`);
                 }
             }
             didRunCreateCards.current = false;
