@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { List, ListItem, Box, Typography, Button } from '@mui/material';
+import { useState, useEffect, useRef } from 'react';
+import { List, ListItem, Box, Typography, Button, Popover } from '@mui/material';
 import Deck from './Deck';
 
 export default function Pack() {
@@ -199,6 +199,8 @@ export default function Pack() {
     }, [leaderNum, packNum, rareNum, uncommonNum, commonNum, setTitle, setPackNum, setPickNum, setPack, pickNum])
 
     const pickCard = (id) => {
+        handlePopoverClose();
+
         if (isFetching || pack.length === 0) return;
 
         const pickedCard = pack.find((card) => card.cardData?._id === id);
@@ -248,6 +250,30 @@ export default function Pack() {
         setPickNum(prev => (prev >= 14 ? 1 : prev + 1));
     };
 
+    // Card Hover
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [hoveredCard, setHoveredCard] = useState(null);
+    const hoverTimeoutRef = useRef(null);
+
+    const handlePopoverOpen = (event, card) => {
+        const target = event.currentTarget;
+        if (!target) return;
+
+        hoverTimeoutRef.current = setTimeout(() => {
+            setAnchorEl(target);
+            setHoveredCard(card);
+        }, 400);
+    };
+
+    const handlePopoverClose = () => {
+        clearTimeout(hoverTimeoutRef.current);
+        setAnchorEl(null);
+        setHoveredCard(null);
+    };
+
+    const open = Boolean(anchorEl);
+
+    // Styles
     const styles = {
         packBox: {
             width: '50%',
@@ -271,7 +297,8 @@ export default function Pack() {
             p: '0rem',
             '&: hover': {
                 cursor: 'pointer',
-                transform: 'translate(0, -10px)',
+                outline: '3px solid rgb(61, 178, 255)',
+                borderRadius: '10px',
             },
             transition: 'transform 0.3s ease-in-out',
         },
@@ -281,7 +308,21 @@ export default function Pack() {
         },
         startDraft: {
             display: draftStarted ? 'none' : 'block',
-        }
+        },
+        frontArtPopover: {
+            width: '20rem',
+            height: 'auto',
+            aspectRatio: hoveredCard?.Type === 'Leader' ? '7/5' : hoveredCard?.Type === 'Base' ? '7/5' : '5/7',
+            borderRadius: '15px',
+            ml: '6px',
+        },
+        backArtPopover: {
+            width: '20rem',
+            height: 'auto',
+            aspectRatio: '5/7',
+            borderRadius: '15px',
+            ml: '3px',
+        },
     };
 
     return (
@@ -300,12 +341,55 @@ export default function Pack() {
                         const labelId = `card-id-${card.cardData._id}`;
                         return (
                             <>
-                                <ListItem key={card.cardData._id} onClick={() => pickCard(card.cardData._id)} sx={styles.card}>
+                                <ListItem
+                                    aria-owns={open ? 'mouse-over-popover' : undefined}
+                                    aria-haspopup="true"
+                                    onMouseEnter={(e) => handlePopoverOpen(e, card.cardData)}
+                                    onMouseLeave={handlePopoverClose} key={card.cardData._id} onClick={() => pickCard(card.cardData._id)} sx={styles.card}>
                                     <Box component='img' src={card.cardData.FrontArt} id={labelId} sx={styles.cardImage}></Box>
                                 </ListItem>
                             </>
                         );
                     })}
+                    <Popover
+                        id="mouse-over-popover"
+                        sx={{
+                            pointerEvents: 'none',
+                            '& .MuiPaper-root': {
+                                backgroundColor: 'transparent',
+                                boxShadow: 'none',
+                            }
+                        }}
+                        open={open}
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                            vertical: 'center',
+                            horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                            vertical: 'center',
+                            horizontal: 'left',
+                        }}
+                        onClose={handlePopoverClose}
+                        disableRestoreFocus
+                        disableScrollLock
+                    >
+                        {hoveredCard && (
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Box
+                                    component='img'
+                                    src={hoveredCard?.FrontArt}
+                                    sx={styles.frontArtPopover}>
+                                </Box>
+                                {hoveredCard?.DoubleSided &&
+                                    <Box
+                                        component='img'
+                                        src={hoveredCard?.BackArt}
+                                        sx={styles.backArtPopover}>
+                                    </Box>}
+                            </Box>
+                        )}
+                    </Popover>
                 </List>
             </Box>
             <Deck deckLeaders={deckLeaders} deckCards={deckCards} />
