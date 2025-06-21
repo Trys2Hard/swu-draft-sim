@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { List, ListItem, Box, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { List, ListItem, Box, Typography, Button } from '@mui/material';
 import Deck from './Deck';
 
 export default function Pack() {
-    const [leaderNum, setLeaderNum] = useState(3);
+    const [leaderNum, setLeaderNum] = useState(-1);
     const [pack, setPack] = useState([]);
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
@@ -15,19 +15,25 @@ export default function Pack() {
     const [title, setTitle] = useState('Leaders');
     const [isFetching, setIsFetching] = useState(false);
     const [savedPacks, setSavedPacks] = useState([]);
+    const [draftStarted, setDraftStarted] = useState(false);
+    const [set, setSet] = useState('jtl');
+    const [setName, setSetName] = useState('');
 
-    let didRun = useRef(false);
-    let didRunCreateCards = useRef(false);
+    useEffect(() => {
+        if (set === 'jtl') {
+            setSetName('Jump to Lightspeed');
+        } else if (set === 'lof') {
+            setSetName('Legends of the Force');
+        }
+    }, [set, setName])
+
     let errorCount = 0;
 
     useEffect(() => {
-        if (didRun.current) return;
-        didRun.current = true;
-
         const createLeaderPack = async () => {
             async function fetchLeaders() {
                 try {
-                    const res = await fetch('http://localhost:3000/leader');
+                    const res = await fetch(`http://localhost:3000/leader?set=${set}`);
                     const data = await res.json();
 
                     if (!res.ok) {
@@ -52,6 +58,16 @@ export default function Pack() {
         createLeaderPack();
     }, [leaderNum])
 
+    const handleStartDraft = () => {
+        setDraftStarted(true);
+        setLeaderNum((prev) => prev + 4);
+    }
+
+    const handleSetChange = (e) => {
+        const newSet = e.target.innerText.toLowerCase();
+        setSet(newSet);
+    }
+
     useEffect(() => {
         if (leaderNum === 0) {
             setPickNum(1);
@@ -64,9 +80,6 @@ export default function Pack() {
     }, [packNum])
 
     useEffect(() => {
-        if (didRunCreateCards.current || leaderNum !== 0) return;
-        didRunCreateCards.current = true;
-
         const createCardPack = async () => {
             if (isFetching) return;
             setIsFetching(true);
@@ -80,7 +93,7 @@ export default function Pack() {
 
             async function fetchRareCard() {
                 try {
-                    const res = await fetch('http://localhost:3000/rare');
+                    const res = await fetch(`http://localhost:3000/rare?set=${set}`);
                     const data = await res.json();
 
                     if (!res.ok) {
@@ -97,7 +110,7 @@ export default function Pack() {
             let uncommonIds = [];
             async function fetchUncommonCard() {
                 try {
-                    const res = await fetch('http://localhost:3000/uncommon');
+                    const res = await fetch(`http://localhost:3000/uncommon?set=${set}`);
                     const data = await res.json();
 
                     if (!res.ok) {
@@ -121,7 +134,7 @@ export default function Pack() {
             let commonIds = [];
             async function fetchCommonCard() {
                 try {
-                    const res = await fetch('http://localhost:3000/common');
+                    const res = await fetch(`http://localhost:3000/common?set=${set}`);
                     const data = await res.json();
 
                     if (!res.ok) {
@@ -153,7 +166,6 @@ export default function Pack() {
             }
 
             if (pickNum > 8) {
-                didRunCreateCards.current = false;
                 setIsFetching(false);
                 const wheelPack = savedPacks.shift();
                 return setPack(wheelPack);
@@ -180,7 +192,6 @@ export default function Pack() {
                     alert(`${errorCount} common card${errorCount > 1 ? 's' : ''} failed to load.`);
                 }
             }
-            didRunCreateCards.current = false;
             setIsFetching(false);
         };
 
@@ -207,7 +218,6 @@ export default function Pack() {
         setPack([]);
 
         if (leaderNum > 0) {
-            didRun.current = false;
             setLeaderNum((prevLeaderNum) => prevLeaderNum - 1);
             setPickNum((prev) => prev + 1);
             return;
@@ -269,15 +279,22 @@ export default function Pack() {
             width: '100%',
             borderRadius: '10px',
         },
+        startDraft: {
+            display: draftStarted ? 'none' : 'block',
+        }
     };
 
     return (
         <>
             <Typography variant='h2' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }} >Star Wars Unlimited Draft Simulator</Typography>
             <Box sx={styles.packBox}>
+                <Button variant='contained' onClick={handleSetChange}>jtl</Button>
+                <Button variant='contained' onClick={handleSetChange}>lof</Button>
                 <Typography variant='h2' component='h2' sx={{ mb: '1rem' }}>{title}</Typography>
                 <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pack: {packNum}</Typography>
                 <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pick: {pickNum}</Typography>
+                <Typography variant='h2' component='h4'>{setName}</Typography>
+                <Button variant='contained' sx={styles.startDraft} onClick={() => handleStartDraft()}>Start Draft</Button>
                 <List sx={styles.pack}>
                     {pack.map((card) => {
                         const labelId = `card-id-${card.cardData._id}`;

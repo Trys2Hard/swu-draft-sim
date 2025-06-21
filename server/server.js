@@ -11,12 +11,18 @@ app.use(express.json())
 
 // routes
 app.get('/leader', async (req, res) => {
+    const set = req.query.set?.toUpperCase();
+
+    if (!set) {
+        return res.status(400).json({ error: 'Set parameter is required' });
+    }
+
     try {
         const rareLeaderChance = Math.random() < 0.2;
         const leaderRarity = rareLeaderChance ? 'Rare' : 'Common';
 
         const leaderArr = await Card.aggregate([
-            { $match: { Type: 'Leader', Rarity: leaderRarity } },
+            { $match: { Set: set, Type: 'Leader', VariantType: 'Normal', Rarity: leaderRarity } },
             { $sample: { size: 1 } }
         ]);
         const randomLeader = leaderArr[0];
@@ -28,12 +34,14 @@ app.get('/leader', async (req, res) => {
 })
 
 app.get('/rare', async (req, res) => {
+    const set = req.query.set?.toUpperCase();
+
     try {
         const legendaryChance = Math.random() < 0.2;
         const rareSlotRarity = legendaryChance ? 'Legendary' : 'Rare';
 
         const findRare = await Card.aggregate([
-            { $match: { Type: { $ne: 'Leader' }, Rarity: rareSlotRarity } },
+            { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Normal', Rarity: rareSlotRarity } },
             { $sample: { size: 1 } }
         ]);
         const randomRare = findRare[0];
@@ -45,9 +53,11 @@ app.get('/rare', async (req, res) => {
 })
 
 app.get('/uncommon', async (req, res) => {
+    const set = req.query.set?.toUpperCase();
+
     try {
         const findUncommonCard = await Card.aggregate([
-            { $match: { Rarity: 'Uncommon' } },
+            { $match: { Set: set, Rarity: 'Uncommon', VariantType: 'Normal', } },
             { $sample: { size: 1 } }
         ]);
         const randomUncommon = findUncommonCard[0];
@@ -59,9 +69,11 @@ app.get('/uncommon', async (req, res) => {
 })
 
 app.get('/common', async (req, res) => {
+    const set = req.query.set?.toUpperCase();
+
     try {
         const findCommonCard = await Card.aggregate([
-            { $match: { Type: { $nin: ['Leader', 'Base'] }, Rarity: 'Common' } },
+            { $match: { Set: set, Type: { $nin: ['Leader', 'Base'] }, VariantType: 'Normal', Rarity: 'Common' } },
             { $sample: { size: 1 } }
         ]);
         const randomCommon = findCommonCard[0];
