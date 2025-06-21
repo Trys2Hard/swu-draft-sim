@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { List, ListItem, Box, Typography, Button, Popover } from '@mui/material';
 import Deck from './Deck';
+import CardHover from './CardHover';
 
 export default function Pack() {
     const [leaderNum, setLeaderNum] = useState(-1);
@@ -250,7 +251,7 @@ export default function Pack() {
         setPickNum(prev => (prev >= 14 ? 1 : prev + 1));
     };
 
-    // Card Hover
+    //Card Hover
     const [anchorEl, setAnchorEl] = useState(null);
     const [hoveredCard, setHoveredCard] = useState(null);
     const hoverTimeoutRef = useRef(null);
@@ -271,9 +272,7 @@ export default function Pack() {
         setHoveredCard(null);
     };
 
-    const open = Boolean(anchorEl);
-
-    // Styles
+    //Styles
     const styles = {
         packBox: {
             width: '50%',
@@ -309,20 +308,6 @@ export default function Pack() {
         startDraft: {
             display: draftStarted ? 'none' : 'block',
         },
-        frontArtPopover: {
-            width: '20rem',
-            height: 'auto',
-            aspectRatio: hoveredCard?.Type === 'Leader' ? '7/5' : hoveredCard?.Type === 'Base' ? '7/5' : '5/7',
-            borderRadius: '15px',
-            ml: '6px',
-        },
-        backArtPopover: {
-            width: '20rem',
-            height: 'auto',
-            aspectRatio: '5/7',
-            borderRadius: '15px',
-            ml: '3px',
-        },
     };
 
     return (
@@ -351,45 +336,10 @@ export default function Pack() {
                             </>
                         );
                     })}
-                    <Popover
-                        id="mouse-over-popover"
-                        sx={{
-                            pointerEvents: 'none',
-                            '& .MuiPaper-root': {
-                                backgroundColor: 'transparent',
-                                boxShadow: 'none',
-                            }
-                        }}
-                        open={open}
+                    <CardHover
                         anchorEl={anchorEl}
-                        anchorOrigin={{
-                            vertical: 'center',
-                            horizontal: 'right',
-                        }}
-                        transformOrigin={{
-                            vertical: 'center',
-                            horizontal: 'left',
-                        }}
-                        onClose={handlePopoverClose}
-                        disableRestoreFocus
-                        disableScrollLock
-                    >
-                        {hoveredCard && (
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Box
-                                    component='img'
-                                    src={hoveredCard?.FrontArt}
-                                    sx={styles.frontArtPopover}>
-                                </Box>
-                                {hoveredCard?.DoubleSided &&
-                                    <Box
-                                        component='img'
-                                        src={hoveredCard?.BackArt}
-                                        sx={styles.backArtPopover}>
-                                    </Box>}
-                            </Box>
-                        )}
-                    </Popover>
+                        hoveredCard={hoveredCard}
+                        onHoverClose={handlePopoverClose} />
                 </List>
             </Box>
             <Deck deckLeaders={deckLeaders} deckCards={deckCards} />
