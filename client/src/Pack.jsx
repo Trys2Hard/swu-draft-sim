@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { List, ListItem, Box, Typography, Button, Popover } from '@mui/material';
 import Deck from './Deck';
 import CardHover from './CardHover';
+import useCardHoverPopover from './useCardHoverPopover';
 
 export default function Pack() {
     const [leaderNum, setLeaderNum] = useState(-1);
@@ -19,6 +20,8 @@ export default function Pack() {
     const [draftStarted, setDraftStarted] = useState(false);
     const [set, setSet] = useState('jtl');
     const [setName, setSetName] = useState('');
+
+    const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
     useEffect(() => {
         if (set === 'jtl') {
@@ -249,27 +252,6 @@ export default function Pack() {
         })
 
         setPickNum(prev => (prev >= 14 ? 1 : prev + 1));
-    };
-
-    //Card Hover
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [hoveredCard, setHoveredCard] = useState(null);
-    const hoverTimeoutRef = useRef(null);
-
-    const handlePopoverOpen = (event, card) => {
-        const target = event.currentTarget;
-        if (!target) return;
-
-        hoverTimeoutRef.current = setTimeout(() => {
-            setAnchorEl(target);
-            setHoveredCard(card);
-        }, 400);
-    };
-
-    const handlePopoverClose = () => {
-        clearTimeout(hoverTimeoutRef.current);
-        setAnchorEl(null);
-        setHoveredCard(null);
     };
 
     //Styles
