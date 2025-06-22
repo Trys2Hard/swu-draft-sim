@@ -18,20 +18,27 @@ export default function Pack() {
     const [isFetching, setIsFetching] = useState(false);
     const [savedPacks, setSavedPacks] = useState([]);
     const [draftStarted, setDraftStarted] = useState(false);
-    const [set, setSet] = useState('jtl');
+    const [set, setSet] = useState('lof');
     const [setName, setSetName] = useState('');
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
+    let errorCount = 0;
+    const sets = ['sor', 'shd', 'twi', 'jtl', 'lof'];
+
     useEffect(() => {
-        if (set === 'jtl') {
+        if (set === 'sor') {
+            setSetName('Spark of Rebellion');
+        } else if (set === 'shd') {
+            setSetName('Shadows of the Galaxy');
+        } else if (set === 'twi') {
+            setSetName('Twilight of the Republic');
+        } else if (set === 'jtl') {
             setSetName('Jump to Lightspeed');
         } else if (set === 'lof') {
             setSetName('Legends of the Force');
         }
     }, [set, setName])
-
-    let errorCount = 0;
 
     useEffect(() => {
         const createLeaderPack = async () => {
@@ -68,7 +75,7 @@ export default function Pack() {
     }
 
     const handleSetChange = (e) => {
-        const newSet = e.target.innerText.toLowerCase();
+        const newSet = e.target.value;
         setSet(newSet);
     }
 
@@ -296,8 +303,15 @@ export default function Pack() {
         <>
             <Typography variant='h2' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }} >Star Wars Unlimited Draft Simulator</Typography>
             <Box sx={styles.packBox}>
-                <Button variant='contained' onClick={handleSetChange}>jtl</Button>
-                <Button variant='contained' onClick={handleSetChange}>lof</Button>
+                <List sx={{ display: 'flex' }}>
+                    {sets.map((set) => {
+                        return (
+                            <ListItem>
+                                <Button variant='contained' value={set} onClick={handleSetChange}>{set}</Button>
+                            </ListItem>
+                        )
+                    })}
+                </List>
                 <Typography variant='h2' component='h2' sx={{ mb: '1rem' }}>{title}</Typography>
                 <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pack: {packNum}</Typography>
                 <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pick: {pickNum}</Typography>
@@ -305,15 +319,15 @@ export default function Pack() {
                 <Button variant='contained' sx={styles.startDraft} onClick={() => handleStartDraft()}>Start Draft</Button>
                 <List sx={styles.pack}>
                     {pack.map((card) => {
-                        const labelId = `card-id-${card.cardData._id}`;
+                        const labelId = `card-id-${card.cardData?._id}`;
                         return (
                             <>
                                 <ListItem
                                     aria-owns={open ? 'mouse-over-popover' : undefined}
                                     aria-haspopup="true"
                                     onMouseEnter={(e) => handlePopoverOpen(e, card.cardData)}
-                                    onMouseLeave={handlePopoverClose} key={card.cardData._id} onClick={() => pickCard(card.cardData._id)} sx={styles.card}>
-                                    <Box component='img' src={card.cardData.FrontArt} id={labelId} sx={styles.cardImage}></Box>
+                                    onMouseLeave={handlePopoverClose} key={card.cardData?._id} onClick={() => pickCard(card.cardData?._id)} sx={styles.card}>
+                                    <Box component='img' src={card.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
                                 </ListItem>
                             </>
                         );
