@@ -5,25 +5,17 @@ import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 
 export default function Pack() {
-    const [leaderNum, setLeaderNum] = useState(3);
-    const [cardPackNum, setCardPackNum] = useState(14);
-    const [pack, setPack] = useState([]);
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
-    const [rareNum, setRareNum] = useState(1);
-    const [uncommonNum, setUncommonNum] = useState(3);
-    const [commonNum, setCommonNum] = useState(10);
     const [pickNum, setPickNum] = useState(1);
-    const [packNum, setPackNum] = useState(1);
+    const [packNum, setPackNum] = useState(null);
     const [title, setTitle] = useState('Leaders');
-    const [isFetching, setIsFetching] = useState(false);
-    const [savedPacks, setSavedPacks] = useState([]);
     const [draftStarted, setDraftStarted] = useState(false);
     const [set, setSet] = useState('lof');
     const [setName, setSetName] = useState('');
     const [leaderPacks, setLeaderPacks] = useState([]);
     const [cardPacks, setCardPacks] = useState([]);
-    const [num, setNum] = useState(0);
+    const [packIndex, setPackIndex] = useState(0);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
@@ -141,7 +133,7 @@ export default function Pack() {
 
     async function generateCardPack() {
         let cardPack = [];
-        for (let i = 0; i < rareNum; i++) {
+        for (let i = 0; i < 1; i++) {
             const rareCard = await getRareCard();
             if (rareCard) {
                 cardPack.push(rareCard);
@@ -152,7 +144,7 @@ export default function Pack() {
             alert(`${errorCount} rare card${errorCount > 1 ? 's' : ''} failed to load.`);
         }
 
-        for (let i = 0; i < uncommonNum; i++) {
+        for (let i = 0; i < 3; i++) {
             const uncommonCard = await getUncommonCard();
             if (uncommonCard) {
                 cardPack.push(uncommonCard);
@@ -163,7 +155,7 @@ export default function Pack() {
             alert(`${errorCount} uncommon card${errorCount > 1 ? 's' : ''} failed to load.`);
         }
 
-        for (let i = 0; i < commonNum; i++) {
+        for (let i = 0; i < 10; i++) {
             const commonCard = await getCommonCard();
             if (commonCard) {
                 cardPack.push(commonCard);
@@ -179,9 +171,6 @@ export default function Pack() {
         }
     }
 
-
-
-
     async function handleStartDraft() {
         setDraftStarted(true);
 
@@ -192,129 +181,17 @@ export default function Pack() {
         if (errorCount > 0) {
             alert(`${errorCount} leader${errorCount > 1 ? 's' : ''} failed to load.`);
         }
-
-
-
-        // for (let i = 0; i < 8; i++) {
-        //     await generateCardPack();
-        // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // setLeaderNum((prev) => prev + 4);
-
-
-
-        // if ((leaderNum === 0) && (packNum < 4 && packNum !== null)) {
-        //     for (let i = 0; i < rareNum; i++) {
-        //         await fetchRareCard();
-        //     }
-
-        //     if (errorCount > 0) {
-        //         alert(`${errorCount} rare card${errorCount > 1 ? 's' : ''} failed to load.`);
-        //     }
-
-        //     for (let i = 0; i < uncommonNum; i++) {
-        //         await fetchUncommonCard();
-        //     }
-
-        //     if (errorCount > 0) {
-        //         alert(`${errorCount} uncommon card${errorCount > 1 ? 's' : ''} failed to load.`);
-        //     }
-
-        //     for (let i = 0; i < commonNum; i++) {
-        //         await fetchCommonCard();
-        //     }
-
-        //     if (errorCount > 0) {
-        //         alert(`${errorCount} common card${errorCount > 1 ? 's' : ''} failed to load.`);
-        //     }
-        // }
     }
-
-    // useEffect(() => {
-    //     setNum((prev) => prev + 1);
-    //     // console.log(num)
-    //     // console.log('Leader Packs', leaderPacks)
-    // }, [leaderNum])
-
-    // useEffect(() => {
-    //     setNum((prev) => prev + 1);
-    //     // console.log(num)
-    //     // console.log('Leader Packs', leaderPacks)
-    // }, [cardPackNum])
-
-    // useEffect(() => {
-
-    // }, [num])
 
     function handleSetChange(e) {
         const newSet = e.target.value;
         setSet(newSet);
     }
 
-    useEffect(() => {
-        if (draftStarted && leaderPacks.every(arr => arr.length === 0)) {
-            setTitle('Cards');
-        }
-    }, [num]);
-
-    useEffect(() => {
-        setSavedPacks([]);
-    }, [packNum])
-
-
-
-
-    // useEffect(() => {
-    //     const createCardPack = async () => {
-    //         if (isFetching) return;
-    //         setIsFetching(true);
-
-
-    //         if (packNum === 4) {
-    //             setTitle('Draft Complete');
-    //             setPackNum(null);
-    //             setPickNum(null);
-    //         }
-
-    //         if (rareNum === 0 && uncommonNum === 0 && commonNum === 0) {
-    //             setPackNum((prev) => prev + 1);
-    //         }
-
-    //         if (pickNum === 1) {
-    //             setRareNum(1);
-    //             setUncommonNum(3);
-    //             setCommonNum(10);
-    //         }
-
-    //         if (pickNum > 8) {
-    //             setIsFetching(false);
-    //             const wheelPack = savedPacks.shift();
-    //             return setPack(wheelPack);
-    //         }
-    //         setIsFetching(false);
-    //     };
-
-    //     createCardPack();
-    // }, [leaderNum, packNum, rareNum, uncommonNum, commonNum, setTitle, setPackNum, setPickNum, setPack, pickNum])
-
     async function pickCard(id) {
         handlePopoverClose();
 
-        if (isFetching || currentPack[num].length === 0) return;
-
-        const pickedCard = currentPack[num].find((card) => card.cardData?._id === id);
+        const pickedCard = currentPack[packIndex].find((card) => card.cardData?._id === id);
         if (!pickedCard) return;
 
         const pickedCardData = pickedCard.cardData;
@@ -330,88 +207,43 @@ export default function Pack() {
         if (packs.length === 8) {
             addCard((prev) => [...prev, pickedCardData]);
 
-            setNum((prev) => prev + 1);
+            setPackIndex((prev) => prev + 1);
 
-            const pickedCardIndex = packs[num].findIndex((item) => item.cardData._id === pickedCardData._id);
-            packs[num].splice(pickedCardIndex, 1);
+            const pickedCardIndex = packs[packIndex].findIndex((item) => item.cardData._id === pickedCardData._id);
+            packs[packIndex].splice(pickedCardIndex, 1);
 
             packs.map((pack) => {
-                if (packs.indexOf(pack) !== num) {
-                    const randNum = Math.floor(Math.random() * pack.length);
-                    pack.splice(randNum, 1);
+                if (packs.indexOf(pack) !== packIndex) {
+                    const randCardIndex = Math.floor(Math.random() * pack.length);
+                    pack.splice(randCardIndex, 1);
                 }
             })
 
-            if (num === 7) {
-                setNum(0);
+            if (packIndex === 7) {
+                setPackIndex(0);
+            }
+
+            if (draftStarted && leaderPacks.every(arr => arr.length === 0 && pickNum < 15)) {
+                setTitle('Cards');
+            }
+
+            setPickNum((prev) => prev + 1);
+
+            if (draftStarted && packs.every(arr => arr.length === 0) && packNum < 3) {
+                setPackNum((prev) => prev + 1);
+                setPickNum(1);
+                setPackIndex(0);
+                setCardPacks([]);
+                for (let i = 0; i < 8; i++) {
+                    await generateCardPack();
+                    commonIds = [];
+                    uncommonIds = [];
+                }
+            } else if (packNum === 3 && pickNum === 14) {
+                setTitle('Draft Complete');
             }
         }
-
-        if (draftStarted && packs.every(arr => arr.length === 0)) {
-            setNum(0);
-            setCardPacks([]);
-            for (let i = 0; i < 8; i++) {
-                await generateCardPack();
-                commonIds = [];
-                uncommonIds = [];
-            }
-        }
-
-        console.log('leader packs', leaderPacks);
-        console.log('card packs', cardPacks)
-        console.log('num', num)
-
-
-
-        // if (leaderPacks.every(arr => arr.length === 0)) {
-        //     console.log('all leaders drafted')
-        // }
-
-
-        // if (leaderNum === 0) {
-        //     const pickedCardIndex = pack.findIndex((item) => item.cardData._id === pickedCardData._id);
-        //     pack.splice(pickedCardIndex, 1);
-        //     setSavedPacks((prev) => [...prev, pack]);
-        // }
-
-        // setPack([]);
-
-        // if (leaderNum > 0) {
-        //     setLeaderNum((prevLeaderNum) => prevLeaderNum - 1);
-        //     setPickNum((prev) => prev + 1);
-        //     return;
-        // }
-
-        // const availableRarities = [];
-        // if (rareNum > 0) availableRarities.push('rare');
-        // if (uncommonNum > 0) availableRarities.push('uncommon');
-        // if (commonNum > 0) availableRarities.push('common');
-
-        // if (availableRarities.length === 0) return;
-
-        // const rarity = availableRarities[Math.floor(Math.random() * availableRarities.length)];
-
-        // if (rarity === 'rare') {
-        //     setRareNum((prev) => prev - 1);
-        // } else if (rarity === 'uncommon') {
-        //     setUncommonNum((prev) => prev - 1);
-        // } else if (rarity === 'common') {
-        //     setCommonNum((prev) => prev - 1);
-        // }
-
-        // savedPacks.map((pack) => {
-        //     const randPackNum = Math.floor(Math.random() * pack.length);
-        //     pack.splice(randPackNum, 1);
-        // })
-
-        // setPickNum(prev => (prev >= 14 ? 1 : prev + 1));
     };
-
-    // useEffect(() => {
-    //     if (draftStarted && cardPacks.every(arr => arr.length === 0)) {
-    //         console.log('pack is done');
-    //     }
-    // }, [cardPacks])
 
     //Styles
     const styles = {
@@ -451,8 +283,6 @@ export default function Pack() {
         },
     };
 
-    // cardPacks[0]?.map((card) => console.log(card.cardData?._id));
-
     return (
         <>
             <Typography variant='h2' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }} >Star Wars Unlimited Draft Simulator</Typography>
@@ -466,13 +296,15 @@ export default function Pack() {
                         )
                     })}
                 </List>
-                <Typography variant='h2' component='h2' sx={{ mb: '1rem' }}>{title}</Typography>
-                <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pack: {packNum}</Typography>
-                <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pick: {pickNum}</Typography>
-                <Typography variant='h2' component='h4'>{setName}</Typography>
+                {draftStarted && <Box>
+                    <Typography variant='h2' component='h2' sx={{ mb: '1rem' }}>{title}</Typography>
+                    <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pack: {packNum}</Typography>
+                    <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pick: {pickNum}</Typography>
+                </Box>}
+                {!draftStarted && <Typography variant='h2' component='h4'>{setName}</Typography>}
                 <Button variant='contained' sx={styles.startDraft} onClick={() => handleStartDraft()}>Start Draft</Button>
                 <List sx={styles.pack}>
-                    {currentPack[num]?.map((card) => {
+                    {currentPack[packIndex]?.map((card) => {
                         const labelId = `card-id-${card.cardData?._id}`;
                         return (
                             <>
@@ -486,7 +318,6 @@ export default function Pack() {
                             </>
                         );
                     })}
-                    {/* {leadersDrafted && <Button>Click me</Button>} */}
                     <CardHover
                         anchorEl={anchorEl}
                         hoveredCard={hoveredCard}
