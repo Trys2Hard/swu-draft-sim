@@ -19,6 +19,7 @@ export default function Deck({ deckLeaders, deckCards }) {
             borderRadius: '5px',
         },
         leaders: {
+            width: '100%',
             display: 'flex',
             justifyContent: 'center',
         },
@@ -28,9 +29,9 @@ export default function Deck({ deckLeaders, deckCards }) {
             p: '0',
         },
         cards: {
+            width: '100%',
             display: 'flex',
             flexWrap: 'wrap',
-
         },
         nonLeaderCards: {
             width: '10%',

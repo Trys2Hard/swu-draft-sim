@@ -260,6 +260,7 @@ export default function Pack() {
             color: 'white',
         },
         pack: {
+            width: '100%',
             display: 'flex',
             flexWrap: 'wrap',
             gap: '0.5rem',
