@@ -214,8 +214,14 @@ export default function Pack() {
 
             packs.map((pack) => {
                 if (packs.indexOf(pack) !== packIndex) {
-                    const randCardIndex = Math.floor(Math.random() * pack.length);
-                    pack.splice(randCardIndex, 1);
+                    const cardPick = pack.reduce((highest, card) => {
+                        if (!highest || (card.cardData.Rank ?? 0) > (highest.cardData.Rank ?? 0)) {
+                            return card;
+                        }
+                        return highest;
+                    }, null);
+                    const botPickedCardIndex = pack.indexOf(cardPick);
+                    pack.splice(botPickedCardIndex, 1);
                 }
             })
 
