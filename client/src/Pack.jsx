@@ -5,7 +5,8 @@ import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 
 export default function Pack() {
-    const [leaderNum, setLeaderNum] = useState(-1);
+    const [leaderNum, setLeaderNum] = useState(3);
+    const [cardPackNum, setCardPackNum] = useState(14);
     const [pack, setPack] = useState([]);
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
@@ -20,246 +21,397 @@ export default function Pack() {
     const [draftStarted, setDraftStarted] = useState(false);
     const [set, setSet] = useState('lof');
     const [setName, setSetName] = useState('');
+    const [leaderPacks, setLeaderPacks] = useState([]);
+    const [cardPacks, setCardPacks] = useState([]);
+    const [num, setNum] = useState(0);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
+    const leadersDrafted = draftStarted && leaderPacks.every(arr => arr.length === 0);
+    const currentPack = leadersDrafted ? cardPacks : leaderPacks;
+
     let errorCount = 0;
-    const sets = ['sor', 'shd', 'twi', 'jtl', 'lof'];
+    const sets = ['lof', 'jtl', 'twi', 'shd', 'sor'];
 
     useEffect(() => {
-        if (set === 'sor') {
-            setSetName('Spark of Rebellion');
-        } else if (set === 'shd') {
-            setSetName('Shadows of the Galaxy');
-        } else if (set === 'twi') {
-            setSetName('Twilight of the Republic');
+        if (set === 'lof') {
+            setSetName('Legends of the Force');
         } else if (set === 'jtl') {
             setSetName('Jump to Lightspeed');
-        } else if (set === 'lof') {
-            setSetName('Legends of the Force');
+        } else if (set === 'twi') {
+            setSetName('Twilight of the Republic');
+        } else if (set === 'shd') {
+            setSetName('Shadows of the Galaxy');
+        } else if (set === 'sor') {
+            setSetName('Spark of Rebellion');
         }
     }, [set, setName])
 
-    useEffect(() => {
-        const createLeaderPack = async () => {
-            async function fetchLeaders() {
-                try {
-                    const res = await fetch(`http://localhost:3000/leader?set=${set}`);
-                    const data = await res.json();
+    const getLeader = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/leader?set=${set}`);
+            const data = await res.json();
 
-                    if (!res.ok) {
-                        throw new Error(data.error || 'Failed to fetch leader');
-                    }
-
-                    setPack((prevPack) => [...prevPack, data]);
-                } catch (error) {
-                    errorCount++;
-                    console.error('Error fetching leader', error);
-                }
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to fetch leader');
             }
-
-            for (let i = 0; i < leaderNum; i++) {
-                await fetchLeaders();
-            }
-
-            if (errorCount > 0) {
-                alert(`${errorCount} leader${errorCount > 1 ? 's' : ''} failed to load.`);
-            }
+            return data;
+        } catch (error) {
+            errorCount++;
+            console.error('Error fetching leader', error);
         }
-        createLeaderPack();
-    }, [leaderNum])
-
-    const handleStartDraft = () => {
-        setDraftStarted(true);
-        setLeaderNum((prev) => prev + 4);
     }
 
-    const handleSetChange = (e) => {
+    const getRareCard = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/rare?set=${set}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to fetch rare card');
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Error fetching rare card', error);
+            alert('Rare card failed to load');
+        }
+    }
+
+    let uncommonIds = [];
+    const getUncommonCard = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/uncommon?set=${set}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to fetch uncommon card');
+            }
+
+            const uncommonDuplicate = uncommonIds.some((id) => id === data.cardData._id);
+            uncommonIds.push(data.cardData._id);
+
+            if (uncommonDuplicate) {
+                return getUncommonCard()
+            } else {
+                return data;
+            }
+        } catch (error) {
+            errorCount++;
+            console.error('Error fetching uncommon cards', error);
+        }
+    }
+
+    let commonIds = [];
+    const getCommonCard = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/common?set=${set}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to fetch common card');
+            }
+
+            const commonDuplicate = commonIds.some((id) => id === data.cardData._id);
+            commonIds.push(data.cardData._id);
+
+            if (commonDuplicate) {
+                return getCommonCard()
+            } else {
+                return data;
+            }
+        } catch (error) {
+            errorCount++;
+            console.error('Error fetching common cards', error);
+        }
+    }
+
+    async function generateLeaderPack() {
+        let leaderPack = [];
+        for (let i = 0; i < 3; i++) {
+            const leader = await getLeader();
+            if (leader) {
+                leaderPack.push(leader);
+            }
+        }
+        if (leaderPack.length === 3) {
+            setLeaderPacks((prev) => [...prev, leaderPack]);
+        }
+    }
+
+    async function generateCardPack() {
+        let cardPack = [];
+        for (let i = 0; i < rareNum; i++) {
+            const rareCard = await getRareCard();
+            if (rareCard) {
+                cardPack.push(rareCard);
+            }
+        }
+
+        if (errorCount > 0) {
+            alert(`${errorCount} rare card${errorCount > 1 ? 's' : ''} failed to load.`);
+        }
+
+        for (let i = 0; i < uncommonNum; i++) {
+            const uncommonCard = await getUncommonCard();
+            if (uncommonCard) {
+                cardPack.push(uncommonCard);
+            }
+        }
+
+        if (errorCount > 0) {
+            alert(`${errorCount} uncommon card${errorCount > 1 ? 's' : ''} failed to load.`);
+        }
+
+        for (let i = 0; i < commonNum; i++) {
+            const commonCard = await getCommonCard();
+            if (commonCard) {
+                cardPack.push(commonCard);
+            }
+        }
+
+        if (errorCount > 0) {
+            alert(`${errorCount} common card${errorCount > 1 ? 's' : ''} failed to load.`);
+        }
+
+        if (cardPack.length === 14) {
+            setCardPacks((prev) => [...prev, cardPack]);
+        }
+    }
+
+
+
+
+    async function handleStartDraft() {
+        setDraftStarted(true);
+
+        for (let i = 0; i < 8; i++) {
+            await generateLeaderPack();
+        }
+
+        if (errorCount > 0) {
+            alert(`${errorCount} leader${errorCount > 1 ? 's' : ''} failed to load.`);
+        }
+
+
+
+        // for (let i = 0; i < 8; i++) {
+        //     await generateCardPack();
+        // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // setLeaderNum((prev) => prev + 4);
+
+
+
+        // if ((leaderNum === 0) && (packNum < 4 && packNum !== null)) {
+        //     for (let i = 0; i < rareNum; i++) {
+        //         await fetchRareCard();
+        //     }
+
+        //     if (errorCount > 0) {
+        //         alert(`${errorCount} rare card${errorCount > 1 ? 's' : ''} failed to load.`);
+        //     }
+
+        //     for (let i = 0; i < uncommonNum; i++) {
+        //         await fetchUncommonCard();
+        //     }
+
+        //     if (errorCount > 0) {
+        //         alert(`${errorCount} uncommon card${errorCount > 1 ? 's' : ''} failed to load.`);
+        //     }
+
+        //     for (let i = 0; i < commonNum; i++) {
+        //         await fetchCommonCard();
+        //     }
+
+        //     if (errorCount > 0) {
+        //         alert(`${errorCount} common card${errorCount > 1 ? 's' : ''} failed to load.`);
+        //     }
+        // }
+    }
+
+    // useEffect(() => {
+    //     setNum((prev) => prev + 1);
+    //     // console.log(num)
+    //     // console.log('Leader Packs', leaderPacks)
+    // }, [leaderNum])
+
+    // useEffect(() => {
+    //     setNum((prev) => prev + 1);
+    //     // console.log(num)
+    //     // console.log('Leader Packs', leaderPacks)
+    // }, [cardPackNum])
+
+    // useEffect(() => {
+
+    // }, [num])
+
+    function handleSetChange(e) {
         const newSet = e.target.value;
         setSet(newSet);
     }
 
     useEffect(() => {
-        if (leaderNum === 0) {
-            setPickNum(1);
+        if (draftStarted && leaderPacks.every(arr => arr.length === 0)) {
             setTitle('Cards');
         }
-    }, [leaderNum]);
+    }, [num]);
 
     useEffect(() => {
         setSavedPacks([]);
     }, [packNum])
 
-    useEffect(() => {
-        const createCardPack = async () => {
-            if (isFetching) return;
-            setIsFetching(true);
 
 
-            if (packNum === 4) {
-                setTitle('Draft Complete');
-                setPackNum(null);
-                setPickNum(null);
-            }
 
-            async function fetchRareCard() {
-                try {
-                    const res = await fetch(`http://localhost:3000/rare?set=${set}`);
-                    const data = await res.json();
+    // useEffect(() => {
+    //     const createCardPack = async () => {
+    //         if (isFetching) return;
+    //         setIsFetching(true);
 
-                    if (!res.ok) {
-                        throw new Error(data.error || 'Failed to fetch rare card');
-                    }
 
-                    setPack((prevPack) => [...prevPack, data]);
-                } catch (error) {
-                    console.error('Error fetching rare card', error);
-                    alert('Rare card failed to load');
-                }
-            }
+    //         if (packNum === 4) {
+    //             setTitle('Draft Complete');
+    //             setPackNum(null);
+    //             setPickNum(null);
+    //         }
 
-            let uncommonIds = [];
-            async function fetchUncommonCard() {
-                try {
-                    const res = await fetch(`http://localhost:3000/uncommon?set=${set}`);
-                    const data = await res.json();
+    //         if (rareNum === 0 && uncommonNum === 0 && commonNum === 0) {
+    //             setPackNum((prev) => prev + 1);
+    //         }
 
-                    if (!res.ok) {
-                        throw new Error(data.error || 'Failed to fetch uncommon card');
-                    }
+    //         if (pickNum === 1) {
+    //             setRareNum(1);
+    //             setUncommonNum(3);
+    //             setCommonNum(10);
+    //         }
 
-                    const uncommonDuplicate = uncommonIds.some((id) => id === data.cardData._id);
-                    uncommonIds.push(data.cardData._id);
+    //         if (pickNum > 8) {
+    //             setIsFetching(false);
+    //             const wheelPack = savedPacks.shift();
+    //             return setPack(wheelPack);
+    //         }
+    //         setIsFetching(false);
+    //     };
 
-                    if (uncommonDuplicate) {
-                        return fetchUncommonCard()
-                    } else {
-                        setPack((prevPack) => [...prevPack, data]);
-                    }
-                } catch (error) {
-                    errorCount++;
-                    console.error('Error fetching uncommon cards', error);
-                }
-            }
+    //     createCardPack();
+    // }, [leaderNum, packNum, rareNum, uncommonNum, commonNum, setTitle, setPackNum, setPickNum, setPack, pickNum])
 
-            let commonIds = [];
-            async function fetchCommonCard() {
-                try {
-                    const res = await fetch(`http://localhost:3000/common?set=${set}`);
-                    const data = await res.json();
-
-                    if (!res.ok) {
-                        throw new Error(data.error || 'Failed to fetch common card');
-                    }
-
-                    const commonDuplicate = commonIds.some((id) => id === data.cardData._id);
-                    commonIds.push(data.cardData._id);
-
-                    if (commonDuplicate) {
-                        return fetchCommonCard()
-                    } else {
-                        setPack((prevPack) => [...prevPack, data]);
-                    }
-                } catch (error) {
-                    errorCount++;
-                    console.error('Error fetching common cards', error);
-                }
-            }
-
-            if (rareNum === 0 && uncommonNum === 0 && commonNum === 0) {
-                setPackNum((prev) => prev + 1);
-            }
-
-            if (pickNum === 1) {
-                setRareNum(1);
-                setUncommonNum(3);
-                setCommonNum(10);
-            }
-
-            if (pickNum > 8) {
-                setIsFetching(false);
-                const wheelPack = savedPacks.shift();
-                return setPack(wheelPack);
-            }
-
-            if ((leaderNum === 0) && (packNum < 4 && packNum !== null)) {
-                for (let i = 0; i < rareNum; i++) {
-                    await fetchRareCard();
-                }
-
-                for (let i = 0; i < uncommonNum; i++) {
-                    await fetchUncommonCard();
-                }
-
-                if (errorCount > 0) {
-                    alert(`${errorCount} uncommon card${errorCount > 1 ? 's' : ''} failed to load.`);
-                }
-
-                for (let i = 0; i < commonNum; i++) {
-                    await fetchCommonCard();
-                }
-
-                if (errorCount > 0) {
-                    alert(`${errorCount} common card${errorCount > 1 ? 's' : ''} failed to load.`);
-                }
-            }
-            setIsFetching(false);
-        };
-
-        createCardPack();
-    }, [leaderNum, packNum, rareNum, uncommonNum, commonNum, setTitle, setPackNum, setPickNum, setPack, pickNum])
-
-    const pickCard = (id) => {
+    async function pickCard(id) {
         handlePopoverClose();
 
-        if (isFetching || pack.length === 0) return;
+        if (isFetching || currentPack[num].length === 0) return;
 
-        const pickedCard = pack.find((card) => card.cardData?._id === id);
+        const pickedCard = currentPack[num].find((card) => card.cardData?._id === id);
         if (!pickedCard) return;
 
         const pickedCardData = pickedCard.cardData;
 
-        const addCard = deckLeaders.length < 3 ? setDeckLeaders : setDeckCards;
-        addCard((prev) => [...prev, pickedCardData]);
+        let addCard = setDeckLeaders;
+        let packs = leaderPacks;
 
-        if (leaderNum === 0) {
-            const pickedCardIndex = pack.findIndex((item) => item.cardData._id === pickedCardData._id);
-            pack.splice(pickedCardIndex, 1);
-            setSavedPacks((prev) => [...prev, pack]);
+        if (leadersDrafted) {
+            addCard = setDeckCards;
+            packs = cardPacks;
         }
 
-        setPack([]);
+        if (packs.length === 8) {
+            addCard((prev) => [...prev, pickedCardData]);
 
-        if (leaderNum > 0) {
-            setLeaderNum((prevLeaderNum) => prevLeaderNum - 1);
-            setPickNum((prev) => prev + 1);
-            return;
+            setNum((prev) => prev + 1);
+
+            const pickedCardIndex = packs[num].findIndex((item) => item.cardData._id === pickedCardData._id);
+            packs[num].splice(pickedCardIndex, 1);
+
+            packs.map((pack) => {
+                if (packs.indexOf(pack) !== num) {
+                    const randNum = Math.floor(Math.random() * pack.length);
+                    pack.splice(randNum, 1);
+                }
+            })
+
+            if (num === 7) {
+                setNum(0);
+            }
         }
 
-        const availableRarities = [];
-        if (rareNum > 0) availableRarities.push('rare');
-        if (uncommonNum > 0) availableRarities.push('uncommon');
-        if (commonNum > 0) availableRarities.push('common');
-
-        if (availableRarities.length === 0) return;
-
-        const rarity = availableRarities[Math.floor(Math.random() * availableRarities.length)];
-
-        if (rarity === 'rare') {
-            setRareNum((prev) => prev - 1);
-        } else if (rarity === 'uncommon') {
-            setUncommonNum((prev) => prev - 1);
-        } else if (rarity === 'common') {
-            setCommonNum((prev) => prev - 1);
+        if (draftStarted && packs.every(arr => arr.length === 0)) {
+            setNum(0);
+            setCardPacks([]);
+            for (let i = 0; i < 8; i++) {
+                await generateCardPack();
+                commonIds = [];
+                uncommonIds = [];
+            }
         }
 
-        savedPacks.map((pack) => {
-            const randPackNum = Math.floor(Math.random() * pack.length);
-            pack.splice(randPackNum, 1);
-        })
+        console.log('leader packs', leaderPacks);
+        console.log('card packs', cardPacks)
+        console.log('num', num)
 
-        setPickNum(prev => (prev >= 14 ? 1 : prev + 1));
+
+
+        // if (leaderPacks.every(arr => arr.length === 0)) {
+        //     console.log('all leaders drafted')
+        // }
+
+
+        // if (leaderNum === 0) {
+        //     const pickedCardIndex = pack.findIndex((item) => item.cardData._id === pickedCardData._id);
+        //     pack.splice(pickedCardIndex, 1);
+        //     setSavedPacks((prev) => [...prev, pack]);
+        // }
+
+        // setPack([]);
+
+        // if (leaderNum > 0) {
+        //     setLeaderNum((prevLeaderNum) => prevLeaderNum - 1);
+        //     setPickNum((prev) => prev + 1);
+        //     return;
+        // }
+
+        // const availableRarities = [];
+        // if (rareNum > 0) availableRarities.push('rare');
+        // if (uncommonNum > 0) availableRarities.push('uncommon');
+        // if (commonNum > 0) availableRarities.push('common');
+
+        // if (availableRarities.length === 0) return;
+
+        // const rarity = availableRarities[Math.floor(Math.random() * availableRarities.length)];
+
+        // if (rarity === 'rare') {
+        //     setRareNum((prev) => prev - 1);
+        // } else if (rarity === 'uncommon') {
+        //     setUncommonNum((prev) => prev - 1);
+        // } else if (rarity === 'common') {
+        //     setCommonNum((prev) => prev - 1);
+        // }
+
+        // savedPacks.map((pack) => {
+        //     const randPackNum = Math.floor(Math.random() * pack.length);
+        //     pack.splice(randPackNum, 1);
+        // })
+
+        // setPickNum(prev => (prev >= 14 ? 1 : prev + 1));
     };
+
+    // useEffect(() => {
+    //     if (draftStarted && cardPacks.every(arr => arr.length === 0)) {
+    //         console.log('pack is done');
+    //     }
+    // }, [cardPacks])
 
     //Styles
     const styles = {
@@ -299,6 +451,8 @@ export default function Pack() {
         },
     };
 
+    // cardPacks[0]?.map((card) => console.log(card.cardData?._id));
+
     return (
         <>
             <Typography variant='h2' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }} >Star Wars Unlimited Draft Simulator</Typography>
@@ -318,7 +472,7 @@ export default function Pack() {
                 <Typography variant='h2' component='h4'>{setName}</Typography>
                 <Button variant='contained' sx={styles.startDraft} onClick={() => handleStartDraft()}>Start Draft</Button>
                 <List sx={styles.pack}>
-                    {pack.map((card) => {
+                    {currentPack[num]?.map((card) => {
                         const labelId = `card-id-${card.cardData?._id}`;
                         return (
                             <>
@@ -332,6 +486,7 @@ export default function Pack() {
                             </>
                         );
                     })}
+                    {/* {leadersDrafted && <Button>Click me</Button>} */}
                     <CardHover
                         anchorEl={anchorEl}
                         hoveredCard={hoveredCard}
