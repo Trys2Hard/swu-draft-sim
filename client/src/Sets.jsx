@@ -10,6 +10,7 @@ const styles = {
     },
     setButton: {
         backgroundColor: 'rgba(73, 73, 73, 1)',
+        borderRadius: '6px',
         '&:hover': {
             filter: 'brightness(1.2)',
         }
