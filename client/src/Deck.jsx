@@ -9,33 +9,40 @@ export default function Deck({ deckLeaders, deckCards }) {
     const styles = {
         deck: {
             color: 'white',
-            backgroundColor: 'rgba(55, 55, 55, 1)',
-            width: '80%',
+            backgroundColor: 'rgba(31, 202, 255, 0.5)',
+            width: '60%',
             height: '100%',
             m: '0 auto 0 auto',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: '5px',
+            p: '0.5rem',
         },
         leaders: {
             width: '100%',
             display: 'flex',
             justifyContent: 'center',
+            backdropFilter: deckLeaders.length > 0 && 'brightness(0.7)',
+            borderRadius: '5px',
+            gap: '1rem',
         },
         leaderCards: {
             width: '20%',
-            m: '0.2rem',
             p: '0',
         },
         cards: {
             width: '100%',
             display: 'flex',
+            justifyContent: 'center',
             flexWrap: 'wrap',
+            backdropFilter: deckCards.length > 0 && 'brightness(0.7)',
+            borderRadius: '5px',
+            gap: '0.5rem',
         },
         nonLeaderCards: {
-            width: '10%',
-            m: '0.2rem',
+            width: '13%',
+            m: '0',
             p: '0',
         },
         cardImage: {
@@ -47,7 +54,7 @@ export default function Deck({ deckLeaders, deckCards }) {
     return (
         <Box sx={styles.deck}>
             <Typography variant='h3' component='h2' sx={{ mb: '1rem' }}>Deck</Typography>
-            <Typography variant='h4' component='h3' sx={{ mb: '1rem' }}>Leaders</Typography>
+            {deckLeaders.length > 0 && <Typography variant='h4' component='h3'>Leaders</Typography>}
 
             <List sx={styles.leaders}>
                 {deckLeaders.map((card) => {
@@ -64,7 +71,7 @@ export default function Deck({ deckLeaders, deckCards }) {
                 })}
             </List>
 
-            <Typography variant='h4' component='h3' sx={{ mb: '1rem' }}>Cards</Typography>
+            {deckCards.length > 0 && <Typography variant='h4' component='h3' sx={{ mt: '1rem' }}>Cards</Typography>}
 
             <List sx={styles.cards}>
                 {deckCards.map((card) => {

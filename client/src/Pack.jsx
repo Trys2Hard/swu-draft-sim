@@ -3,6 +3,7 @@ import { List, ListItem, Box, Typography, Button, Popover } from '@mui/material'
 import Deck from './Deck';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
+import Sets from './Sets';
 
 export default function Pack() {
     const [deckLeaders, setDeckLeaders] = useState([]);
@@ -12,7 +13,7 @@ export default function Pack() {
     const [title, setTitle] = useState('Leaders');
     const [draftStarted, setDraftStarted] = useState(false);
     const [set, setSet] = useState('lof');
-    const [setName, setSetName] = useState('');
+    const [setName, setSetName] = useState('Legends of the Force');
     const [leaderPacks, setLeaderPacks] = useState([]);
     const [cardPacks, setCardPacks] = useState([]);
     const [packIndex, setPackIndex] = useState(0);
@@ -21,23 +22,26 @@ export default function Pack() {
 
     const leadersDrafted = draftStarted && leaderPacks.every(arr => arr.length === 0);
     const currentPack = leadersDrafted ? cardPacks : leaderPacks;
+    const draftingLeaders = draftStarted && leaderPacks.every(arr => arr.length > 0);
+    const draftEnded = packNum === 3 && pickNum === 14;
 
     let errorCount = 0;
-    const sets = ['lof', 'jtl', 'twi', 'shd', 'sor'];
+    // const sets = ['lof', 'jtl', 'twi', 'shd', 'sor'];
+    const sets = ['lof'];
 
-    useEffect(() => {
-        if (set === 'lof') {
-            setSetName('Legends of the Force');
-        } else if (set === 'jtl') {
-            setSetName('Jump to Lightspeed');
-        } else if (set === 'twi') {
-            setSetName('Twilight of the Republic');
-        } else if (set === 'shd') {
-            setSetName('Shadows of the Galaxy');
-        } else if (set === 'sor') {
-            setSetName('Spark of Rebellion');
-        }
-    }, [set, setName])
+    // useEffect(() => {
+    //     if (set === 'lof') {
+    //         setSetName('Legends of the Force');
+    //     } else if (set === 'jtl') {
+    //         setSetName('Jump to Lightspeed');
+    //     } else if (set === 'twi') {
+    //         setSetName('Twilight of the Republic');
+    //     } else if (set === 'shd') {
+    //         setSetName('Shadows of the Galaxy');
+    //     } else if (set === 'sor') {
+    //         setSetName('Spark of Rebellion');
+    //     }
+    // }, [set, setName])
 
     const getLeader = async () => {
         try {
@@ -245,7 +249,7 @@ export default function Pack() {
                     commonIds = [];
                     uncommonIds = [];
                 }
-            } else if (packNum === 3 && pickNum === 14) {
+            } else if (draftEnded) {
                 setTitle('Draft Complete');
             }
         }
@@ -254,11 +258,11 @@ export default function Pack() {
     //Styles
     const styles = {
         packBox: {
-            width: '50%',
+            width: '60%',
             height: '100%',
-            m: '8rem auto 8rem auto',
-            p: '1rem',
-            backgroundColor: 'rgba(55, 55, 55, 1)',
+            m: '5rem auto 5rem auto',
+            p: '0.5rem',
+            backgroundColor: 'rgba(31, 202, 255, 0.5)',
             borderRadius: '5px',
             display: 'flex',
             flexDirection: 'column',
@@ -269,48 +273,50 @@ export default function Pack() {
             width: '100%',
             display: 'flex',
             flexWrap: 'wrap',
-            gap: '0.5rem',
+            gap: draftingLeaders ? '1rem' : '0.5rem',
+            backdropFilter: draftStarted && 'brightness(0.7)',
+            borderRadius: '5px',
+            p: draftStarted && '1rem',
+            justifyContent: 'center',
         },
         card: {
-            width: '15%',
+            width: draftingLeaders ? '20%' : '15%',
             p: '0rem',
-            '&: hover': {
-                cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
-                borderRadius: '10px',
-            },
             transition: 'transform 0.3s ease-in-out',
         },
         cardImage: {
             width: '100%',
             borderRadius: '10px',
+            '&: hover': {
+                cursor: 'pointer',
+                outline: '3px solid rgb(61, 178, 255)',
+            },
         },
         startDraft: {
-            display: draftStarted ? 'none' : 'block',
+            display: draftStarted ? 'none' : 'flex',
+            backgroundColor: 'rgba(73, 73, 73, 1)',
+            borderRadius: '6px',
+            '&:hover': {
+                filter: 'brightness(1.2)',
+            },
         },
     };
 
     return (
         <>
-            <Typography variant='h2' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }} >Star Wars Unlimited Draft Simulator</Typography>
+            <Sets sets={sets} handleSetChange={handleSetChange} />
             <Box sx={styles.packBox}>
-                <List sx={{ display: 'flex' }}>
-                    {sets.map((set) => {
-                        return (
-                            <ListItem>
-                                <Button variant='contained' value={set} onClick={handleSetChange}>{set}</Button>
-                            </ListItem>
-                        )
-                    })}
-                </List>
-                {draftStarted && <Box>
-                    <Typography variant='h2' component='h2' sx={{ mb: '1rem' }}>{title}</Typography>
-                    <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pack: {packNum}</Typography>
-                    <Typography variant='h3' component='h3' sx={{ mb: '1rem' }}>Pick: {pickNum}</Typography>
-                </Box>}
-                {!draftStarted && <Typography variant='h2' component='h4'>{setName}</Typography>}
+                {draftStarted &&
+                    <Box sx={{ width: '100%' }}>
+                        <Typography variant='h3' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>{title}</Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                            <Typography variant='h4' component='h3' sx={{ mb: '1rem', mr: '1rem' }}>Pack: {packNum}</Typography>
+                            <Typography variant='h4' component='h3' sx={{ mb: '1rem', ml: '1rem' }}>Pick: {pickNum}</Typography>
+                        </Box>
+                    </Box>}
+                {!draftStarted && <Typography variant='h2' component='h4' sx={{ mb: '1rem' }}>{setName}</Typography>}
                 <Button variant='contained' sx={styles.startDraft} onClick={() => handleStartDraft()}>Start Draft</Button>
-                <List sx={styles.pack}>
+                {draftStarted && <List sx={styles.pack}>
                     {currentPack[packIndex]?.map((card) => {
                         const labelId = `card-id-${card.cardData?._id}`;
                         return (
@@ -329,7 +335,7 @@ export default function Pack() {
                         anchorEl={anchorEl}
                         hoveredCard={hoveredCard}
                         onHoverClose={handlePopoverClose} />
-                </List>
+                </List>}
             </Box>
             <Deck deckLeaders={deckLeaders} deckCards={deckCards} />
         </>
