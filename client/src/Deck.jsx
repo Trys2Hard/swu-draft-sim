@@ -58,14 +58,16 @@ export default function Deck({ deckLeaders, deckCards }) {
 
             <List sx={styles.leaders}>
                 {deckLeaders.map((card) => {
-                    const labelId = `card-id-${card._id}`;
+                    const labelId = `card-id-${card.id}`;
                     return (
                         <ListItem
                             aria-owns={open ? 'mouse-over-popover' : undefined}
                             aria-haspopup="true"
                             onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                            onMouseLeave={handlePopoverClose} key={card.id} sx={styles.leaderCards}>
-                            <Box component='img' src={card.FrontArt} id={labelId} sx={styles.cardImage}></Box>
+                            onMouseLeave={handlePopoverClose}
+                            key={labelId}
+                            sx={styles.leaderCards}>
+                            <Box component='img' src={card.leader?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
                         </ListItem>
                     )
                 })}
@@ -75,14 +77,14 @@ export default function Deck({ deckLeaders, deckCards }) {
 
             <List sx={styles.cards}>
                 {deckCards.map((card) => {
-                    const labelId = `card-id-${card._id}`;
+                    const labelId = `card-id-${card.id}`;
                     return (
                         <ListItem
                             aria-owns={open ? 'mouse-over-popover' : undefined}
                             aria-haspopup="true"
                             onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                            onMouseLeave={handlePopoverClose} key={card.id} sx={styles.nonLeaderCards}>
-                            <Box component='img' src={card.FrontArt} id={labelId} sx={styles.cardImage}></Box>
+                            onMouseLeave={handlePopoverClose} key={labelId} sx={styles.nonLeaderCards}>
+                            <Box component='img' src={card.leader?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
                         </ListItem>
                     )
                 })}

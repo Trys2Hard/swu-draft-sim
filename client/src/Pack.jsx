@@ -4,6 +4,7 @@ import Deck from './Deck';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 import Sets from './Sets';
+import { v4 as uuid } from 'uuid';
 
 export default function Pack() {
     const [deckLeaders, setDeckLeaders] = useState([]);
@@ -127,7 +128,8 @@ export default function Pack() {
         for (let i = 0; i < 3; i++) {
             const leader = await getLeader();
             if (leader) {
-                leaderPack.push(leader);
+                const leaderObj = { leader, id: uuid() };
+                leaderPack.push(leaderObj);
             }
         }
         if (leaderPack.length === 3) {
@@ -140,7 +142,8 @@ export default function Pack() {
         for (let i = 0; i < 1; i++) {
             const rareCard = await getRareCard();
             if (rareCard) {
-                cardPack.push(rareCard);
+                const rareCardObj = { leader: rareCard, id: uuid() };
+                cardPack.push(rareCardObj);
             }
         }
 
@@ -151,7 +154,8 @@ export default function Pack() {
         for (let i = 0; i < 3; i++) {
             const uncommonCard = await getUncommonCard();
             if (uncommonCard) {
-                cardPack.push(uncommonCard);
+                const uncommonCardObj = { leader: uncommonCard, id: uuid() };
+                cardPack.push(uncommonCardObj);
             }
         }
 
@@ -162,7 +166,8 @@ export default function Pack() {
         for (let i = 0; i < 10; i++) {
             const commonCard = await getCommonCard();
             if (commonCard) {
-                cardPack.push(commonCard);
+                const commonCardObj = { leader: commonCard, id: uuid() };
+                cardPack.push(commonCardObj);
             }
         }
 
@@ -195,10 +200,8 @@ export default function Pack() {
     async function pickCard(id) {
         handlePopoverClose();
 
-        const pickedCard = currentPack[packIndex].find((card) => card.cardData?._id === id);
+        const pickedCard = currentPack[packIndex]?.find((card) => card.id === id);
         if (!pickedCard) return;
-
-        const pickedCardData = pickedCard.cardData;
 
         let addCard = setDeckLeaders;
         let packs = leaderPacks;
@@ -209,17 +212,17 @@ export default function Pack() {
         }
 
         if (packs.length === 8) {
-            addCard((prev) => [...prev, pickedCardData]);
+            addCard((prev) => [...prev, pickedCard]);
 
             setPackIndex((prev) => prev + 1);
 
-            const pickedCardIndex = packs[packIndex].findIndex((item) => item.cardData._id === pickedCardData._id);
+            const pickedCardIndex = packs[packIndex]?.findIndex((item) => item.id === pickedCard.leader?.id);
             packs[packIndex].splice(pickedCardIndex, 1);
 
             packs.map((pack) => {
                 if (packs.indexOf(pack) !== packIndex) {
                     const cardPick = pack.reduce((highest, card) => {
-                        if (!highest || (card.cardData.Rank ?? 0) > (highest.cardData.Rank ?? 0)) {
+                        if (!highest || (card.leader?.cardData?.Rank ?? 0) > (highest.leader?.cardData?.Rank ?? 0)) {
                             return card;
                         }
                         return highest;
@@ -318,17 +321,18 @@ export default function Pack() {
                 <Button variant='contained' sx={styles.startDraft} onClick={() => handleStartDraft()}>Start Draft</Button>
                 {draftStarted && <List sx={styles.pack}>
                     {currentPack[packIndex]?.map((card) => {
-                        const labelId = `card-id-${card.cardData?._id}`;
+                        const cardId = `card-id-${card.id}`;
                         return (
-                            <>
-                                <ListItem
-                                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                                    aria-haspopup="true"
-                                    onMouseEnter={(e) => handlePopoverOpen(e, card.cardData)}
-                                    onMouseLeave={handlePopoverClose} key={card.cardData?._id} onClick={() => pickCard(card.cardData?._id)} sx={styles.card}>
-                                    <Box component='img' src={card.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
-                                </ListItem>
-                            </>
+                            <ListItem
+                                aria-owns={open ? 'mouse-over-popover' : undefined}
+                                aria-haspopup="true"
+                                onMouseEnter={(e) => handlePopoverOpen(e, card.cardData)}
+                                onMouseLeave={handlePopoverClose}
+                                key={cardId}
+                                onClick={() => pickCard(card.id)}
+                                sx={styles.card}>
+                                <Box component='img' src={card.leader?.cardData?.FrontArt} id={cardId} sx={styles.cardImage}></Box>
+                            </ListItem>
                         );
                     })}
                     <CardHover

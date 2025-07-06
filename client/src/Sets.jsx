@@ -24,7 +24,7 @@ export default function Sets({ sets, handleSetChange }) {
             <List>
                 {sets.map((set) => {
                     return (
-                        <ListItem>
+                        <ListItem key={set}>
                             <Button variant='contained' sx={styles.setButton} value={set} onClick={handleSetChange}>{set}</Button>
                         </ListItem>
                     )
