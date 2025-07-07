@@ -128,7 +128,7 @@ export default function Pack() {
         for (let i = 0; i < 3; i++) {
             const leader = await getLeader();
             if (leader) {
-                const leaderObj = { leader, id: uuid() };
+                const leaderObj = { cardObj: leader, id: uuid() };
                 leaderPack.push(leaderObj);
             }
         }
@@ -142,7 +142,7 @@ export default function Pack() {
         for (let i = 0; i < 1; i++) {
             const rareCard = await getRareCard();
             if (rareCard) {
-                const rareCardObj = { leader: rareCard, id: uuid() };
+                const rareCardObj = { cardObj: rareCard, id: uuid() };
                 cardPack.push(rareCardObj);
             }
         }
@@ -154,7 +154,7 @@ export default function Pack() {
         for (let i = 0; i < 3; i++) {
             const uncommonCard = await getUncommonCard();
             if (uncommonCard) {
-                const uncommonCardObj = { leader: uncommonCard, id: uuid() };
+                const uncommonCardObj = { cardObj: uncommonCard, id: uuid() };
                 cardPack.push(uncommonCardObj);
             }
         }
@@ -166,7 +166,7 @@ export default function Pack() {
         for (let i = 0; i < 10; i++) {
             const commonCard = await getCommonCard();
             if (commonCard) {
-                const commonCardObj = { leader: commonCard, id: uuid() };
+                const commonCardObj = { cardObj: commonCard, id: uuid() };
                 cardPack.push(commonCardObj);
             }
         }
@@ -216,13 +216,13 @@ export default function Pack() {
 
             setPackIndex((prev) => prev + 1);
 
-            const pickedCardIndex = packs[packIndex]?.findIndex((item) => item.id === pickedCard.leader?.id);
+            const pickedCardIndex = packs[packIndex]?.findIndex((item) => item.id === pickedCard.cardObj?.id);
             packs[packIndex].splice(pickedCardIndex, 1);
 
             packs.map((pack) => {
                 if (packs.indexOf(pack) !== packIndex) {
                     const cardPick = pack.reduce((highest, card) => {
-                        if (!highest || (card.leader?.cardData?.Rank ?? 0) > (highest.leader?.cardData?.Rank ?? 0)) {
+                        if (!highest || (card.cardObj?.cardData?.Rank ?? 0) > (highest.cardObj?.cardData?.Rank ?? 0)) {
                             return card;
                         }
                         return highest;
@@ -326,12 +326,12 @@ export default function Pack() {
                             <ListItem
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
-                                onMouseEnter={(e) => handlePopoverOpen(e, card.cardData)}
+                                onMouseEnter={(e) => handlePopoverOpen(e, card)}
                                 onMouseLeave={handlePopoverClose}
                                 key={cardId}
                                 onClick={() => pickCard(card.id)}
                                 sx={styles.card}>
-                                <Box component='img' src={card.leader?.cardData?.FrontArt} id={cardId} sx={styles.cardImage}></Box>
+                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage}></Box>
                             </ListItem>
                         );
                     })}

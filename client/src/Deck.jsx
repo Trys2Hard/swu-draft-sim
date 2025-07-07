@@ -67,7 +67,7 @@ export default function Deck({ deckLeaders, deckCards }) {
                             onMouseLeave={handlePopoverClose}
                             key={labelId}
                             sx={styles.leaderCards}>
-                            <Box component='img' src={card.leader?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
+                            <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
                         </ListItem>
                     )
                 })}
@@ -84,7 +84,7 @@ export default function Deck({ deckLeaders, deckCards }) {
                             aria-haspopup="true"
                             onMouseEnter={(e) => handlePopoverOpen(e, card)}
                             onMouseLeave={handlePopoverClose} key={labelId} sx={styles.nonLeaderCards}>
-                            <Box component='img' src={card.leader?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
+                            <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
                         </ListItem>
                     )
                 })}
