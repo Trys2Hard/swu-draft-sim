@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { List, ListItem, Box, Typography, Button, Popover } from '@mui/material';
 import Deck from './Deck';
-import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 import Sets from './Sets';
 import { v4 as uuid } from 'uuid';
+import CurrentPack from './CurrentPack';
 
 export default function Pack() {
     const [deckLeaders, setDeckLeaders] = useState([]);
@@ -262,7 +262,6 @@ export default function Pack() {
         }
     };
 
-    //Styles
     const styles = {
         packBox: {
             width: '60%',
@@ -275,29 +274,6 @@ export default function Pack() {
             flexDirection: 'column',
             alignItems: 'center',
             color: 'white',
-        },
-        pack: {
-            width: '100%',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: draftingLeaders ? '1rem' : '0.5rem',
-            backdropFilter: draftStarted && 'brightness(0.7)',
-            borderRadius: '5px',
-            p: draftStarted && '1rem',
-            justifyContent: 'center',
-        },
-        card: {
-            width: draftingLeaders ? '20%' : '15%',
-            p: '0rem',
-            transition: 'transform 0.3s ease-in-out',
-        },
-        cardImage: {
-            width: '100%',
-            borderRadius: '10px',
-            '&: hover': {
-                cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
-            },
         },
         startDraft: {
             display: draftStarted ? 'none' : 'flex',
@@ -323,27 +299,16 @@ export default function Pack() {
                     </Box>}
                 {!draftStarted && <Typography variant='h2' component='h4' sx={{ mb: '1rem' }}>{setName}</Typography>}
                 <Button variant='contained' sx={styles.startDraft} onClick={() => handleStartDraft()}>Start Draft</Button>
-                {draftStarted && <List sx={styles.pack}>
-                    {currentPack[packIndex]?.map((card) => {
-                        const cardId = `card-id-${card.id}`;
-                        return (
-                            <ListItem
-                                aria-owns={open ? 'mouse-over-popover' : undefined}
-                                aria-haspopup="true"
-                                onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                onMouseLeave={handlePopoverClose}
-                                key={cardId}
-                                onClick={() => pickCard(card.id)}
-                                sx={styles.card}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage}></Box>
-                            </ListItem>
-                        );
-                    })}
-                    <CardHover
-                        anchorEl={anchorEl}
-                        hoveredCard={hoveredCard}
-                        onHoverClose={handlePopoverClose} />
-                </List>}
+                {draftStarted && < CurrentPack
+                    draftStarted={draftStarted}
+                    draftingLeaders={draftingLeaders}
+                    currentPack={currentPack}
+                    packIndex={packIndex}
+                    handlePopoverClose={handlePopoverClose}
+                    handlePopoverOpen={handlePopoverOpen}
+                    pickCard={pickCard}
+                    anchorEl={anchorEl}
+                    hoveredCard={hoveredCard} />}
             </Box>
             <Deck deckLeaders={deckLeaders} deckCards={deckCards} />
         </>
