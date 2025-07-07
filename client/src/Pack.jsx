@@ -200,7 +200,7 @@ export default function Pack() {
     async function pickCard(id) {
         handlePopoverClose();
 
-        const pickedCard = currentPack[packIndex]?.find((card) => card.id === id);
+        let pickedCard = currentPack[packIndex]?.find((card) => card.id === id);
         if (!pickedCard) return;
 
         let addCard = setDeckLeaders;
@@ -212,6 +212,10 @@ export default function Pack() {
         }
 
         if (packs.length === 8) {
+            const dupId = deckCards.some((c) => c.id === pickedCard.id);
+            if (dupId) {
+                pickedCard = { ...pickedCard, id: uuid() };
+            }
             addCard((prev) => [...prev, pickedCard]);
 
             setPackIndex((prev) => prev + 1);
