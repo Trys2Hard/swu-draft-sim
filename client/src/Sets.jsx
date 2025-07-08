@@ -1,4 +1,5 @@
 import { Box, Typography, List, ListItem, Button } from '@mui/material';
+import DefaultButton from './DefaultButton';
 
 const styles = {
     sets: {
@@ -7,13 +8,6 @@ const styles = {
         alignItems: 'center',
         color: 'white',
         mt: '0.5rem',
-    },
-    setButton: {
-        backgroundColor: 'rgba(73, 73, 73, 1)',
-        borderRadius: '6px',
-        '&:hover': {
-            filter: 'brightness(1.2)',
-        }
     },
 };
 
@@ -25,7 +19,7 @@ export default function Sets({ sets, handleSetChange }) {
                 {sets.map((set) => {
                     return (
                         <ListItem key={set}>
-                            <Button variant='contained' sx={styles.setButton} value={set} onClick={handleSetChange}>{set}</Button>
+                            <DefaultButton value={set} onClick={handleSetChange}>{set}</DefaultButton>
                         </ListItem>
                     )
                 })}

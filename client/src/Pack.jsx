@@ -5,6 +5,7 @@ import useCardHoverPopover from './useCardHoverPopover';
 import Sets from './Sets';
 import { v4 as uuid } from 'uuid';
 import CurrentPack from './CurrentPack';
+import DefaultButton from './DefaultButton';
 
 export default function Pack() {
     const [deckLeaders, setDeckLeaders] = useState([]);
@@ -275,14 +276,6 @@ export default function Pack() {
             alignItems: 'center',
             color: 'white',
         },
-        startDraft: {
-            display: draftStarted ? 'none' : 'flex',
-            backgroundColor: 'rgba(73, 73, 73, 1)',
-            borderRadius: '6px',
-            '&:hover': {
-                filter: 'brightness(1.2)',
-            },
-        },
     };
 
     return (
@@ -298,7 +291,7 @@ export default function Pack() {
                         </Box>
                     </Box>}
                 {!draftStarted && <Typography variant='h2' component='h4' sx={{ mb: '1rem' }}>{setName}</Typography>}
-                <Button variant='contained' sx={styles.startDraft} onClick={() => handleStartDraft()}>Start Draft</Button>
+                <DefaultButton draftStarted={draftStarted} handleStartDraft={handleStartDraft}>Start Draft</DefaultButton>
                 {draftStarted && < CurrentPack
                     draftStarted={draftStarted}
                     draftingLeaders={draftingLeaders}
