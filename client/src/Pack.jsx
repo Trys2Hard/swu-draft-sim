@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { List, ListItem, Box, Typography, Button, Popover } from '@mui/material';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';

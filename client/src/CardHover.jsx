@@ -9,7 +9,7 @@ export default function CardHover({ anchorEl, hoveredCard, onHoverClose }) {
         frontArtPopover: {
             width: '20rem',
             height: 'auto',
-            aspectRatio: hoveredCardData?.Type === 'Leader' ? '7/5' : hoveredCardData?.Type === 'Base' ? '7/5' : '5/7',
+            aspectRatio: hoveredCardData?.Type === 'Leader' ? '7/5' : '5/7',
             borderRadius: '15px',
             ml: '6px',
         },
