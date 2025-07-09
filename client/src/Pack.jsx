@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { List, ListItem, Box, Typography, Button, Popover } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';
 import Sets from './Sets';
@@ -45,136 +45,64 @@ export default function Pack() {
     //     }
     // }, [set, setName])
 
-    const getLeader = async () => {
-        try {
-            const res = await fetch(`http://localhost:3000/leader?set=${set}`);
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to fetch leader');
-            }
-            return data;
-        } catch (error) {
-            errorCount++;
-            console.error('Error fetching leader', error);
-        }
-    }
-
-    const getRareCard = async () => {
-        try {
-            const res = await fetch(`http://localhost:3000/rare?set=${set}`);
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to fetch rare card');
-            }
-
-            return data;
-        } catch (error) {
-            console.error('Error fetching rare card', error);
-            alert('Rare card failed to load');
-        }
-    }
-
     let uncommonIds = [];
-    const getUncommonCard = async () => {
-        try {
-            const res = await fetch(`http://localhost:3000/uncommon?set=${set}`);
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to fetch uncommon card');
-            }
-
-            const uncommonDuplicate = uncommonIds.some((id) => id === data.cardData._id);
-            uncommonIds.push(data.cardData._id);
-
-            if (uncommonDuplicate) {
-                return getUncommonCard()
-            } else {
-                return data;
-            }
-        } catch (error) {
-            errorCount++;
-            console.error('Error fetching uncommon cards', error);
-        }
-    }
-
     let commonIds = [];
-    const getCommonCard = async () => {
+
+    const fetchCard = async (rarity, seenIds = null) => {
         try {
-            const res = await fetch(`http://localhost:3000/common?set=${set}`);
+            const res = await fetch(`http://localhost:3000/${rarity}?set=${set}`);
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.error || 'Failed to fetch common card');
+                throw new Error(data.error || `Failed to fetch ${rarity} card`);
             }
 
-            const commonDuplicate = commonIds.some((id) => id === data.cardData._id);
-            commonIds.push(data.cardData._id);
-
-            if (commonDuplicate) {
-                return getCommonCard()
-            } else {
-                return data;
+            if (seenIds && data.cardData?._id) {
+                const isDuplicate = seenIds.includes(data.cardData._id);
+                if (isDuplicate) {
+                    return fetchCard(rarity, seenIds);
+                } else {
+                    seenIds.push(data.cardData._id);
+                }
             }
+
+            return data;
         } catch (error) {
             errorCount++;
-            console.error('Error fetching common cards', error);
+            console.error(`Error fetching ${rarity} card`, error);
+            if (rarity === 'rare') {
+                alert('Rare card failed to load');
+            }
         }
+    };
+
+    async function generateCards(count, rarity, seenIds = null) {
+        const cards = [];
+        for (let i = 0; i < count; i++) {
+            const card = await fetchCard(rarity, seenIds);
+            if (card) {
+                cards.push({ cardObj: card, id: uuid() });
+            }
+        }
+        if (errorCount > 0) {
+            alert(`${errorCount} ${rarity} card${errorCount > 1 ? 's' : ''} failed to load.`);
+        }
+        return cards;
     }
 
     async function generateLeaderPack() {
-        let leaderPack = [];
-        for (let i = 0; i < 3; i++) {
-            const leader = await getLeader();
-            if (leader) {
-                const leaderObj = { cardObj: leader, id: uuid() };
-                leaderPack.push(leaderObj);
-            }
-        }
+        const leaderPack = await generateCards(3, 'leader');
         if (leaderPack.length === 3) {
             setLeaderPacks((prev) => [...prev, leaderPack]);
         }
     }
 
     async function generateCardPack() {
-        let cardPack = [];
-        for (let i = 0; i < 1; i++) {
-            const rareCard = await getRareCard();
-            if (rareCard) {
-                const rareCardObj = { cardObj: rareCard, id: uuid() };
-                cardPack.push(rareCardObj);
-            }
-        }
+        const rareCards = await generateCards(1, 'rare');
+        const uncommonCards = await generateCards(3, 'uncommon', uncommonIds);
+        const commonCards = await generateCards(10, 'common', commonIds);
 
-        if (errorCount > 0) {
-            alert(`${errorCount} rare card${errorCount > 1 ? 's' : ''} failed to load.`);
-        }
-
-        for (let i = 0; i < 3; i++) {
-            const uncommonCard = await getUncommonCard();
-            if (uncommonCard) {
-                const uncommonCardObj = { cardObj: uncommonCard, id: uuid() };
-                cardPack.push(uncommonCardObj);
-            }
-        }
-
-        if (errorCount > 0) {
-            alert(`${errorCount} uncommon card${errorCount > 1 ? 's' : ''} failed to load.`);
-        }
-
-        for (let i = 0; i < 10; i++) {
-            const commonCard = await getCommonCard();
-            if (commonCard) {
-                const commonCardObj = { cardObj: commonCard, id: uuid() };
-                cardPack.push(commonCardObj);
-            }
-        }
-
-        if (errorCount > 0) {
-            alert(`${errorCount} common card${errorCount > 1 ? 's' : ''} failed to load.`);
-        }
+        const cardPack = [...rareCards, ...uncommonCards, ...commonCards];
 
         if (cardPack.length === 14) {
             setCardPacks((prev) => [...prev, cardPack]);
