@@ -17,8 +17,8 @@ if (!process.env.MONGO_URI) {
 
 const allowedOrigins = [
     'http://localhost:5173',
-    // 'https://swudraftsim.com'
-    'https://swudraftsim-frontend.onrender.com',
+    'https://www.swudraftsim.com',
+    'https://swudraftsim.com'
 ];
 
 app.use(cors({
