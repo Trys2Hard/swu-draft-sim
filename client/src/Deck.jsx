@@ -5,6 +5,8 @@ import useCardHoverPopover from './useCardHoverPopover';
 export default function Deck({ deckLeaders, deckCards }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
+    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
+
     //Styles
     const styles = {
         deck: {
@@ -76,7 +78,7 @@ export default function Deck({ deckLeaders, deckCards }) {
             {deckCards.length > 0 && <Typography variant='h4' component='h3' sx={{ mt: '1rem' }}>Cards</Typography>}
 
             <List sx={styles.cards}>
-                {deckCards.map((card) => {
+                {sortedDeckCards.map((card) => {
                     const labelId = `card-id-${card.id}`;
                     return (
                         <ListItem
