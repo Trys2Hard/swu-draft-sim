@@ -1,13 +1,39 @@
 require('dotenv').config()
 
 const express = require('express')
+const path = require('path');
+const cors = require('cors');
+const helmet = require('helmet');
 const mongoose = require('mongoose')
 const Card = require('./models/Card')
 
-// express app
 const app = express()
+const PORT = process.env.PORT || 3000;
 
+if (!process.env.MONGO_URI) {
+    console.error('Missing MONGO_URI in environment variables');
+    process.exit(1);
+}
+
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://swudraftsim.com'
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.error('Blocked by CORS:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+}));
+
+app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(express.json())
+app.use(helmet());
 
 // routes
 app.get('/leader', async (req, res) => {
@@ -25,11 +51,14 @@ app.get('/leader', async (req, res) => {
             { $match: { Set: set, Type: 'Leader', VariantType: 'Normal', Rarity: leaderRarity } },
             { $sample: { size: 1 } }
         ]);
+        if (!leaderArr.length) {
+            return res.status(404).json({ error: 'No leader found' });
+        }
         const randomLeader = leaderArr[0];
         res.json({ cardData: randomLeader });
     } catch (error) {
         console.error('Error fetching leader:', error);
-        res.status(500).json({ error: error.message || 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 })
 
@@ -40,15 +69,18 @@ app.get('/rare', async (req, res) => {
         const legendaryChance = Math.random() < 0.2;
         const rareSlotRarity = legendaryChance ? 'Legendary' : 'Rare';
 
-        const findRare = await Card.aggregate([
+        const rareArr = await Card.aggregate([
             { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Normal', Rarity: rareSlotRarity } },
             { $sample: { size: 1 } }
         ]);
-        const randomRare = findRare[0];
+        if (!rareArr.length) {
+            return res.status(404).json({ error: 'No rare card found' });
+        }
+        const randomRare = rareArr[0];
         res.json({ cardData: randomRare });
     } catch (error) {
         console.error('Error fetching rare card:', error);
-        res.status(500).json({ error: error.message || 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 })
 
@@ -56,15 +88,18 @@ app.get('/uncommon', async (req, res) => {
     const set = req.query.set?.toUpperCase();
 
     try {
-        const findUncommonCard = await Card.aggregate([
+        const uncommonArr = await Card.aggregate([
             { $match: { Set: set, Rarity: 'Uncommon', VariantType: 'Normal', } },
             { $sample: { size: 1 } }
         ]);
-        const randomUncommon = findUncommonCard[0];
+        if (!uncommonArr.length) {
+            return res.status(404).json({ error: 'No uncommon card found' });
+        }
+        const randomUncommon = uncommonArr[0];
         res.json({ cardData: randomUncommon });
     } catch (error) {
         console.error('Error fetching uncommon cards:', error);
-        res.status(500).json({ error: error.message || 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 })
 
@@ -72,15 +107,18 @@ app.get('/common', async (req, res) => {
     const set = req.query.set?.toUpperCase();
 
     try {
-        const findCommonCard = await Card.aggregate([
+        const commonArr = await Card.aggregate([
             { $match: { Set: set, Type: { $nin: ['Leader', 'Base'] }, VariantType: 'Normal', Rarity: 'Common' } },
             { $sample: { size: 1 } }
         ]);
-        const randomCommon = findCommonCard[0];
+        if (!commonArr.length) {
+            return res.status(404).json({ error: 'No common card found' });
+        }
+        const randomCommon = commonArr[0];
         res.json({ cardData: randomCommon });
     } catch (error) {
         console.error('Error fetching common cards:', error);
-        res.status(500).json({ error: error.message || 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 })
 
@@ -88,10 +126,10 @@ app.get('/common', async (req, res) => {
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         // listen for requests
-        app.listen(process.env.PORT, () => {
-            console.log('Listening on port 3000...')
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
         });
     })
     .catch((error) => {
-        console.log(error)
+        console.error(error)
     })
