@@ -19,6 +19,7 @@ export default function Pack() {
     const [leaderPacks, setLeaderPacks] = useState([]);
     const [cardPacks, setCardPacks] = useState([]);
     const [packIndex, setPackIndex] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
@@ -91,6 +92,7 @@ export default function Pack() {
     }
 
     async function generateLeaderPack() {
+        setIsLoading(true);
         const leaderPack = await generateCards(3, 'leader');
         if (leaderPack.length === 3) {
             setLeaderPacks((prev) => [...prev, leaderPack]);
@@ -98,6 +100,7 @@ export default function Pack() {
     }
 
     async function generateCardPack() {
+        setIsLoading(true);
         const rareCards = await generateCards(1, 'rare');
         const uncommonCards = await generateCards(3, 'uncommon', uncommonIds);
         const commonCards = await generateCards(10, 'common', commonIds);
@@ -115,6 +118,8 @@ export default function Pack() {
         for (let i = 0; i < 8; i++) {
             await generateLeaderPack();
         }
+
+        setIsLoading(false);
 
         if (errorCount > 0) {
             alert(`${errorCount} leader${errorCount > 1 ? 's' : ''} failed to load.`);
@@ -185,6 +190,7 @@ export default function Pack() {
                     commonIds = [];
                     uncommonIds = [];
                 }
+                setIsLoading(false);
             } else if (draftEnded) {
                 setTitle('Draft Complete');
             }
@@ -229,7 +235,8 @@ export default function Pack() {
                     handlePopoverOpen={handlePopoverOpen}
                     pickCard={pickCard}
                     anchorEl={anchorEl}
-                    hoveredCard={hoveredCard} />}
+                    hoveredCard={hoveredCard}
+                    isLoading={isLoading} />}
             </Box>
             <Deck deckLeaders={deckLeaders} deckCards={deckCards} />
         </>
