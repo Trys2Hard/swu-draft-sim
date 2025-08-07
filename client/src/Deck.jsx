@@ -4,7 +4,7 @@ import useCardHoverPopover from './useCardHoverPopover';
 import Sideboard from './Sideboard';
 import { useState } from 'react';
 
-export default function Deck({ deckLeaders, deckCards }) {
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
     const [sideboardLeaders, setSideboardLeaders] = useState([]);
@@ -15,19 +15,18 @@ export default function Deck({ deckLeaders, deckCards }) {
     function moveToSideboard(id) {
         handlePopoverClose();
 
-        let pickedCard = deckLeaders.find((card) => card.id === id);
+        let pickedCard = deckLeaders.find((card) => card.id === id) || deckCards.find((card) => card.id === id);
         if (!pickedCard) return;
 
-        const cardData = pickedCard.cardObj?.cardData;
+        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
 
-        const pickedCardIndex = deckLeaders.findIndex((card) => card.id === id);
-        deckLeaders.splice(pickedCardIndex, 1);
+        const stateToUpdate = isLeader ? deckLeaders : deckCards;
+        const setStateToUpdate = isLeader ? setDeckLeaders : setDeckCards;
 
-        let addCard = setSideboardLeaders;
+        const updatedDeck = stateToUpdate.filter((card) => card.id !== id);
+        setStateToUpdate(updatedDeck)
 
-        if (cardData.Type !== 'Leader') {
-            addCard = setSideboardCards;
-        }
+        const addCard = isLeader ? setSideboardLeaders : setSideboardCards;
 
         addCard((prev) => [...prev, pickedCard]);
     }
@@ -130,7 +129,13 @@ export default function Deck({ deckLeaders, deckCards }) {
                         onHoverClose={handlePopoverClose} />
                 </List>
             </Box >
-            <Sideboard sideboardLeaders={sideboardLeaders} sideboardCards={sideboardCards} />
+            <Sideboard
+                sideboardLeaders={sideboardLeaders}
+                setSideboardLeaders={setSideboardLeaders}
+                setSideboardCards={setSideboardCards}
+                sideboardCards={sideboardCards}
+                setDeckLeaders={setDeckLeaders}
+                setDeckCards={setDeckCards} />
         </>
     );
 };

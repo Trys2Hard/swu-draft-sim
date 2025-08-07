@@ -238,7 +238,7 @@ export default function Pack() {
                     hoveredCard={hoveredCard}
                     isLoading={isLoading} />}
             </Box>
-            <Deck deckLeaders={deckLeaders} deckCards={deckCards} />
+            <Deck deckLeaders={deckLeaders} setDeckLeaders={setDeckLeaders} deckCards={deckCards} setDeckCards={setDeckCards} />
         </>
     );
 };
