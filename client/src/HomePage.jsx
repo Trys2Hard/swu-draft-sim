@@ -218,7 +218,8 @@ export default function HomePage() {
 
     return (
         <>
-            <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Star Wars Unlimited Draft Simulator</Typography>
+            <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>SWU Draft Sim</Typography>
+            <Typography variant='h5' component='p' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
             <Sets sets={sets} handleSetChange={handleSetChange} />
             <Box sx={styles.packBox}>
                 {draftStarted &&
