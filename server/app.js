@@ -123,6 +123,12 @@ app.get('/common', async (req, res) => {
     }
 })
 
+// React Router fallback
+app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+});
+
+
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
