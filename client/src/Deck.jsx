@@ -1,14 +1,9 @@
 import { Box, Typography, List, ListItem } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
-import Sideboard from './Sideboard';
-import { useState } from 'react';
 
-export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards }) {
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
-
-    const [sideboardLeaders, setSideboardLeaders] = useState([]);
-    const [sideboardCards, setSideboardCards] = useState([]);
 
     const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
 
@@ -129,13 +124,6 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         onHoverClose={handlePopoverClose} />
                 </List>
             </Box >
-            <Sideboard
-                sideboardLeaders={sideboardLeaders}
-                setSideboardLeaders={setSideboardLeaders}
-                setSideboardCards={setSideboardCards}
-                sideboardCards={sideboardCards}
-                setDeckLeaders={setDeckLeaders}
-                setDeckCards={setDeckCards} />
         </>
     );
 };

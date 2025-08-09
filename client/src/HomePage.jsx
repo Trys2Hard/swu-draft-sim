@@ -6,8 +6,9 @@ import Sets from './Sets';
 import { v4 as uuid } from 'uuid';
 import CurrentPack from './CurrentPack';
 import DefaultButton from './DefaultButton';
+import Sideboard from './Sideboard';
 
-export default function Pack() {
+export default function HomePage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
     const [pickNum, setPickNum] = useState(1);
@@ -20,6 +21,8 @@ export default function Pack() {
     const [cardPacks, setCardPacks] = useState([]);
     const [packIndex, setPackIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [sideboardLeaders, setSideboardLeaders] = useState([]);
+    const [sideboardCards, setSideboardCards] = useState([]);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
@@ -195,8 +198,9 @@ export default function Pack() {
                 setTitle('Draft Complete');
             }
         }
-    };
+    }
 
+    //Styles
     const styles = {
         packBox: {
             width: '60%',
@@ -214,6 +218,7 @@ export default function Pack() {
 
     return (
         <>
+            <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Star Wars Unlimited Draft Simulator</Typography>
             <Sets sets={sets} handleSetChange={handleSetChange} />
             <Box sx={styles.packBox}>
                 {draftStarted &&
@@ -238,7 +243,20 @@ export default function Pack() {
                     hoveredCard={hoveredCard}
                     isLoading={isLoading} />}
             </Box>
-            <Deck deckLeaders={deckLeaders} setDeckLeaders={setDeckLeaders} deckCards={deckCards} setDeckCards={setDeckCards} />
+            <Deck
+                deckLeaders={deckLeaders}
+                setDeckLeaders={setDeckLeaders}
+                deckCards={deckCards}
+                setDeckCards={setDeckCards}
+                setSideboardLeaders={setSideboardLeaders}
+                setSideboardCards={setSideboardCards} />
+            <Sideboard
+                sideboardLeaders={sideboardLeaders}
+                setSideboardLeaders={setSideboardLeaders}
+                setSideboardCards={setSideboardCards}
+                sideboardCards={sideboardCards}
+                setDeckLeaders={setDeckLeaders}
+                setDeckCards={setDeckCards} />
         </>
     );
 };
