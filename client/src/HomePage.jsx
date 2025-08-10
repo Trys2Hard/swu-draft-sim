@@ -231,7 +231,7 @@ export default function HomePage() {
                         </Box>
                     </Box>}
                 {!draftStarted && <Typography variant='h2' component='h4' sx={{ mb: '1rem' }}>{setName}</Typography>}
-                <DefaultButton draftStarted={draftStarted} handleStartDraft={handleStartDraft}>Start Draft</DefaultButton>
+                <DefaultButton draftStarted={draftStarted} onClick={() => handleStartDraft()}>Start Draft</DefaultButton>
                 {draftStarted && < CurrentPack
                     draftStarted={draftStarted}
                     draftingLeaders={draftingLeaders}

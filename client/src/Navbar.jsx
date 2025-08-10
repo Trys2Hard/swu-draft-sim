@@ -12,7 +12,7 @@ export default function Navbar() {
         link: {
             textDecoration: 'none',
             color: 'inherit',
-            padding: '0.4rem',
+            padding: '0.5rem',
             borderRadius: '20px',
             '&:hover': {
                 background: 'linear-gradient(rgba(125, 125, 125, 1), rgba(31, 202, 255, 0.5))',
@@ -22,7 +22,7 @@ export default function Navbar() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ background: 'rgba(73, 73, 73, 1)', }}>
+            <AppBar position="static" sx={{ background: 'rgba(42, 9, 86, 1)' }}>
                 <Toolbar sx={styles.toolbar}>
                     <Typography component={Link} variant='h6' to='/' sx={styles.link}>Draft</Typography>
                     <Typography component={Link} variant='h6' to='/sealed' sx={styles.link}>Sealed</Typography>

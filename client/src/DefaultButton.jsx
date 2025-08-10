@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 
-export default function DefaultButton({ draftStarted, handleStartDraft, children }) {
+export default function DefaultButton({ draftStarted, children, onClick }) {
     const styles = {
         DefaultButton: {
             display: draftStarted ? 'none' : 'flex',
@@ -14,6 +14,6 @@ export default function DefaultButton({ draftStarted, handleStartDraft, children
     }
 
     return (
-        <Button variant='contained' sx={styles.DefaultButton} onClick={() => handleStartDraft()}>{children}</Button>
+        <Button variant='contained' sx={styles.DefaultButton} onClick={onClick}>{children}</Button>
     )
 }
