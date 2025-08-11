@@ -1,20 +1,18 @@
 import { useState } from 'react';
-import { Box, Typography, List, ListItem } from '@mui/material';
+import { Typography } from '@mui/material';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';
 import Sets from './Sets';
 import { v4 as uuid } from 'uuid';
-import DefaultButton from './DefaultButton';
-import CardHover from './CardHover';
+import SealedPool from './SealedPool';
 
 export default function SealedPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
-    const [title, setTitle] = useState('Leaders');
-    const [sealedBuildLoaded, setSealedBuildLoaded] = useState(false);
     const [set, setSet] = useState('lof');
     const [setName, setSetName] = useState('Legends of the Force');
     const [sealedLeaderPool, setSealedLeaderPool] = useState([]);
+    const [sealedStarted, setSealedStarted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [sealedCardPool, setSealedCardPool] = useState([]);
 
@@ -88,12 +86,12 @@ export default function SealedPage() {
     }
 
     async function handleStartSealedBuild() {
+        setSealedStarted(true);
+
         await generateLeaderPool();
         for (let i = 0; i < 6; i++) {
             await generateCardPool();
         }
-
-        setSealedBuildLoaded(true);
 
         setIsLoading(false);
 
@@ -126,130 +124,22 @@ export default function SealedPage() {
         setSet(newSet);
     }
 
-    const styles = {
-        packBox: {
-            width: '60%',
-            height: '100%',
-            m: '5rem auto 5rem auto',
-            p: '0.5rem',
-            backgroundColor: 'rgba(31, 202, 255, 0.5)',
-            borderRadius: '5px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            color: 'white',
-        },
-        pack: {
-            width: '100%',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.5rem',
-            backdropFilter: sealedBuildLoaded && 'brightness(0.7)',
-            borderRadius: '5px',
-            p: sealedBuildLoaded && '1rem',
-            justifyContent: 'center',
-            filter: isLoading ? 'blur(2px)' : 'blur(0)',
-        },
-        packLeaders: {
-            width: '100%',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            backdropFilter: sealedBuildLoaded && 'brightness(0.7)',
-            borderRadius: '5px',
-            p: sealedBuildLoaded && '1rem',
-            justifyContent: 'center',
-            filter: isLoading ? 'blur(2px)' : 'blur(0)',
-        },
-        card: {
-            width: '15%',
-            p: '0rem',
-            transition: 'transform 0.3s ease-in-out',
-        },
-        cardLeaders: {
-            width: '20%',
-            p: '0rem',
-            transition: 'transform 0.3s ease-in-out',
-        },
-        cardImage: {
-            width: '100%',
-            borderRadius: '10px',
-            '&: hover': {
-                cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
-            },
-        },
-        loading: {
-            display: isLoading ? 'block' : 'none',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            textShadow: '2px 2px 3px black',
-        },
-    };
-
     return (
         <>
             <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Sealed</Typography>
             <Sets sets={sets} handleSetChange={handleSetChange} />
-            <Box sx={styles.packBox}>
-                {!sealedBuildLoaded &&
-                    <Box>
-                        <Typography variant='h2' component='h4' sx={{ mb: '1rem' }}>{setName}</Typography>
-                        <DefaultButton onClick={() => handleStartSealedBuild()}>Start Sealed Build</DefaultButton>
-                    </Box>
-                }
-                {sealedBuildLoaded &&
-                    <Box sx={{ width: '100%' }}>
-                        <Typography variant='h3' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>Leaders</Typography>
-                    </Box>}
-                {sealedBuildLoaded &&
-                    <List sx={styles.packLeaders}>
-                        {sealedLeaderPool.flat().map((card) => {
-                            const cardId = `card-id-${card.id}`;
-                            return (
-                                <ListItem
-                                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                                    aria-haspopup="true"
-                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                    onMouseLeave={handlePopoverClose}
-                                    key={cardId}
-                                    onClick={() => moveToDeck(card.id)}
-                                    sx={styles.cardLeaders}>
-                                    <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage} />
-                                </ListItem>
-                            )
-                        })}
-                    </List>
-                }
-                {sealedBuildLoaded &&
-                    <Box sx={{ width: '100%' }}>
-                        <Typography variant='h3' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>Cards</Typography>
-                    </Box>}
-                {sealedBuildLoaded &&
-                    <List sx={styles.pack}>
-                        {sealedCardPool.flat().map((card) => {
-                            const cardId = `card-id-${card.id}`;
-                            return (
-                                <ListItem
-                                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                                    aria-haspopup="true"
-                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                    onMouseLeave={handlePopoverClose}
-                                    key={cardId}
-                                    onClick={() => moveToDeck(card.id)}
-                                    sx={styles.card}>
-                                    <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage} />
-                                </ListItem>
-                            )
-                        })}
-                    </List>}
-                <CardHover
-                    anchorEl={anchorEl}
-                    hoveredCard={hoveredCard}
-                    onHoverClose={handlePopoverClose} />
-            </Box>
+            <SealedPool
+                sealedStarted={sealedStarted}
+                setName={setName}
+                sealedLeaderPool={sealedLeaderPool}
+                sealedCardPool={sealedCardPool}
+                handleStartSealedBuild={handleStartSealedBuild}
+                handlePopoverClose={handlePopoverClose}
+                handlePopoverOpen={handlePopoverOpen}
+                moveToDeck={moveToDeck}
+                anchorEl={anchorEl}
+                hoveredCard={hoveredCard}
+                isLoading={isLoading} />
             <Deck
                 deckLeaders={deckLeaders}
                 setDeckLeaders={setDeckLeaders}
@@ -260,4 +150,3 @@ export default function SealedPage() {
         </>
     );
 };
-

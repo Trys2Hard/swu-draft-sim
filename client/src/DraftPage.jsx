@@ -1,25 +1,24 @@
 import { useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';
 import Sets from './Sets';
 import { v4 as uuid } from 'uuid';
-import CurrentPack from './CurrentPack';
-import DefaultButton from './DefaultButton';
+import DraftPack from './DraftPack';
 import Sideboard from './Sideboard';
 
-export default function HomePage() {
+export default function DraftPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
     const [pickNum, setPickNum] = useState(1);
     const [packNum, setPackNum] = useState(null);
     const [title, setTitle] = useState('Leaders');
-    const [draftStarted, setDraftStarted] = useState(false);
     const [set, setSet] = useState('lof');
     const [setName, setSetName] = useState('Legends of the Force');
     const [leaderPacks, setLeaderPacks] = useState([]);
     const [cardPacks, setCardPacks] = useState([]);
     const [packIndex, setPackIndex] = useState(0);
+    const [draftStarted, setDraftStarted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [sideboardLeaders, setSideboardLeaders] = useState([]);
     const [sideboardCards, setSideboardCards] = useState([]);
@@ -200,50 +199,27 @@ export default function HomePage() {
         }
     }
 
-    //Styles
-    const styles = {
-        packBox: {
-            width: '60%',
-            height: '100%',
-            m: '5rem auto 5rem auto',
-            p: '0.5rem',
-            backgroundColor: 'rgba(31, 202, 255, 0.5)',
-            borderRadius: '5px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            color: 'white',
-        },
-    };
-
     return (
         <>
             <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>SWU Draft Sim</Typography>
             <Typography variant='h5' component='p' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
             <Sets sets={sets} handleSetChange={handleSetChange} />
-            <Box sx={styles.packBox}>
-                {draftStarted &&
-                    <Box sx={{ width: '100%' }}>
-                        <Typography variant='h3' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>{title}</Typography>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                            <Typography variant='h4' component='h3' sx={{ mb: '1rem', mr: '1rem' }}>Pack: {packNum}</Typography>
-                            <Typography variant='h4' component='h3' sx={{ mb: '1rem', ml: '1rem' }}>Pick: {pickNum}</Typography>
-                        </Box>
-                    </Box>}
-                {!draftStarted && <Typography variant='h2' component='h4' sx={{ mb: '1rem' }}>{setName}</Typography>}
-                <DefaultButton draftStarted={draftStarted} onClick={() => handleStartDraft()}>Start Draft</DefaultButton>
-                {draftStarted && < CurrentPack
-                    draftStarted={draftStarted}
-                    draftingLeaders={draftingLeaders}
-                    currentPack={currentPack}
-                    packIndex={packIndex}
-                    handlePopoverClose={handlePopoverClose}
-                    handlePopoverOpen={handlePopoverOpen}
-                    pickCard={pickCard}
-                    anchorEl={anchorEl}
-                    hoveredCard={hoveredCard}
-                    isLoading={isLoading} />}
-            </Box>
+            <DraftPack
+                setName={setName}
+                title={title}
+                packNum={packNum}
+                pickNum={pickNum}
+                handleStartDraft={handleStartDraft}
+                draftStarted={draftStarted}
+                draftingLeaders={draftingLeaders}
+                currentPack={currentPack}
+                packIndex={packIndex}
+                handlePopoverClose={handlePopoverClose}
+                handlePopoverOpen={handlePopoverOpen}
+                pickCard={pickCard}
+                anchorEl={anchorEl}
+                hoveredCard={hoveredCard}
+                isLoading={isLoading} />
             <Deck
                 deckLeaders={deckLeaders}
                 setDeckLeaders={setDeckLeaders}

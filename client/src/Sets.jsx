@@ -1,5 +1,5 @@
 import { Box, Typography, List, ListItem, Button } from '@mui/material';
-import DefaultButton from './DefaultButton';
+import StartButton from './StartButton';
 
 const styles = {
     sets: {
@@ -19,7 +19,7 @@ export default function Sets({ sets, handleSetChange }) {
                 {sets.map((set) => {
                     return (
                         <ListItem key={set}>
-                            <DefaultButton value={set} onClick={handleSetChange}>{set}</DefaultButton>
+                            <StartButton value={set} onClick={handleSetChange}>{set}</StartButton>
                         </ListItem>
                     )
                 })}
