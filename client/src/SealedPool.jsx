@@ -3,18 +3,24 @@ import CardHover from './CardHover';
 import StartButton from './StartButton';
 
 export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setName, anchorEl, hoveredCard, isLoading, moveToDeck, handleStartSealedBuild, sealedStarted, sealedLeaderPool, sealedCardPool }) {
+    const sortedSealedCardPool = [...sealedCardPool].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
+
+    //Styles
     const styles = {
         packBox: {
+            position: 'relative',
             width: '60%',
             height: '100%',
             m: '5rem auto 5rem auto',
             p: '0.5rem',
-            backgroundColor: 'rgba(31, 202, 255, 0.5)',
+            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
             borderRadius: '5px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            justifyContent: 'center',
             color: 'white',
+            minHeight: '20rem',
         },
         pack: {
             width: '100%',
@@ -70,7 +76,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
         <Box sx={styles.packBox} >
             {!sealedStarted &&
                 <>
-                    <Typography variant='h2' component='h4' sx={{ mb: '1rem' }}>{setName}</Typography>
+                    <Typography variant='h2' component='h4' sx={{ mb: '1rem', position: 'absolute', top: '0' }}>{setName}</Typography>
                     <StartButton isLoading={isLoading} onClick={() => handleStartSealedBuild()}>Start Sealed Build</StartButton>
                 </>
             }
@@ -108,7 +114,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             }
             {sealedStarted &&
                 <List sx={styles.pack}>
-                    {sealedCardPool.flat().map((card) => {
+                    {sortedSealedCardPool.flat().map((card) => {
                         const cardId = `card-id-${card.id}`;
                         return (
                             <ListItem
@@ -129,6 +135,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
                 anchorEl={anchorEl}
                 hoveredCard={hoveredCard}
                 onHoverClose={handlePopoverClose} />
-        </Box >
-    )
+        </Box>
+    );
 }

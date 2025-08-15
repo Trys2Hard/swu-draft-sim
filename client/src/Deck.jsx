@@ -5,7 +5,7 @@ import useCardHoverPopover from './useCardHoverPopover';
 export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setSealedLeaderPool, setSealedCardPool }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
-    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
+    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost);
 
     function moveToSideboard(id) {
         handlePopoverClose();
@@ -51,7 +51,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     const styles = {
         deck: {
             color: 'white',
-            backgroundColor: 'rgba(31, 202, 255, 0.5)',
+            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
             width: '60%',
             height: '100%',
             m: '0 auto 0 auto',
@@ -144,7 +144,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         hoveredCard={hoveredCard}
                         onHoverClose={handlePopoverClose} />
                 </List>
-            </Box >
+            </Box>
         </>
     );
-};
+}

@@ -3,17 +3,20 @@ import CardHover from './CardHover';
 import StartButton from './StartButton';
 
 export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading }) {
+    //Styles
     const styles = {
         packBox: {
+            position: 'relative',
             width: '60%',
-            height: '100%',
+            minHeight: '20rem',
             m: '5rem auto 5rem auto',
             p: '0.5rem',
-            backgroundColor: 'rgba(31, 202, 255, 0.5)',
+            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
             borderRadius: '5px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            justifyContent: 'center',
             color: 'white',
         },
         pack: {
@@ -63,7 +66,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             }
             {!draftStarted &&
                 <>
-                    <Typography variant='h2' component='h4' sx={{ mb: '1rem' }}>{setName}</Typography>
+                    <Typography variant='h2' component='h4' sx={{ position: 'absolute', top: '0' }}>{setName}</Typography>
                     <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
                 </>
             }
@@ -89,10 +92,10 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                             anchorEl={anchorEl}
                             hoveredCard={hoveredCard}
                             onHoverClose={handlePopoverClose} />
-                    </List >
+                    </List>
                     <Typography variant='h3' component='p' sx={styles.loading}>Loading...</Typography>
                 </Box>
             }
         </Box>
-    )
+    );
 }

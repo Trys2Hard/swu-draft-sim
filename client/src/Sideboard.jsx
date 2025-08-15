@@ -30,7 +30,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
     const styles = {
         sideboard: {
             color: 'white',
-            backgroundColor: 'rgba(31, 202, 255, 0.5)',
+            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
             width: '60%',
             height: '100%',
             m: '5rem auto 0 auto',

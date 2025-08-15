@@ -5,7 +5,7 @@ export default function Navbar() {
     // Styles
     const styles = {
         appBar: {
-            background: 'linear-gradient(to right, rgba(125, 125, 125, 0.2), rgba(31, 202, 255, 0.4), rgba(125, 125, 125, 0.2))',
+            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.1), rgba(31, 202, 255, 0.4), rgba(31, 202, 255, 0.1))',
         },
         toolbar: {
             display: 'flex',
