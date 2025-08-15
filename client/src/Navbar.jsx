@@ -4,30 +4,38 @@ import { Link } from 'react-router-dom';
 export default function Navbar() {
     // Styles
     const styles = {
+        appBar: {
+            background: 'linear-gradient(to right, rgba(125, 125, 125, 0.2), rgba(31, 202, 255, 0.4), rgba(125, 125, 125, 0.2))',
+        },
         toolbar: {
             display: 'flex',
-            justifyContent: 'center',
-            gap: '1rem',
+            alignItems: 'center',
         },
         link: {
             textDecoration: 'none',
             color: 'inherit',
-            padding: '0.5rem',
+            padding: '0.4rem',
             borderRadius: '20px',
+            transition: 'background-color 0.3s',
+            m: '0.2rem',
             '&:hover': {
-                background: 'linear-gradient(rgba(125, 125, 125, 1), rgba(31, 202, 255, 0.5))',
+                backgroundColor: 'rgba(92, 92, 92, 0.6)',
             },
         },
     }
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ background: 'rgba(42, 9, 86, 1)' }}>
+            <AppBar position="static" sx={styles.appBar}>
                 <Toolbar sx={styles.toolbar}>
-                    <Typography component={Link} variant='h6' to='/' sx={styles.link}>Draft</Typography>
-                    <Typography component={Link} variant='h6' to='/sealed' sx={styles.link}>Sealed</Typography>
+                    <Box component='img' src='swudraftsim-logo.png' sx={{ width: '3.5rem', mr: '0.3rem' }} />
+                    <Typography component='p' variant='h4'>SWU Draft Sim</Typography>
+                    <Box sx={{ ml: '1.5rem' }}>
+                        <Typography component={Link} variant='h6' to='/' sx={styles.link}>Draft</Typography>
+                        <Typography component={Link} variant='h6' to='/sealed' sx={styles.link}>Sealed</Typography>
+                    </Box>
                 </Toolbar>
             </AppBar>
-        </Box >
+        </Box>
     );
 }
