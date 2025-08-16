@@ -38,7 +38,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: '5px',
-            p: '0.5rem',
+            p: '1rem',
         },
         leaders: {
             width: '100%',
@@ -78,8 +78,8 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
 
     return (
         <Box sx={styles.sideboard}>
-            <Typography variant='h3' component='h2' sx={{ mb: '1rem' }}>Sideboard</Typography>
-            {sideboardLeaders.length > 0 && <Typography variant='h4' component='h3'>Leaders</Typography>}
+            <Typography variant='h4' component='h2' sx={{ mb: '1rem' }}>Sideboard</Typography>
+            {sideboardLeaders.length > 0 && <Typography variant='h4' component='h3' sx={{ mb: '0.5rem' }}>Leaders</Typography>}
 
             <List sx={styles.leaders}>
                 {sideboardLeaders.map((card) => {
@@ -99,7 +99,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
                 })}
             </List>
 
-            {sideboardCards.length > 0 && <Typography variant='h4' component='h3' sx={{ mt: '1rem' }}>Cards</Typography>}
+            {sideboardCards.length > 0 && <Typography variant='h4' component='h3' sx={{ m: '1rem auto 0.5rem auto' }}>Cards</Typography>}
 
             <List sx={styles.cards}>
                 {sortedSideboardCards.map((card) => {

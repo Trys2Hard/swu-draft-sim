@@ -7,7 +7,6 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         color: 'white',
-        mt: '0.5rem',
     },
     setButton: {
         color: 'inherit',

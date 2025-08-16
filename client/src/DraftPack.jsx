@@ -57,16 +57,16 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
         <Box sx={styles.packBox}>
             {!draftStarted &&
                 <>
-                    <Typography variant='h3' component='h4' sx={{ position: 'absolute', top: '0.5rem' }}>{setName}</Typography>
+                    <Typography variant='h4' component='h4' sx={{ position: 'absolute', top: '1rem' }}>{setName}</Typography>
                     <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
                 </>
             }
             {draftStarted &&
                 <Box sx={{ width: '100%' }}>
-                    <Typography variant='h5' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>{title}</Typography>
+                    <Typography variant='h4' component='h2' sx={{ mb: '0.5rem', display: 'flex', justifyContent: 'center' }}>{title}</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                        <Typography variant='h4' component='h3' sx={{ mb: '1rem', mr: '1rem' }}>Pack: {packNum}</Typography>
-                        <Typography variant='h4' component='h3' sx={{ mb: '1rem', ml: '1rem' }}>Pick: {pickNum}</Typography>
+                        <Typography variant='h5' component='h3' sx={{ mb: '1rem', mr: '1rem' }}>Pack: {packNum}</Typography>
+                        <Typography variant='h5' component='h3' sx={{ mb: '1rem', ml: '1rem' }}>Pick: {pickNum}</Typography>
                     </Box>
                 </Box>
             }

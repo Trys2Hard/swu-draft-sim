@@ -3,7 +3,7 @@ import CardHover from './CardHover';
 import StartButton from './StartButton';
 
 export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setName, anchorEl, hoveredCard, isLoading, moveToDeck, handleStartSealedBuild, sealedStarted, sealedLeaderPool, sealedCardPool }) {
-    const sortedSealedCardPool = [...sealedCardPool].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
+    const sortedSealedCardPool = [...sealedCardPool].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
 
     //Styles
     const styles = {
@@ -76,13 +76,13 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
         <Box sx={styles.packBox} >
             {!sealedStarted &&
                 <>
-                    <Typography variant='h3' component='h4' sx={{ position: 'absolute', top: '0.5rem' }}>{setName}</Typography>
-                    <StartButton isLoading={isLoading} onClick={() => handleStartSealedBuild()}>Start Sealed Build</StartButton>
+                    <Typography variant='h4' component='h4' sx={{ position: 'absolute', top: '1rem' }}>{setName}</Typography>
+                    <StartButton isLoading={isLoading} onClick={() => handleStartSealedBuild()}>Start Sealed</StartButton>
                 </>
             }
             {sealedStarted &&
                 <Box sx={{ width: '100%' }}>
-                    <Typography variant='h3' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>Leaders</Typography>
+                    <Typography variant='h4' component='h2' sx={{ mb: '0.5rem', display: 'flex', justifyContent: 'center' }}>Leaders</Typography>
                 </Box>
             }
             {sealedStarted &&
@@ -109,7 +109,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             }
             {sealedStarted &&
                 <Box sx={{ width: '100%' }}>
-                    <Typography variant='h3' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>Cards</Typography>
+                    <Typography variant='h4' component='h2' sx={{ m: '1rem auto 0.5rem auto', display: 'flex', justifyContent: 'center' }}>Cards</Typography>
                 </Box>
             }
             {sealedStarted &&

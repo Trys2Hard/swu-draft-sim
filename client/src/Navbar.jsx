@@ -28,8 +28,8 @@ export default function Navbar() {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" sx={styles.appBar}>
                 <Toolbar sx={styles.toolbar}>
-                    <Box component='img' src='swudraftsim-logo.png' sx={{ width: '3.5rem', mr: '0.3rem' }} />
-                    <Typography component='p' variant='h4'>SWU Draft Sim</Typography>
+                    <Box component='img' src='swudraftsim-logo.png' sx={{ width: '3rem', mr: '0.3rem' }} />
+                    <Typography variant='h5' component='p' >SWU Draft Sim</Typography>
                     <Box sx={{ ml: '1.5rem' }}>
                         <Typography component={Link} variant='h6' to='/' sx={styles.link}>Draft</Typography>
                         <Typography component={Link} variant='h6' to='/sealed' sx={styles.link}>Sealed</Typography>

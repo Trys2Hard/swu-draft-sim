@@ -5,17 +5,17 @@ export default function StartButton({ isLoading, children, onClick }) {
     const styles = {
         StartButton: {
             display: isLoading ? 'none' : 'flex',
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
             borderRadius: '30px',
             p: '0.6rem',
-            fontSize: '1.3rem',
-            boxShadow: '0 0 7px rgba(31, 202, 255, 1)',
-            outline: '1px solid rgba(31, 202, 255, 0.7)',
-            transition: 'all 0.3s',
+            fontSize: '1rem',
+            boxShadow: '0 0 8px rgba(31, 202, 255, 1)',
+            outline: '1px solid rgba(31, 202, 255, 1)',
+            transition: 'all 0.6s',
             '&:hover': {
                 backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                boxShadow: '0 0 12px rgba(31, 202, 255, 1)',
-                outline: '1px solid rgba(31, 202, 255, 0.7)',
+                boxShadow: '0 0 18px rgba(31, 202, 255, 1)',
+                outline: '1px solid rgba(31, 202, 255, 1)',
             },
         },
     };

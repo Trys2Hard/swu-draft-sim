@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';
 import Sets from './Sets';
@@ -201,10 +201,12 @@ export default function DraftPage() {
 
     return (
         <>
-            <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>SWU Draft Sim</Typography>
-            <Typography variant='h5' component='p' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
+            <Box>
+                <Typography variant='h4' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Welcome to SWUDraftSim.com</Typography>
+                <Typography variant='subtitle1' component='p' sx={{ textAlign: 'center', mt: '0rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
+            </Box>
             <Sets sets={sets} handleSetChange={handleSetChange} />
-            <Typography variant='h3' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography>
+            <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography>
             <DraftPack
                 setName={setName}
                 title={title}
