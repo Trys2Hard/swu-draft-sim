@@ -1,16 +1,11 @@
 import { Box, Typography, List, ListItem } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
-import Sideboard from './Sideboard';
-import { useState } from 'react';
 
-export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards }) {
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setSealedLeaderPool, setSealedCardPool }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
-    const [sideboardLeaders, setSideboardLeaders] = useState([]);
-    const [sideboardCards, setSideboardCards] = useState([]);
-
-    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
+    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost);
 
     function moveToSideboard(id) {
         handlePopoverClose();
@@ -27,6 +22,27 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         setStateToUpdate(updatedDeck)
 
         const addCard = isLeader ? setSideboardLeaders : setSideboardCards;
+        if (!addCard) return;
+
+        addCard((prev) => [...prev, pickedCard]);
+    }
+
+    function moveToSealedPool(id) {
+        handlePopoverClose();
+
+        let pickedCard = deckLeaders.find((card) => card.id === id) || deckCards.find((card) => card.id === id);
+        if (!pickedCard) return;
+
+        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
+
+        const stateToUpdate = isLeader ? deckLeaders : deckCards;
+        const setStateToUpdate = isLeader ? setDeckLeaders : setDeckCards;
+
+        const updatedDeck = stateToUpdate.filter((card) => card.id !== id);
+        setStateToUpdate(updatedDeck)
+
+        const addCard = isLeader ? setSealedLeaderPool : setSealedCardPool;
+        if (!addCard) return;
 
         addCard((prev) => [...prev, pickedCard]);
     }
@@ -35,7 +51,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     const styles = {
         deck: {
             color: 'white',
-            backgroundColor: 'rgba(31, 202, 255, 0.5)',
+            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
             width: '60%',
             height: '100%',
             m: '0 auto 0 auto',
@@ -43,7 +59,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: '5px',
-            p: '0.5rem',
+            p: '1rem',
         },
         leaders: {
             width: '100%',
@@ -84,8 +100,8 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     return (
         <>
             <Box sx={styles.deck}>
-                <Typography variant='h3' component='h2' sx={{ mb: '1rem' }}>Deck</Typography>
-                {deckLeaders.length > 0 && <Typography variant='h4' component='h3'>Leaders</Typography>}
+                <Typography variant='h4' component='h2' sx={{ mb: '1rem' }}>Deck</Typography>
+                {deckLeaders.length > 0 && <Typography variant='h4' component='h3' sx={{ mb: '0.5rem' }}>Leaders</Typography>}
 
                 <List sx={styles.leaders}>
                     {deckLeaders.map((card) => {
@@ -98,14 +114,14 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
                                 sx={styles.leaderCards}
-                                onClick={() => moveToSideboard(card.id)}>
+                                onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
                                 <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
                             </ListItem>
                         )
                     })}
                 </List>
 
-                {deckCards.length > 0 && <Typography variant='h4' component='h3' sx={{ mt: '1rem' }}>Cards</Typography>}
+                {deckCards.length > 0 && <Typography variant='h4' component='h3' sx={{ m: '1rem auto 0.5rem auto' }}>Cards</Typography>}
 
                 <List sx={styles.cards}>
                     {sortedDeckCards.map((card) => {
@@ -118,7 +134,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
                                 sx={styles.nonLeaderCards}
-                                onClick={() => moveToSideboard(card.id)}>
+                                onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
                                 <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage} />
                             </ListItem>
                         )
@@ -128,14 +144,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         hoveredCard={hoveredCard}
                         onHoverClose={handlePopoverClose} />
                 </List>
-            </Box >
-            <Sideboard
-                sideboardLeaders={sideboardLeaders}
-                setSideboardLeaders={setSideboardLeaders}
-                setSideboardCards={setSideboardCards}
-                sideboardCards={sideboardCards}
-                setDeckLeaders={setDeckLeaders}
-                setDeckCards={setDeckCards} />
+            </Box>
         </>
     );
-};
+}
