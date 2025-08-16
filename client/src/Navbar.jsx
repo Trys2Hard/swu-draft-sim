@@ -19,7 +19,7 @@ export default function Navbar() {
             transition: 'background-color 0.3s',
             m: '0.2rem',
             '&:hover': {
-                backgroundColor: 'rgba(92, 92, 92, 0.6)',
+                backgroundColor: 'rgba(31, 202, 255, 0.1)',
             },
         },
     }

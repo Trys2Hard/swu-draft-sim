@@ -11,7 +11,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             position: 'relative',
             width: '60%',
             height: '100%',
-            m: '5rem auto 5rem auto',
+            m: '1rem auto 5rem auto',
             p: '0.5rem',
             background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
             borderRadius: '5px',
@@ -76,7 +76,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
         <Box sx={styles.packBox} >
             {!sealedStarted &&
                 <>
-                    <Typography variant='h2' component='h4' sx={{ mb: '1rem', position: 'absolute', top: '0' }}>{setName}</Typography>
+                    <Typography variant='h3' component='h4' sx={{ position: 'absolute', top: '0.5rem' }}>{setName}</Typography>
                     <StartButton isLoading={isLoading} onClick={() => handleStartSealedBuild()}>Start Sealed Build</StartButton>
                 </>
             }

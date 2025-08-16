@@ -9,7 +9,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             position: 'relative',
             width: '60%',
             minHeight: '20rem',
-            m: '5rem auto 5rem auto',
+            m: '1rem auto 5rem auto',
             p: '0.5rem',
             background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
             borderRadius: '5px',
@@ -55,20 +55,20 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
 
     return (
         <Box sx={styles.packBox}>
+            {!draftStarted &&
+                <>
+                    <Typography variant='h3' component='h4' sx={{ position: 'absolute', top: '0.5rem' }}>{setName}</Typography>
+                    <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
+                </>
+            }
             {draftStarted &&
                 <Box sx={{ width: '100%' }}>
-                    <Typography variant='h3' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>{title}</Typography>
+                    <Typography variant='h5' component='h2' sx={{ mb: '1rem', display: 'flex', justifyContent: 'center' }}>{title}</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                         <Typography variant='h4' component='h3' sx={{ mb: '1rem', mr: '1rem' }}>Pack: {packNum}</Typography>
                         <Typography variant='h4' component='h3' sx={{ mb: '1rem', ml: '1rem' }}>Pick: {pickNum}</Typography>
                     </Box>
                 </Box>
-            }
-            {!draftStarted &&
-                <>
-                    <Typography variant='h2' component='h4' sx={{ position: 'absolute', top: '0' }}>{setName}</Typography>
-                    <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
-                </>
             }
             {draftStarted &&
                 <Box sx={{ position: 'relative', width: '100%' }}>
