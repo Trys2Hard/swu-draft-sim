@@ -37,7 +37,7 @@ app.use(express.json())
 app.use(helmet());
 
 // routes
-app.get('/leader', async (req, res) => {
+app.get('/api/leader', async (req, res) => {
     const set = req.query.set?.toUpperCase();
 
     if (!set) {
@@ -63,7 +63,7 @@ app.get('/leader', async (req, res) => {
     }
 })
 
-app.get('/rare', async (req, res) => {
+app.get('/api/rare', async (req, res) => {
     const set = req.query.set?.toUpperCase();
 
     try {
@@ -85,7 +85,7 @@ app.get('/rare', async (req, res) => {
     }
 })
 
-app.get('/uncommon', async (req, res) => {
+app.get('/api/uncommon', async (req, res) => {
     const set = req.query.set?.toUpperCase();
 
     try {
@@ -104,7 +104,7 @@ app.get('/uncommon', async (req, res) => {
     }
 })
 
-app.get('/common', async (req, res) => {
+app.get('/api/common', async (req, res) => {
     const set = req.query.set?.toUpperCase();
 
     try {
@@ -124,8 +124,8 @@ app.get('/common', async (req, res) => {
 })
 
 // React Router fallback
-app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+app.get('/*splat', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 

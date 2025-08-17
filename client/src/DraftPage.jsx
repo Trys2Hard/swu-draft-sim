@@ -53,7 +53,7 @@ export default function DraftPage() {
 
     const fetchCard = async (rarity, seenIds = null) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/${rarity}?set=${set}`);
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${rarity}?set=${set}`);
             const data = await res.json();
 
             if (!res.ok) {
