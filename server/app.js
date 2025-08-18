@@ -63,15 +63,47 @@ app.get('/api/leader', async (req, res) => {
     }
 })
 
+app.get('/api/special', async (req, res) => {
+    const set = req.query.set?.toUpperCase();
+    try {
+        const specialArr = await Card.aggregate([
+            { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Normal', Rarity: 'Special' } },
+            { $sample: { size: 1 } }
+        ]);
+        if (!specialArr.length) {
+            return res.status(404).json({ error: 'No special card found' });
+        }
+        const randomSpecial = specialArr[0];
+        res.json({ cardData: randomSpecial });
+    } catch (error) {
+        console.error('Error fetching special card:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
+
+app.get('/api/legendary', async (req, res) => {
+    const set = req.query.set?.toUpperCase();
+    try {
+        const legendaryArr = await Card.aggregate([
+            { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Normal', Rarity: 'Legendary' } },
+            { $sample: { size: 1 } }
+        ]);
+        if (!legendaryArr.length) {
+            return res.status(404).json({ error: 'No legendary card found' });
+        }
+        const randomLegendary = legendaryArr[0];
+        res.json({ cardData: randomLegendary });
+    } catch (error) {
+        console.error('Error fetching legendary card:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
+
 app.get('/api/rare', async (req, res) => {
     const set = req.query.set?.toUpperCase();
-
     try {
-        const legendaryChance = Math.random() < 0.2;
-        const rareSlotRarity = legendaryChance ? 'Legendary' : 'Rare';
-
         const rareArr = await Card.aggregate([
-            { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Normal', Rarity: rareSlotRarity } },
+            { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Normal', Rarity: 'Rare' } },
             { $sample: { size: 1 } }
         ]);
         if (!rareArr.length) {
@@ -123,12 +155,6 @@ app.get('/api/common', async (req, res) => {
     }
 })
 
-// React Router fallback
-app.get('/*splat', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
@@ -140,3 +166,8 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((error) => {
         console.error(error)
     })
+
+// React Router fallback
+app.get('/*splat', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});

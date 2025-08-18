@@ -103,11 +103,46 @@ export default function DraftPage() {
 
     async function generateCardPack() {
         setIsLoading(true);
-        const rareCards = await generateCards(1, 'rare');
-        const uncommonCards = await generateCards(3, 'uncommon', uncommonIds);
-        const commonCards = await generateCards(10, 'common', commonIds);
 
-        const cardPack = [...rareCards, ...uncommonCards, ...commonCards];
+        let rareUncommonRarity;
+        let legendaryCards;
+        let rareCards;
+
+        //Determine rarity of the rare slot
+        const legendaryChance = Math.random() < 0.2;
+        if (legendaryChance) {
+            legendaryCards = await generateCards(1, 'legendary');
+        } else {
+            rareCards = await generateCards(1, 'rare');
+        }
+
+        //Determine rarity of the first uncommon (rareUncommon) slot
+        const rareUncommonRarityNum = Math.random() < 0.1;
+        if (rareUncommonRarityNum) {
+            rareUncommonRarity = 'rare';
+        } else {
+            rareUncommonRarity = 'uncommon';
+        }
+
+        //Determine rarity of the foil slot
+        const foilRarities = [
+            { rarity: 'legendary', threshold: 1 },
+            { rarity: 'special', threshold: 2 },
+            { rarity: 'rare', threshold: 4 },
+            { rarity: 'uncommon', threshold: 10 },
+            { rarity: 'common', threshold: 24 }
+        ];
+
+        const foilRarityNum = Math.floor(Math.random() * 24);
+        const foilRarity = foilRarities.find(r => foilRarityNum < r.threshold).rarity;
+
+        const rareSlot = legendaryCards ?? rareCards;
+        const rareUncommonSlot = await generateCards(1, rareUncommonRarity);
+        const uncommonCards = await generateCards(2, 'uncommon', uncommonIds);
+        const commonCards = await generateCards(9, 'common', commonIds);
+        const foilSlot = await generateCards(1, foilRarity);
+
+        const cardPack = [...rareSlot, ...rareUncommonSlot, ...uncommonCards, ...commonCards, ...foilSlot];
 
         if (cardPack.length === 14) {
             setCardPacks((prev) => [...prev, cardPack]);
