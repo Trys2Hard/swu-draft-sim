@@ -2,7 +2,7 @@ import { Box, Typography, List, ListItem } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 
-export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setSealedLeaderPool, setSealedCardPool }) {
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setLeaderPacks, setCardPacks }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
     const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost);
@@ -41,7 +41,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         const updatedDeck = stateToUpdate.filter((card) => card.id !== id);
         setStateToUpdate(updatedDeck)
 
-        const addCard = isLeader ? setSealedLeaderPool : setSealedCardPool;
+        const addCard = isLeader ? setLeaderPacks : setCardPacks;
         if (!addCard) return;
 
         addCard((prev) => [...prev, pickedCard]);
