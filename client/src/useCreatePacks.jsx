@@ -84,23 +84,11 @@ export default function useCreatePacks() {
             rareUncommonRarity = 'uncommon';
         }
 
-        //Determine rarity of the foil slot
-        const foilRarities = [
-            { rarity: 'legendary', threshold: 1 },
-            { rarity: 'special', threshold: 6 },
-            { rarity: 'rare', threshold: 8 },
-            { rarity: 'uncommon', threshold: 25 },
-            { rarity: 'common', threshold: 50 }
-        ];
-
-        const foilRarityNum = Math.floor(Math.random() * 50);
-        const foilRarity = foilRarities.find(r => foilRarityNum < r.threshold).rarity;
-
         const rareSlot = rareSlotCard
         const rareUncommonSlot = await generateCards(1, rareUncommonRarity);
         const uncommonCards = await generateCards(2, 'uncommon', uncommonIdsRef.current);
         const commonCards = await generateCards(9, 'common', commonIdsRef.current);
-        const foilSlot = await generateCards(1, foilRarity);
+        const foilSlot = await generateCards(1, 'foil');
 
         const cardPack = [...rareSlot, ...rareUncommonSlot, ...uncommonCards, ...commonCards, ...foilSlot];
 

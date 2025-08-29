@@ -155,6 +155,53 @@ app.get('/api/common', async (req, res) => {
     }
 })
 
+app.get('/api/foil', async (req, res) => {
+    const set = req.query.set?.toUpperCase();
+    try {
+        // Determine rarity based on odds (similar to leader endpoint)
+        const random = Math.random();
+        let foilRarity;
+
+        if (random < 0.02) { // 2% chance for Legendary
+            foilRarity = 'Legendary';
+        } else if (random < 0.12) { // 10% chance for Special
+            foilRarity = 'Special';
+        } else if (random < 0.20) { // 8% chance for Rare
+            foilRarity = 'Rare';
+        } else if (random < 0.50) { // 30% chance for Uncommon
+            foilRarity = 'Uncommon';
+        } else { // 50% chance for Common
+            foilRarity = 'Common';
+        }
+
+        const foilArr = await Card.aggregate([
+            { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Hyperspace Foil', Rarity: foilRarity } },
+            { $sample: { size: 1 } }
+        ]);
+
+        if (!foilArr.length) {
+            // Fallback: if no cards found for selected rarity, try any foil card
+            const fallbackFoilArr = await Card.aggregate([
+                { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Hyperspace Foil' } },
+                { $sample: { size: 1 } }
+            ]);
+
+            if (!fallbackFoilArr.length) {
+                return res.status(404).json({ error: 'No foil card found' });
+            }
+
+            const randomFoil = fallbackFoilArr[0];
+            res.json({ cardData: randomFoil });
+        } else {
+            const randomFoil = foilArr[0];
+            res.json({ cardData: randomFoil });
+        }
+    } catch (error) {
+        console.error('Error fetching foil card:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
+
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
