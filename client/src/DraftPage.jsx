@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Typography, Box } from '@mui/material';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';
+import useCreatePacks from './useCreatePacks';
 import Sets from './Sets';
 import { v4 as uuid } from 'uuid';
 import DraftPack from './DraftPack';
@@ -15,15 +16,13 @@ export default function DraftPage() {
     const [title, setTitle] = useState('Leaders');
     const [set, setSet] = useState('lof');
     const [setName, setSetName] = useState('Legends of the Force');
-    const [leaderPacks, setLeaderPacks] = useState([]);
-    const [cardPacks, setCardPacks] = useState([]);
     const [packIndex, setPackIndex] = useState(0);
     const [draftStarted, setDraftStarted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [sideboardLeaders, setSideboardLeaders] = useState([]);
     const [sideboardCards, setSideboardCards] = useState([]);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
+    const { generateLeaderPack, generateCardPack, leaderPacks, cardPacks, isLoading, resetCardPacks, resetSeenIds, setIsLoading } = useCreatePacks('');
 
     const leadersDrafted = draftStarted && leaderPacks.every(arr => arr.length === 0);
     const currentPack = leadersDrafted ? cardPacks : leaderPacks;
@@ -48,80 +47,24 @@ export default function DraftPage() {
     //     }
     // }, [set, setName])
 
-    let uncommonIds = [];
-    let commonIds = [];
-
-    const fetchCard = async (rarity, seenIds = null) => {
-        try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${rarity}?set=${set}`);
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || `Failed to fetch ${rarity} card`);
-            }
-
-            if (seenIds && data.cardData?._id) {
-                const isDuplicate = seenIds.includes(data.cardData._id);
-                if (isDuplicate) {
-                    return fetchCard(rarity, seenIds);
-                } else {
-                    seenIds.push(data.cardData._id);
-                }
-            }
-
-            return data;
-        } catch (error) {
-            errorCount++;
-            console.error(`Error fetching ${rarity} card`, error);
-            if (rarity === 'rare') {
-                alert('Rare card failed to load');
-            }
+    useEffect(() => {
+        if (cardPacks.length === 8) {
+            setIsLoading(false);
         }
-    };
+    }, [cardPacks, setIsLoading])
 
-    async function generateCards(count, rarity, seenIds = null) {
-        const cards = [];
-        for (let i = 0; i < count; i++) {
-            const card = await fetchCard(rarity, seenIds);
-            if (card) {
-                cards.push({ cardObj: card, id: uuid() });
-            }
+    useEffect(() => {
+        if (leaderPacks.length === 8) {
+            setIsLoading(false);
         }
-        if (errorCount > 0) {
-            alert(`${errorCount} ${rarity} card${errorCount > 1 ? 's' : ''} failed to load.`);
-        }
-        return cards;
-    }
+    }, [leaderPacks, setIsLoading])
 
-    async function generateLeaderPack() {
-        setIsLoading(true);
-        const leaderPack = await generateCards(3, 'leader');
-        if (leaderPack.length === 3) {
-            setLeaderPacks((prev) => [...prev, leaderPack]);
-        }
-    }
-
-    async function generateCardPack() {
-        setIsLoading(true);
-        const rareCards = await generateCards(1, 'rare');
-        const uncommonCards = await generateCards(3, 'uncommon', uncommonIds);
-        const commonCards = await generateCards(10, 'common', commonIds);
-
-        const cardPack = [...rareCards, ...uncommonCards, ...commonCards];
-
-        if (cardPack.length === 14) {
-            setCardPacks((prev) => [...prev, cardPack]);
-        }
-    }
-
-    async function handleStartDraft() {
+    function handleStartDraft() {
         setDraftStarted(true);
 
         for (let i = 0; i < 8; i++) {
-            await generateLeaderPack();
+            generateLeaderPack(3);
         }
-
-        setIsLoading(false);
 
         if (errorCount > 0) {
             alert(`${errorCount} leader${errorCount > 1 ? 's' : ''} failed to load.`);
@@ -133,7 +76,7 @@ export default function DraftPage() {
         setSet(newSet);
     }
 
-    async function pickCard(id) {
+    function pickCard(id) {
         handlePopoverClose();
 
         let pickedCard = currentPack[packIndex]?.find((card) => card.id === id);
@@ -186,13 +129,11 @@ export default function DraftPage() {
                 setPackNum((prev) => prev + 1);
                 setPickNum(1);
                 setPackIndex(0);
-                setCardPacks([]);
+                resetCardPacks();
                 for (let i = 0; i < 8; i++) {
-                    await generateCardPack();
-                    commonIds = [];
-                    uncommonIds = [];
+                    generateCardPack();
+                    resetSeenIds();
                 }
-                setIsLoading(false);
             } else if (draftEnded) {
                 setTitle('Draft Complete');
             }

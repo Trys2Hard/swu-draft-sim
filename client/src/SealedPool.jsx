@@ -2,8 +2,8 @@ import { List, ListItem, Box, Typography, } from '@mui/material';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
 
-export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setName, anchorEl, hoveredCard, isLoading, moveToDeck, handleStartSealedBuild, sealedStarted, sealedLeaderPool, sealedCardPool }) {
-    const sortedSealedCardPool = [...sealedCardPool].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
+export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setName, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks }) {
+    const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
 
     //Styles
     const styles = {
@@ -31,7 +31,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             borderRadius: '5px',
             p: sealedStarted && '1rem',
             justifyContent: 'center',
-            filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
         packLeaders: {
             width: '100%',
@@ -42,7 +41,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             borderRadius: '5px',
             p: sealedStarted && '1rem',
             justifyContent: 'center',
-            filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
         card: {
             width: '15%',
@@ -63,7 +61,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             },
         },
         loading: {
-            display: isLoading ? 'block' : 'none',
             position: 'absolute',
             top: '50%',
             left: '50%',
@@ -77,7 +74,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             {!sealedStarted &&
                 <>
                     <Typography variant='h4' component='h4' sx={{ position: 'absolute', top: '1rem' }}>{setName}</Typography>
-                    <StartButton isLoading={isLoading} onClick={() => handleStartSealedBuild()}>Start Sealed</StartButton>
+                    <StartButton onClick={() => handleStartSealedBuild()}>Start Sealed</StartButton>
                 </>
             }
             {sealedStarted &&
@@ -88,7 +85,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             {sealedStarted &&
                 <Box sx={{ position: 'relative', width: '100%' }}>
                     <List sx={styles.packLeaders}>
-                        {sealedLeaderPool.flat().map((card) => {
+                        {leaderPacks.flat().map((card) => {
                             const cardId = `card-id-${card.id}`;
                             return (
                                 <ListItem
@@ -104,7 +101,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
                             )
                         })}
                     </List>
-                    <Typography variant='h3' component='p' sx={styles.loading}>Loading Sealed Pool...</Typography>
                 </Box>
             }
             {sealedStarted &&
@@ -114,7 +110,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             }
             {sealedStarted &&
                 <List sx={styles.pack}>
-                    {sortedSealedCardPool.flat().map((card) => {
+                    {sortedCardPacks.flat().map((card) => {
                         const cardId = `card-id-${card.id}`;
                         return (
                             <ListItem
