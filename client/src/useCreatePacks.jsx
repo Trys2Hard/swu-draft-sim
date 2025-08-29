@@ -77,8 +77,10 @@ export default function useCreatePacks() {
         }
 
         //Determine rarity of the first uncommon (rareUncommon) slot
-        const rareUncommonRarityNum = Math.random() < 0.1;
-        if (rareUncommonRarityNum) {
+        const rareUncommonRarityNum = Math.random();
+        if (rareUncommonRarityNum < 0.02) {
+            rareUncommonRarity = 'legendary';
+        } else if (rareUncommonRarityNum < 0.1) {
             rareUncommonRarity = 'rare';
         } else {
             rareUncommonRarity = 'uncommon';
