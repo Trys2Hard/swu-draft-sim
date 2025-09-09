@@ -40,17 +40,109 @@ app.use(helmet());
 
 const ai = new GoogleGenAI({});
 
+// Escape user input for safe use in RegExp
+function escapeRegex(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Helper function to search for cards in the database
+async function searchCards(searchTerm) {
+    try {
+        // Search for cards by name (case insensitive) across all sets
+        const cards = await Card.find({
+            Name: { $regex: searchTerm, $options: 'i' },
+            VariantType: 'Normal'
+        }).limit(50); // Increased limit to show more results
+
+        return cards;
+    } catch (error) {
+        console.error('Error searching cards:', error);
+        return [];
+    }
+}
+
+// Helper function to search for exact name matches (case-insensitive)
+async function searchCardsExact(searchTerm) {
+    try {
+        const trimmed = (searchTerm || '').trim();
+        if (!trimmed) return [];
+        const regex = new RegExp(`^${escapeRegex(trimmed)}$`, 'i');
+        const cards = await Card.find({
+            Name: { $regex: regex },
+            VariantType: 'Normal'
+        }).limit(100);
+        return cards;
+    } catch (error) {
+        console.error('Error searching exact cards:', error);
+        return [];
+    }
+}
+
 // routes
 app.post("/api/gemini", async (req, res) => {
     try {
         const { prompt } = req.body;
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
+        // First, search for exact matches by Name (case-insensitive) and VariantType 'Normal'
+        const exactMatches = await searchCardsExact(prompt);
+
+        let foundCards = [];
+        if (exactMatches.length > 0) {
+            foundCards = exactMatches;
+        } else {
+            // Extract potential card names from the prompt for database search
+            const words = (prompt || '').toLowerCase().split(/\s+/);
+            const potentialCardNames = words.filter(word =>
+                word.length > 2 &&
+                !['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'must'].includes(word)
+            );
+
+            // Search for cards in the database (partial/phrase)
+            const fullPhraseCards = await searchCards(prompt);
+            foundCards = [...foundCards, ...fullPhraseCards];
+
+            for (const term of potentialCardNames) {
+                const cards = await searchCards(term);
+                foundCards = [...foundCards, ...cards];
+            }
+        }
+
+        // Remove duplicates based on unique document id (not by Name)
+        const seenIds = new Set();
+        const uniqueCards = foundCards.filter((card) => {
+            const id = String(card._id);
+            if (seenIds.has(id)) return false;
+            seenIds.add(id);
+            return true;
         });
 
-        res.json({ text: response.text });
+        // Debug logging
+        console.log(`Search prompt: "${prompt}"`);
+        console.log(`Found ${uniqueCards.length} unique cards`);
+        uniqueCards.forEach(card => {
+            console.log(`- ${card.Name} (${card.Set}) #${card.Number}`);
+        });
+
+        res.json({
+            cards: uniqueCards.map(card => ({
+                name: card.Name,
+                type: card.Type,
+                rarity: card.Rarity,
+                cost: card.Cost,
+                power: card.Power,
+                hp: card.HP,
+                frontText: card.FrontText,
+                frontArt: card.FrontArt,
+                aspects: card.Aspects,
+                traits: card.Traits,
+                arenas: card.Arenas,
+                keywords: card.Keywords,
+                artist: card.Artist,
+                set: card.Set,
+                number: card.Number,
+                id: String(card._id)
+            }))
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
