@@ -45,6 +45,76 @@ function escapeRegex(value) {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// Very lightweight NL parser turning user text into a MongoDB filter
+function parsePromptToFilter(prompt) {
+    const text = (prompt || '').toLowerCase();
+    const filter = { VariantType: 'Normal' };
+    let limit = 200;
+
+    // Cost extraction: "cost 2", "costs 2", "with cost 2", "cost of 2", "2 cost", "2-cost"
+    let costMatch = text.match(/\bcosts?\s*(?:of\s*)?(\d{1,2})\b/);
+    if (!costMatch) costMatch = text.match(/\b(\d{1,2})\s*-?\s*cost\b/);
+    if (costMatch) filter.Cost = String(costMatch[1]);
+
+    // Single result intents: "one", "a", "an" (word boundaries)
+    if (/\b(one|a|an)\b/.test(text)) {
+        limit = 1;
+    }
+
+    // Aspects detection (exact match with simple aliasing to avoid false positives like "are" -> Aggression)
+    const knownAspects = ['aggression', 'villainy', 'heroism', 'cunning', 'command', 'vigilance'];
+    const aspectAliases = { 'agression': 'aggression' };
+    const colorToAspect = {
+        'green': 'command',
+        'white': 'heroism',
+        'black': 'villainy',
+        'blue': 'vigilance',
+        'red': 'aggression',
+        'yellow': 'cunning',
+    };
+    const words = text.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(Boolean);
+    const aspects = new Set();
+    for (let word of words) {
+        if (aspectAliases[word]) word = aspectAliases[word];
+        // Map colors to aspects
+        if (colorToAspect[word]) word = colorToAspect[word];
+        if (knownAspects.includes(word)) {
+            aspects.add(word.charAt(0).toUpperCase() + word.slice(1));
+        }
+    }
+    if (aspects.size > 0) {
+        filter.Aspects = { $all: Array.from(aspects) };
+    }
+
+    // Ensure leaders are included when aspects imply them; otherwise we might miss leaders like Mon Mothma
+    // Only set Type if user explicitly asked for one; we won't default Type to Unit
+
+    // Rarity detection
+    const rarities = ['common', 'uncommon', 'rare', 'legendary', 'special'];
+    const rarity = rarities.find(r => text.includes(r));
+    if (rarity) {
+        filter.Rarity = rarity.charAt(0).toUpperCase() + rarity.slice(1);
+    }
+
+    // Type detection (Leader, Base, Unit, Event, Upgrade, etc.)
+    const types = ['leader', 'base', 'unit', 'event', 'upgrade'];
+    const type = types.find(t => text.includes(t));
+    if (type) {
+        filter.Type = type.charAt(0).toUpperCase() + type.slice(1);
+    }
+
+    // Set detection (LOF, JTL, SOR, etc.)
+    const setMatch = text.match(/\b(lof|jtl|sor|twi|shd)\b/);
+    if (setMatch) {
+        filter.Set = setMatch[1].toUpperCase();
+    }
+
+    // If we extracted at least one non-default constraint besides VariantType, use it
+    const keys = Object.keys(filter).filter(k => k !== 'VariantType');
+    const hasMeaningful = keys.length > 0;
+    return { filter, limit, hasMeaningful };
+}
+
 // Helper function to search for cards in the database
 async function searchCards(searchTerm) {
     try {
@@ -52,7 +122,7 @@ async function searchCards(searchTerm) {
         const cards = await Card.find({
             Name: { $regex: searchTerm, $options: 'i' },
             VariantType: 'Normal'
-        }).limit(50); // Increased limit to show more results
+        }).limit(200); // Increased limit to show more results
 
         return cards;
     } catch (error) {
@@ -82,6 +152,45 @@ async function searchCardsExact(searchTerm) {
 app.post("/api/gemini", async (req, res) => {
     try {
         const { prompt } = req.body;
+
+        // First: try to parse structured intent (cost/aspects/etc.)
+        const { filter: parsedFilter, limit: parsedLimit, hasMeaningful } = parsePromptToFilter(prompt);
+        if (hasMeaningful) {
+            const results = await Card.find(parsedFilter).limit(parsedLimit);
+            const cards = results;
+
+            // Deduplicate by _id just in case
+            const seenIds = new Set();
+            const uniqueCards = cards.filter((card) => {
+                const id = String(card._id);
+                if (seenIds.has(id)) return false;
+                seenIds.add(id);
+                return true;
+            });
+
+            console.log(`Parsed filter hit. Prompt: "${prompt}" ->`, parsedFilter, `limit=${parsedLimit}`, `results=${uniqueCards.length}`);
+
+            return res.json({
+                cards: uniqueCards.map(card => ({
+                    name: card.Name,
+                    type: card.Type,
+                    rarity: card.Rarity,
+                    cost: card.Cost,
+                    power: card.Power,
+                    hp: card.HP,
+                    frontText: card.FrontText,
+                    frontArt: card.FrontArt,
+                    aspects: card.Aspects,
+                    traits: card.Traits,
+                    arenas: card.Arenas,
+                    keywords: card.Keywords,
+                    artist: card.Artist,
+                    set: card.Set,
+                    number: card.Number,
+                    id: String(card._id)
+                }))
+            });
+        }
 
         // First, search for exact matches by Name (case-insensitive) and VariantType 'Normal'
         const exactMatches = await searchCardsExact(prompt);
