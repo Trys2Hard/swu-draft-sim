@@ -33,6 +33,7 @@ export default function Navbar() {
                     <Box sx={{ ml: '1.5rem' }}>
                         <Typography component={Link} variant='h6' to='/' sx={styles.link}>Draft</Typography>
                         <Typography component={Link} variant='h6' to='/sealed' sx={styles.link}>Sealed</Typography>
+                        <Typography component={Link} variant='h6' to='/card-search' sx={styles.link}>Card Search</Typography>
                     </Box>
                 </Toolbar>
             </AppBar>

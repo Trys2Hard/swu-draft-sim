@@ -6,6 +6,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const mongoose = require('mongoose')
 const Card = require('./models/Card')
+const { GoogleGenAI } = require('@google/genai');
+
 
 const app = express()
 const PORT = process.env.PORT || 3000;
@@ -36,7 +38,28 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(express.json())
 app.use(helmet());
 
+const ai = new GoogleGenAI({});
+
 // routes
+app.post("/api/gemini", async (req, res) => {
+    try {
+        const { prompt } = req.body;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
+
+        res.json({ text: response.text });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
 app.get('/api/leader', async (req, res) => {
     const set = req.query.set?.toUpperCase();
 

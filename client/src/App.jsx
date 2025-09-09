@@ -4,6 +4,7 @@ import Footer from './Footer';
 import DraftPage from './DraftPage';
 import SealedPage from './SealedPage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import CardSearch from './CardSearch';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <Routes>
             <Route path="/" element={<DraftPage />} />
             <Route path="/sealed" element={<SealedPage />} />
-
+            <Route path="/card-search" element={<CardSearch />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Box>
