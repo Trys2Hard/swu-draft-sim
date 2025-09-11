@@ -83,12 +83,16 @@ async function searchCardsExact(searchTerm) {
 // routes
 app.post("/api/gemini", async (req, res) => {
     try {
-        const { prompt } = req.body;
+        const { prompt, page: rawPage, pageSize: rawPageSize } = req.body;
+        const page = Math.max(1, Number(rawPage) || 1);
+        const pageSize = Math.min(200, Math.max(1, Number(rawPageSize) || 50));
+        const skip = (page - 1) * pageSize;
 
         // First: try to parse structured intent (cost/aspects/etc.)
         const { filter: parsedFilter, limit: parsedLimit, hasMeaningful } = parsePromptToFilter(prompt);
         if (hasMeaningful) {
             let results;
+            let total = 0;
             if (parsedFilter._random) {
                 const match = { ...parsedFilter };
                 delete match._random;
@@ -96,8 +100,10 @@ app.post("/api/gemini", async (req, res) => {
                     { $match: match },
                     { $sample: { size: parsedLimit || 1 } }
                 ]);
+                total = results.length;
             } else {
-                results = await Card.find(parsedFilter).limit(parsedLimit);
+                total = await Card.countDocuments(parsedFilter);
+                results = await Card.find(parsedFilter).skip(skip).limit(pageSize);
             }
             const cards = results;
 
@@ -113,6 +119,10 @@ app.post("/api/gemini", async (req, res) => {
             console.log(`Parsed filter hit. Prompt: "${prompt}" ->`, parsedFilter, `limit=${parsedLimit}`, `results=${uniqueCards.length}`);
 
             return res.json({
+                page,
+                pageSize: parsedFilter._random ? 1 : pageSize,
+                total,
+                totalPages: parsedFilter._random ? 1 : Math.max(1, Math.ceil(total / pageSize)),
                 cards: uniqueCards.map(card => ({
                     name: card.Name,
                     type: card.Type,
@@ -174,8 +184,17 @@ app.post("/api/gemini", async (req, res) => {
             console.log(`- ${card.Name} (${card.Set}) #${card.Number}`);
         });
 
+        // Apply pagination on the deduped results for fallback search
+        const total = uniqueCards.length;
+        const start = Math.min(skip, Math.max(0, total - 1));
+        const paged = uniqueCards.slice(start, start + pageSize);
+
         res.json({
-            cards: uniqueCards.map(card => ({
+            page,
+            pageSize,
+            total,
+            totalPages: Math.max(1, Math.ceil(total / pageSize)),
+            cards: paged.map(card => ({
                 name: card.Name,
                 type: card.Type,
                 rarity: card.Rarity,
