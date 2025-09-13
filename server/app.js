@@ -7,7 +7,6 @@ const helmet = require('helmet');
 const mongoose = require('mongoose')
 const Card = require('./models/Card')
 const { parsePromptToFilter } = require('./utils/parsePromptToFilter')
-const { GoogleGenAI } = require('@google/genai');
 
 
 const app = express()
@@ -38,8 +37,6 @@ app.use(cors({
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(express.json())
 app.use(helmet());
-
-const ai = new GoogleGenAI({});
 
 // Escape user input for safe use in RegExp
 function escapeRegex(value) {
@@ -81,7 +78,7 @@ async function searchCardsExact(searchTerm) {
 }
 
 // routes
-app.post("/api/gemini", async (req, res) => {
+app.post("/api/card-search", async (req, res) => {
     try {
         const { prompt, page: rawPage, pageSize: rawPageSize } = req.body;
         const page = Math.max(1, Number(rawPage) || 1);
