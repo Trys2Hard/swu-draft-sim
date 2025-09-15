@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, Button, Grid, FormControl, TextField } from '@mui/material';
+import PageButtons from './PageButtons';
 
 export default function CardSearch() {
     const [prompt, setPrompt] = useState("");
@@ -75,26 +76,66 @@ export default function CardSearch() {
             alignItems: 'center',
         },
         input: {
-            color: 'white',
-            height: '2.5rem',
-            border: '1px solid white',
-            borderRadius: '25px',
+            // target the OutlinedInput root
+            '& .MuiOutlinedInput-root': {
+                color: 'white',                 // text color
+                height: '2.5rem',               // height of the input wrapper
+                borderRadius: '25px',           // border radius
+
+                '& fieldset': {
+                    borderColor: 'white',         // outlined border color
+                },
+
+                '&:hover fieldset': {
+                    borderColor: 'white',         // border on hover
+                },
+
+                '&.Mui-focused fieldset': {
+                    borderColor: 'white',         // border when focused
+                },
+
+                '& input': {
+                    color: 'white',               // text color inside input
+                    height: '2.5rem',
+                    padding: '0 1rem',            // adjust horizontal padding
+                },
+
+                // autofill override
+                '& input:-webkit-autofill': {
+                    WebkitBoxShadow: '0 0 0 100px transparent inset',
+                    WebkitTextFillColor: 'white',
+                    transition: 'background-color 5000s ease-in-out 0s',
+                },
+                '& input:-webkit-autofill:focus': {
+                    WebkitBoxShadow: '0 0 0 100px transparent inset',
+                    WebkitTextFillColor: 'white',
+                },
+            },
         },
         searchButton: {
-            height: '2.5rem',
             ml: '1rem',
+            background: 'rgba(31, 202, 255, 0.4)',
+            borderRadius: '20px',
+            p: '0.5rem 1rem 0.5rem 1rem',
+            '&:hover': {
+                background: 'rgba(31, 202, 255, 0.5)',
+            }
         },
-        cardSearchContainer: {
-            width: '90%',
-            m: '0 auto 0 auto',
-            color: 'white',
+        cardContainer: {
+            display: 'flex',
+            justifyContent: 'center',
+            width: '95%',
+            p: '1rem',
+            backgroundColor: 'rgba(35, 35, 35, 1)',
+            m: '1rem auto',
+            borderRadius: '10px',
         },
     }
 
     return (
         <>
             <Typography variant='h4' component='h2' sx={styles.title}>Card Search</Typography>
-            <Box sx={styles.formContainer}>
+            <Box>
                 <form onSubmit={handleSubmit}>
                     <FormControl sx={styles.form}>
                         <TextField
@@ -104,90 +145,36 @@ export default function CardSearch() {
                             placeholder="2 cost green hero..."
                             id="card-search"
                             variant="outlined"
-                            slotProps={{
-                                input: {
-                                    sx: styles.input
-                                },
-                            }} />
+                            sx={styles.input}
+                        />
                         <Button variant='contained' sx={styles.searchButton} type="submit">Search</Button>
                     </FormControl>
                 </form>
             </Box>
 
-            <Box sx={styles.cardSearchContainer}>
+            <Box>
                 {cards.length > 0 && (
                     <Box mt={4}>
-                        <Typography variant="h5" gutterBottom>
+                        <Typography variant="h5" gutterBottom sx={{ width: '95%', m: '0 auto', color: 'white' }}>
                             Cards Found: {total}
                         </Typography>
 
                         {/* Top Pagination Controls */}
-                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2, }}>
-                            <Button
-                                variant="contained"
-                                disabled={loading || page <= 1}
-                                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                                sx={{
-                                    '&.Mui-disabled': {
-                                        color: 'black',
-                                        backgroundColor: 'rgba(65, 65, 65, 1)',
-                                    }
-                                }}>
-                                Prev
-                            </Button>
-
-                            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                {[...Array(totalPages)].map((_, i) => {
-                                    const pageNum = i + 1;
-                                    return (
-                                        <Typography
-                                            key={pageNum}
-                                            onClick={() => setPage(pageNum)}
-                                            sx={{
-                                                cursor: "pointer",
-                                                fontWeight: page === pageNum ? "bold" : "normal",
-                                                textDecoration: page === pageNum ? "underline" : "none",
-                                                "&:hover": { color: "primary.main" },
-                                            }}
-                                        >
-                                            {pageNum}
-                                        </Typography>
-                                    );
-                                })}
-                            </Box>
-
-
-                            <Button
-                                variant="contained"
-                                disabled={loading || page >= totalPages}
-                                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                                sx={{
-                                    '&.Mui-disabled': {
-                                        color: 'black',
-                                        backgroundColor: 'rgba(65, 65, 65, 1)',
-                                    }
-                                }}>
-                                Next
-                            </Button>
-                        </Box>
-
+                        <PageButtons loading={loading} page={page} totalPages={totalPages} setPage={setPage} />
 
                         {/* Cards Grid */}
-                        <Grid container spacing={2}>
+                        <Grid container spacing={4} sx={styles.cardContainer}>
                             {cards.map((card, index) => (
                                 <Grid key={index}>
-                                    <Box display="flex" justifyContent="center" alignItems="center">
+                                    <Box>
                                         {card.frontArt && (
                                             <Box
                                                 component="img"
                                                 src={card.frontArt}
                                                 alt={card.name}
                                                 sx={{
-                                                    width: 200,
-                                                    height: 'auto',
-                                                    borderRadius: 2,
-                                                    objectFit: 'cover',
-                                                    boxShadow: 3
+                                                    width: '20rem',
+                                                    borderRadius: '15px',
                                                 }}
                                                 onError={(e) => {
                                                     e.target.style.display = 'none';
@@ -200,58 +187,10 @@ export default function CardSearch() {
                         </Grid>
 
                         {/* Bottom Pagination Controls */}
-                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2, }}>
-                            <Button
-                                variant="contained"
-                                disabled={loading || page <= 1}
-                                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                                sx={{
-                                    '&.Mui-disabled': {
-                                        color: 'black',
-                                        backgroundColor: 'rgba(65, 65, 65, 1)',
-                                    }
-                                }}>
-                                Prev
-                            </Button>
-
-                            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                {[...Array(totalPages)].map((_, i) => {
-                                    const pageNum = i + 1;
-                                    return (
-                                        <Typography
-                                            key={pageNum}
-                                            onClick={() => setPage(pageNum)}
-                                            sx={{
-                                                cursor: "pointer",
-                                                fontWeight: page === pageNum ? "bold" : "normal",
-                                                textDecoration: page === pageNum ? "underline" : "none",
-                                                "&:hover": { color: "primary.main" },
-                                            }}
-                                        >
-                                            {pageNum}
-                                        </Typography>
-                                    );
-                                })}
-                            </Box>
-
-
-                            <Button
-                                variant="contained"
-                                disabled={loading || page >= totalPages}
-                                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                                sx={{
-                                    '&.Mui-disabled': {
-                                        color: 'black',
-                                        backgroundColor: 'rgba(65, 65, 65, 1)',
-                                    }
-                                }}>
-                                Next
-                            </Button>
-                        </Box>
+                        <PageButtons loading={loading} page={page} totalPages={totalPages} setPage={setPage} />
                     </Box >
                 )
                 }
-
             </Box >
         </>
     );
