@@ -1,3 +1,5 @@
+const knownTraits = require('../constants/traits');
+
 // Very lightweight NL parser turning user text into a MongoDB filter
 function parsePromptToFilter(prompt) {
     const text = (prompt || '').toLowerCase();
@@ -100,6 +102,44 @@ function parsePromptToFilter(prompt) {
     if (setMatch) {
         filter.Set = setMatch[1].toUpperCase();
     }
+
+    // Keyword detection (Grit, Ambush)
+    const knownKeywords = ['Grit', 'Ambush'];
+
+    for (const kw of knownKeywords) {
+        const re = new RegExp(`\\b${kw.toLowerCase()}\\b`, 'i');
+        if (re.test(text)) {
+            if (!filter.Keywords) filter.Keywords = { $in: [] };
+            filter.Keywords.$in.push(kw);
+        }
+    }
+
+    // Trait detection
+    const traitMatches = [];
+    for (const trait of knownTraits) {
+        const re = new RegExp(`\\b${trait}\\b`, 'i');
+        if (re.test(text)) {
+            traitMatches.push(trait.toUpperCase());
+        }
+    }
+
+    // Detect AND / OR logic in the user prompt
+    const hasAnd = /\band\b/.test(text);
+    const hasOr = /\bor\b/.test(text);
+
+    if (traitMatches.length > 0) {
+        if (hasAnd) {
+            // "jedi and rebel" → must have BOTH traits
+            filter.Traits = { $all: traitMatches };
+        } else if (hasOr) {
+            // "jedi or rebel" → can have EITHER trait
+            filter.Traits = { $in: traitMatches };
+        } else {
+            // Default behavior: treat multiple traits as OR
+            filter.Traits = { $in: traitMatches };
+        }
+    }
+
 
     // If we extracted at least one non-default constraint besides VariantType, use it
     const keys = Object.keys(filter).filter(k => k !== 'VariantType');
