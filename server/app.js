@@ -77,6 +77,47 @@ async function searchCardsExact(searchTerm) {
     }
 }
 
+// Sort function for sorting cards in card search by set then number
+function sortCards(cards) {
+    const setOrder = ['SOR', 'SHD', 'TWI', 'JTL', 'LOF'];
+
+    const normalizeSet = s => String(s || '').trim().toUpperCase();
+
+    const getSetIndex = s => {
+        const normalized = normalizeSet(s);
+        const index = setOrder.indexOf(normalized);
+        // Use a very large finite number instead of Infinity for more predictable comparisons
+        return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+    };
+
+    // Extract the first numeric portion of the card number (e.g. "001a" -> 1).
+    // If no numeric portion, return a large number so "unknown" numbers sort last.
+    const parseCardNumber = num => {
+        if (num === null || num === undefined) return Number.MAX_SAFE_INTEGER;
+        const str = String(num).trim();
+        const m = str.match(/\d+/);     // first run of digits
+        if (m) return parseInt(m[0], 10);
+        const n = Number(str);
+        return isNaN(n) ? Number.MAX_SAFE_INTEGER : n;
+    };
+
+    return cards.sort((a, b) => {
+        const aIndex = getSetIndex(a.Set);
+        const bIndex = getSetIndex(b.Set);
+
+        if (aIndex !== bIndex) return aIndex - bIndex;
+
+        const aNum = parseCardNumber(a.Number);
+        const bNum = parseCardNumber(b.Number);
+        if (aNum !== bNum) return aNum - bNum;
+
+        // Final deterministic tie-breaker: name (lexicographic)
+        const aName = (a.Name || '').localeCompare(b.Name || '');
+        return aName;
+    });
+}
+
+
 // routes
 app.post("/api/card-search", async (req, res) => {
     try {
@@ -87,40 +128,87 @@ app.post("/api/card-search", async (req, res) => {
 
         // First: try to parse structured intent (cost/aspects/etc.)
         const { filter: parsedFilter, limit: parsedLimit, hasMeaningful } = parsePromptToFilter(prompt);
+
+        // helper to dedupe by _id for arrays of plain objects or mongoose docs
+        const dedupeById = (arr) => {
+            const seen = new Set();
+            const out = [];
+            for (const c of arr) {
+                const id = String(c._id || c.id || c._id?.toString?.());
+                if (!seen.has(id)) {
+                    seen.add(id);
+                    out.push(c);
+                }
+            }
+            return out;
+        };
+
         if (hasMeaningful) {
-            let results;
-            let total = 0;
+            // RANDOM sampling: leave as-is (we won't apply global sort to random sample)
             if (parsedFilter._random) {
                 const match = { ...parsedFilter };
                 delete match._random;
-                results = await Card.aggregate([
+                const sampled = await Card.aggregate([
                     { $match: match },
                     { $sample: { size: parsedLimit || 1 } }
                 ]);
-                total = results.length;
-            } else {
-                total = await Card.countDocuments(parsedFilter);
-                results = await Card.find(parsedFilter).skip(skip).limit(pageSize);
+                const total = sampled.length;
+                return res.json({
+                    page: 1,
+                    pageSize: sampled.length,
+                    total,
+                    totalPages: 1,
+                    cards: sampled.map(card => ({
+                        name: card.Name,
+                        type: card.Type,
+                        rarity: card.Rarity,
+                        cost: card.Cost,
+                        power: card.Power,
+                        hp: card.HP,
+                        frontText: card.FrontText,
+                        frontArt: card.FrontArt,
+                        aspects: card.Aspects,
+                        traits: card.Traits,
+                        arenas: card.Arenas,
+                        keywords: card.Keywords,
+                        artist: card.Artist,
+                        set: card.Set,
+                        number: card.Number,
+                        id: String(card._id)
+                    }))
+                });
             }
-            const cards = results;
 
-            // Deduplicate by _id just in case
-            const seenIds = new Set();
-            const uniqueCards = cards.filter((card) => {
-                const id = String(card._id);
-                if (seenIds.has(id)) return false;
-                seenIds.add(id);
-                return true;
-            });
+            // Non-random parsed filter: fetch all matching documents, dedupe, sort, then paginate
+            // NOTE: this fetches all matching docs to guarantee global sort order before pagination.
+            const allResults = await Card.find(parsedFilter).lean().exec();
+            const uniqueAll = dedupeById(allResults);
 
-            console.log(`Parsed filter hit. Prompt: "${prompt}" ->`, parsedFilter, `limit=${parsedLimit}`, `results=${uniqueCards.length}`);
+            console.log('Parsed filter hit. Prompt:', JSON.stringify(prompt), 'ParsedFilter:', parsedFilter, 'resultsBeforeDedup:', allResults.length, 'afterDedup:', uniqueAll.length);
+
+            // sortCards from your file will normalize Set and parse numbers
+            const sortedAll = sortCards(uniqueAll);
+
+            // debug: show the set codes seen and a small sample before/after
+            try {
+                const normalizeSet = s => String(s || '').trim().toUpperCase();
+                const uniqSets = [...new Set(uniqueAll.map(c => normalizeSet(c.Set)))];
+                console.log('Unique sets (parsedFilter):', uniqSets);
+                console.log('Sample sorted (first 10):', sortedAll.slice(0, 10).map(c => `${c.Set} #${c.Number} - ${c.Name}`));
+            } catch (e) {
+                console.warn('Debug logging failed:', e);
+            }
+
+            const total = sortedAll.length;
+            const start = Math.min(skip, Math.max(0, total - 1));
+            const paged = sortedAll.slice(start, start + pageSize);
 
             return res.json({
                 page,
-                pageSize: parsedFilter._random ? 1 : pageSize,
+                pageSize,
                 total,
-                totalPages: parsedFilter._random ? 1 : Math.max(1, Math.ceil(total / pageSize)),
-                cards: uniqueCards.map(card => ({
+                totalPages: Math.max(1, Math.ceil(total / pageSize)),
+                cards: paged.map(card => ({
                     name: card.Name,
                     type: card.Type,
                     rarity: card.Rarity,
@@ -141,50 +229,53 @@ app.post("/api/card-search", async (req, res) => {
             });
         }
 
-        // First, search for exact matches by Name (case-insensitive) and VariantType 'Normal'
+        // --- fallback: exact match then tokenized / phrase search ---
         const exactMatches = await searchCardsExact(prompt);
-
         let foundCards = [];
         if (exactMatches.length > 0) {
             foundCards = exactMatches;
         } else {
             // Extract potential card names from the prompt for database search
             const words = (prompt || '').toLowerCase().split(/\s+/);
-            const potentialCardNames = words.filter(word =>
-                word.length > 2 &&
-                !['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'must'].includes(word)
-            );
+            const stopWords = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'must'];
+            const potentialCardNames = words.filter(word => word.length > 2 && !stopWords.includes(word));
 
             // Search for cards in the database (partial/phrase)
             const fullPhraseCards = await searchCards(prompt);
             foundCards = [...foundCards, ...fullPhraseCards];
 
             for (const term of potentialCardNames) {
-                const cards = await searchCards(term);
-                foundCards = [...foundCards, ...cards];
+                const cardsForTerm = await searchCards(term);
+                foundCards = [...foundCards, ...cardsForTerm];
             }
         }
 
         // Remove duplicates based on unique document id (not by Name)
-        const seenIds = new Set();
-        const uniqueCards = foundCards.filter((card) => {
-            const id = String(card._id);
-            if (seenIds.has(id)) return false;
-            seenIds.add(id);
-            return true;
-        });
+        const uniqueCards = dedupeById(foundCards);
 
         // Debug logging
         console.log(`Search prompt: "${prompt}"`);
-        console.log(`Found ${uniqueCards.length} unique cards`);
-        uniqueCards.forEach(card => {
+        console.log(`Found ${uniqueCards.length} unique cards (before sorting)`);
+        uniqueCards.slice(0, 40).forEach(card => {
             console.log(`- ${card.Name} (${card.Set}) #${card.Number}`);
         });
 
-        // Apply pagination on the deduped results for fallback search
-        const total = uniqueCards.length;
+        // Sort the results globally, then paginate
+        const sortedCards = sortCards(uniqueCards);
+
+        // debug: show sets seen in fallback path
+        try {
+            const normalizeSet = s => String(s || '').trim().toUpperCase();
+            const uniqSets = [...new Set(uniqueCards.map(c => normalizeSet(c.Set)))];
+            console.log('Unique sets (fallback):', uniqSets);
+            console.log('Sample sorted (first 10 fallback):', sortedCards.slice(0, 10).map(c => `${c.Set} #${c.Number} - ${c.Name}`));
+        } catch (e) {
+            console.warn('Debug logging failed:', e);
+        }
+
+        const total = sortedCards.length;
         const start = Math.min(skip, Math.max(0, total - 1));
-        const paged = uniqueCards.slice(start, start + pageSize);
+        const paged = sortedCards.slice(start, start + pageSize);
 
         res.json({
             page,
@@ -215,6 +306,7 @@ app.post("/api/card-search", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 
