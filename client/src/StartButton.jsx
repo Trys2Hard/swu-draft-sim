@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 export default function StartButton({ isLoading, children, onClick }) {
     //Styles
     const styles = {
-        StartButton: {
+        startButton: {
             display: isLoading ? 'none' : 'flex',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             borderRadius: '30px',
@@ -21,6 +21,6 @@ export default function StartButton({ isLoading, children, onClick }) {
     };
 
     return (
-        <Button variant='contained' sx={styles.StartButton} onClick={onClick}>{children}</Button>
+        <Button variant='contained' sx={styles.startButton} onClick={onClick}>{children}</Button>
     );
 }

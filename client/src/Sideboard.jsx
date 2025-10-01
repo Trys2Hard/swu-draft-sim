@@ -38,7 +38,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: '5px',
-            p: '1rem',
+            p: '0.5rem',
         },
         leaders: {
             width: '100%',
