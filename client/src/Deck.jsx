@@ -1,6 +1,7 @@
 import { Box, Typography, List, ListItem, Button } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
+import CopyJsonButton from './CopyJsonButton';
 
 export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setLeaderPacks, setCardPacks }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
@@ -95,9 +96,6 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                 outline: '3px solid rgb(61, 178, 255)',
             },
         },
-        exportDeckButton: {
-            m: '1rem 0 0 auto',
-        },
     };
 
     return (
@@ -147,7 +145,9 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         hoveredCard={hoveredCard}
                         onHoverClose={handlePopoverClose} />
                 </List>
-                <Button variant='contained' sx={styles.exportDeckButton}>Copy JSON</Button>
+                <CopyJsonButton
+                    deckLeaders={deckLeaders}
+                    sortedDeckCards={sortedDeckCards} />
             </Box>
         </>
     );

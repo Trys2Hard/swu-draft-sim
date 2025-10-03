@@ -124,4 +124,4 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
             </List>
         </Box>
     );
-};
+}
