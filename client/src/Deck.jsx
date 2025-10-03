@@ -1,6 +1,7 @@
-import { Box, Typography, List, ListItem } from '@mui/material';
+import { Box, Typography, List, ListItem, Button } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
+import CopyJsonButton from './CopyJsonButton';
 
 export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setLeaderPacks, setCardPacks }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
@@ -59,7 +60,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: '5px',
-            p: '1rem',
+            p: '0.5rem',
         },
         leaders: {
             width: '100%',
@@ -94,7 +95,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                 cursor: 'pointer',
                 outline: '3px solid rgb(61, 178, 255)',
             },
-        }
+        },
     };
 
     return (
@@ -115,7 +116,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                                 key={labelId}
                                 sx={styles.leaderCards}
                                 onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
+                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage} />
                             </ListItem>
                         )
                     })}
@@ -144,6 +145,9 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         hoveredCard={hoveredCard}
                         onHoverClose={handlePopoverClose} />
                 </List>
+                <CopyJsonButton
+                    deckLeaders={deckLeaders}
+                    sortedDeckCards={sortedDeckCards} />
             </Box>
         </>
     );
