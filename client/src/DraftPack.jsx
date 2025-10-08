@@ -1,4 +1,4 @@
-import { List, ListItem, Box, Typography, } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
 
@@ -6,9 +6,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
     //Styles
     const styles = {
         packBox: {
-            position: 'relative',
-            width: '60%',
-            minHeight: '20rem',
+            width: !draftStarted || draftingLeaders ? '95%' : {xs: '95%', sm: '70%'},
             m: '1rem auto 5rem auto',
             p: '0.5rem',
             background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
@@ -18,29 +16,26 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
+            minHeight: !draftStarted ? '10rem' : draftingLeaders ? '100%' : '90vh',
         },
         pack: {
-            width: '100%',
+            maxWidth: draftingLeaders ? '95%' : {sm: '90%', md: '70%'},
+            height: '100%',
+            mt: '0.3rem',
             display: 'flex',
-            flexWrap: 'wrap',
-            gap: draftingLeaders ? '1rem' : '0.5rem',
+            justifyContent: draftingLeaders ? 'center' : 'flex-start',
             backdropFilter: draftStarted && 'brightness(0.7)',
             borderRadius: '5px',
-            p: draftStarted && '1rem',
-            justifyContent: 'center',
+            p: draftStarted && '0.5rem',
             filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
         card: {
-            width: draftingLeaders ? '20%' : '15%',
-            p: '0rem',
-            transition: 'transform 0.3s ease-in-out',
-        },
-        cardImage: {
             width: '100%',
             borderRadius: '10px',
+            transition: 'transform 0.3s ease-in-out',
             '&: hover': {
                 cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
+                outline: '2px solid rgb(61, 178, 255)',
             },
         },
         loading: {
@@ -62,39 +57,42 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                 </>
             }
             {draftStarted &&
-                <Box sx={{ width: '100%' }}>
-                    <Typography variant='h4' component='h2' sx={{ mb: '0.5rem', display: 'flex', justifyContent: 'center' }}>{title}</Typography>
+                <Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                        <Typography variant='h5' component='h3' sx={{ mb: '1rem', mr: '1rem' }}>Pack: {packNum}</Typography>
-                        <Typography variant='h5' component='h3' sx={{ mb: '1rem', ml: '1rem' }}>Pick: {pickNum}</Typography>
+                        <Typography variant='h5' component='h3' sx={{ mr: '1rem' }}>Pack: {packNum}</Typography>
+                        <Typography variant='h5' component='h3' sx={{ ml: '1rem' }}>Pick: {pickNum}</Typography>
                     </Box>
                 </Box>
             }
             {draftStarted &&
-                <Box sx={{ position: 'relative', width: '100%' }}>
-                    <List sx={styles.pack}>
+                    <Grid container spacing={draftingLeaders ? 3 : {xs: 0.3, sm: 1}} sx={styles.pack}>
                         {currentPack[packIndex]?.map((card) => {
                             const cardId = `card-id-${card.id}`;
                             return (
-                                <ListItem
+                                <Grid
+                                    size={draftingLeaders ? 4 : 2.4}
+                                    key={cardId}
+                                    id={cardId}
                                     aria-owns={open ? 'mouse-over-popover' : undefined}
                                     aria-haspopup="true"
                                     onMouseEnter={(e) => handlePopoverOpen(e, card)}
                                     onMouseLeave={handlePopoverClose}
-                                    key={cardId}
                                     onClick={() => pickCard(card.id)}
-                                    sx={styles.card}>
-                                    <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage}></Box>
-                                </ListItem>
+                                    sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                    <Box
+                                        component="img"
+                                        src={card.cardObj?.cardData?.FrontArt}
+                                        alt={card.cardObj?.cardData?.Name}
+                                        sx={styles.card}/>
+                                </Grid>
                             );
                         })}
                         <CardHover
                             anchorEl={anchorEl}
                             hoveredCard={hoveredCard}
                             onHoverClose={handlePopoverClose} />
-                    </List>
-                    <Typography variant='h3' component='p' sx={styles.loading}>Loading...</Typography>
-                </Box>
+                            <Typography variant='h3' component='p' sx={styles.loading}>Loading...</Typography>
+                    </Grid>
             }
         </Box>
     );

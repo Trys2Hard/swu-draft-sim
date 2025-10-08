@@ -31,7 +31,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
         sideboard: {
             color: 'white',
             background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
-            width: '60%',
+            width: '95%',
             height: '100%',
             m: '5rem auto 0 auto',
             display: 'flex',
@@ -71,7 +71,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
             borderRadius: '10px',
             '&: hover': {
                 cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
+                outline: '2px solid rgb(61, 178, 255)',
             },
         }
     };

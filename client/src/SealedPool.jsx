@@ -9,7 +9,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
     const styles = {
         packBox: {
             position: 'relative',
-            width: '60%',
+            width: '95%',
             height: '100%',
             m: '1rem auto 5rem auto',
             p: '0.5rem',
@@ -57,7 +57,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             borderRadius: '10px',
             '&: hover': {
                 cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
+                outline: '2px solid rgb(61, 178, 255)',
             },
         },
         loading: {
