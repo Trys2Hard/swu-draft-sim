@@ -22,8 +22,11 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             position: 'relative',
             width: !draftStarted ? '16rem' : '100%',
             m: '1rem auto 5rem auto',
-            background: 'rgba(31, 203, 255, 0.15)',
-            borderRadius: !draftStarted ? '5px' : '0px',
+            backgroundImage: !draftStarted ? 'url(/lof_box_crop.png)' : 'url(/lof_box_wide.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: draftingLeaders ? 'center 90%' : 'center top',
+            backgroundRepeat: 'no-repeat',
+            borderRadius: !draftStarted ? '10px' : '0px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -34,7 +37,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
         pack: {
             width: draftingLeaders ? '100%' : {xs: '95%', sm: '80%', md: '65%', lg:'60%', xl: '55%', xxl: '50%'},
             maxHeight: '92vh',
-            mt: '0.3rem',
+            mt: '0.5rem',
             display: 'flex',
             justifyContent: draftingLeaders ? 'center' : 'flex-start',
             p: draftStarted && {xs: '0.5rem', md: '1rem'},
@@ -63,15 +66,15 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
         <Box sx={styles.packBox}>
             {!draftStarted &&
                 <>
-                    <Typography variant='h5' component='h4' sx={{ position: 'absolute', top: '1rem' }}>{setName}</Typography>
+                    <Box component='img' src='./public/lof_logo.png' sx={{position: 'absolute', bottom: '0', width: '100%', backgroundColor: 'rgba(0, 0, 0, 1)', borderRadius: '0 0 10px 10px'}}/>
                     <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
                 </>
             }
             {draftStarted &&
                 <Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                        <Typography variant='h5' component='h3' sx={{ mr: '1rem', mt: '3rem' }}>Pack: {packNum}</Typography>
-                        <Typography variant='h5' component='h3' sx={{ ml: '1rem', mt: '3rem' }}>Pick: {pickNum}</Typography>
+                        <Typography variant='h5' component='h3' sx={{ mr: '1rem', mt: '1rem' }}>Pack: {packNum}</Typography>
+                        <Typography variant='h5' component='h3' sx={{ ml: '1rem', mt: '1rem' }}>Pick: {pickNum}</Typography>
                     </Box>
                 </Box>
             }
