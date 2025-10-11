@@ -1,21 +1,8 @@
-import { Box, Typography, Grid, createTheme, ThemeProvider } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
 
 export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading }) {
-    const theme = createTheme({
-        breakpoints: {
-            values: {
-                xs: 0,
-                sm: 600,
-                md: 725,
-                lg: 900,
-                xl: 960,
-                xxl: 1050,
-            },
-        },
-    });
-
     //Styles
     const styles = {
         packBox: {
@@ -25,11 +12,11 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             alignItems: 'center',
             justifyContent: !draftStarted && 'center',
             width: !draftStarted ? '16rem' : '100%',
-            minHeight: !draftStarted ? '22rem' : draftingLeaders ? '100%' : '110vh',
+            minHeight: !draftStarted ? '22rem' : '110vh',
             m: '1rem auto 5rem auto',
             backgroundImage: !draftStarted ? 'url(/lof_box_crop.png)' : 'url(/lof_box_wide.png)',
             backgroundSize: 'cover',
-            backgroundPosition: draftingLeaders ? 'center 90%' : 'center top',
+            backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
             color: 'white',
             borderRadius: !draftStarted ? '10px' : '0px',
@@ -37,20 +24,22 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
         },
         pack: {
             display: 'flex',
+            alignItems: 'center',
             justifyContent: draftingLeaders ? 'center' : 'flex-start',
-            width: draftingLeaders ? '100%' : { xs: '95%', sm: '80%', md: '65%', lg: '60%', xl: '55%', xxl: '50%' },
+            width: draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '100%', md: '900px' },
+            height: draftingLeaders && '92vh',
             maxHeight: '92vh',
             mt: '0.5rem',
-            p: draftStarted && { xs: '0.5rem', md: '1rem' },
+            p: draftStarted && '1rem',
             filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
         card: {
             width: '100%',
-            borderRadius: '4%',
-            transition: 'transform 0.3s ease-in-out',
+            borderRadius: '5%',
             '&: hover': {
                 cursor: 'pointer',
-                outline: '2px solid rgb(61, 178, 255)',
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
             },
         },
         loading: {
@@ -61,55 +50,66 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             transform: 'translate(-50%, -50%)',
             textShadow: '2px 2px 3px black',
         },
+        packInfo: {
+            m: '3rem 1rem 0 0',
+            boxShadow: '-2px 2px 5px black',
+            backgroundColor: 'rgba(73, 73, 73, 1)',
+            textShadow: '2px 2px 3px black',
+            p: '0.5rem 0.8rem 0.5rem 0.8rem',
+            borderRadius: '10px',
+            fontSize: '1.2rem',
+        },
+        startDraftImage: {
+            position: 'absolute',
+            bottom: '0',
+            width: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 1)',
+            borderRadius: '0 0 10px 10px',
+        },
     };
 
     return (
         <Box sx={styles.packBox}>
             {!draftStarted &&
                 <>
-                    <Box component='img' src='./public/lof_logo.png' sx={{ position: 'absolute', bottom: '0', width: '100%', backgroundColor: 'rgba(0, 0, 0, 1)', borderRadius: '0 0 10px 10px' }} />
+                    <Box component='img' src='./public/lof_logo.png' sx={styles.startDraftImage} />
                     <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
                 </>
             }
             {draftStarted &&
                 <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                        <Typography variant='h5' component='h3' sx={{ mr: '1rem', mt: '3rem' }}>Pack: {packNum}</Typography>
-                        <Typography variant='h5' component='h3' sx={{ ml: '1rem', mt: '3rem' }}>Pick: {pickNum}</Typography>
-                    </Box>
+                    <Typography variant='h5' component='h3' sx={styles.packInfo}>Pack {packNum} / Pick {pickNum}</Typography>
                 </Box>
             }
             {draftStarted &&
-                <ThemeProvider theme={theme}>
-                    <Grid container spacing={draftingLeaders ? 3 : 1} sx={styles.pack}>
-                        {currentPack[packIndex]?.map((card) => {
-                            const cardId = `card-id-${card.id}`;
-                            return (
-                                <Grid
-                                    size={draftingLeaders ? 4 : 2.4}
-                                    key={cardId}
-                                    id={cardId}
-                                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                                    aria-haspopup="true"
-                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                    onMouseLeave={handlePopoverClose}
-                                    onClick={() => pickCard(card.id)}
-                                    sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                    <Box
-                                        component="img"
-                                        src={card.cardObj?.cardData?.FrontArt}
-                                        alt={card.cardObj?.cardData?.Name}
-                                        sx={styles.card} />
-                                </Grid>
-                            );
-                        })}
-                        <CardHover
-                            anchorEl={anchorEl}
-                            hoveredCard={hoveredCard}
-                            onHoverClose={handlePopoverClose} />
-                        <Typography variant='h3' component='p' sx={styles.loading}>Loading...</Typography>
-                    </Grid>
-                </ThemeProvider>
+                <Grid container spacing={draftingLeaders ? 3 : 1} sx={styles.pack}>
+                    {currentPack[packIndex]?.map((card) => {
+                        const cardId = `card-id-${card.id}`;
+                        return (
+                            <Grid
+                                size={draftingLeaders ? 4 : 2.4}
+                                key={cardId}
+                                id={cardId}
+                                aria-owns={open ? 'mouse-over-popover' : undefined}
+                                aria-haspopup="true"
+                                onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                onMouseLeave={handlePopoverClose}
+                                onClick={() => pickCard(card.id)}
+                                sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                <Box
+                                    component="img"
+                                    src={card.cardObj?.cardData?.FrontArt}
+                                    alt={card.cardObj?.cardData?.Name}
+                                    sx={styles.card} />
+                            </Grid>
+                        );
+                    })}
+                    <CardHover
+                        anchorEl={anchorEl}
+                        hoveredCard={hoveredCard}
+                        onHoverClose={handlePopoverClose} />
+                    <Typography variant='h3' component='p' sx={styles.loading}>Loading...</Typography>
+                </Grid>
             }
         </Box>
     );

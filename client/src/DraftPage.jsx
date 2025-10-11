@@ -12,7 +12,7 @@ export default function DraftPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
     const [pickNum, setPickNum] = useState(1);
-    const [packNum, setPackNum] = useState(null);
+    const [packNum, setPackNum] = useState(0);
     const [title, setTitle] = useState('Leaders');
     const [set, setSet] = useState('lof');
     const [setName, setSetName] = useState('Legends of the Force');
