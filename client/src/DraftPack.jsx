@@ -10,9 +10,9 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: !draftStarted && 'center',
+            justifyContent: !draftStarted ? 'center' : 'flex-start',
             width: !draftStarted ? '16rem' : '100%',
-            minHeight: !draftStarted ? '22rem' : '110vh',
+            height: !draftStarted ? '22rem' : '100vh',
             m: '1rem auto 5rem auto',
             backgroundImage: !draftStarted ? 'url(/lof_box_crop.png)' : 'url(/lof_box_wide.png)',
             backgroundSize: 'cover',
@@ -24,14 +24,11 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
         },
         pack: {
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: draftingLeaders ? 'center' : 'flex-start',
+            alignItems: draftingLeaders ? 'center' : 'flex-start',
             width: draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '100%', md: '900px' },
-            height: draftingLeaders && '92vh',
-            maxHeight: '92vh',
+            height: draftingLeaders && '100vh',
             mt: '0.5rem',
-            p: draftStarted && '1rem',
-            filter: isLoading ? 'blur(2px)' : 'blur(0)',
+            p: draftStarted && '0.5rem',
         },
         card: {
             width: '100%',
@@ -45,19 +42,20 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
         loading: {
             position: 'absolute',
             display: isLoading ? 'block' : 'none',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            fontSize: { xs: '2rem', md: '2.5rem' },
+            top: '100%',
+            right: { xs: '-10%', md: '-20%' },
+            zIndex: '2',
             textShadow: '2px 2px 3px black',
         },
         packInfo: {
-            m: '3rem 1rem 0 0',
+            mt: '1rem',
             boxShadow: '-2px 2px 5px black',
             backgroundColor: 'rgba(73, 73, 73, 1)',
             textShadow: '2px 2px 3px black',
             p: '0.5rem 0.8rem 0.5rem 0.8rem',
             borderRadius: '10px',
-            fontSize: '1.2rem',
+            fontSize: { xs: '1rem', md: '1.2rem' },
         },
         startDraftImage: {
             position: 'absolute',
@@ -77,39 +75,41 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                 </>
             }
             {draftStarted &&
-                <Box>
+                <Box sx={{ position: 'relative' }}>
                     <Typography variant='h5' component='h3' sx={styles.packInfo}>Pack {packNum} / Pick {pickNum}</Typography>
+                    <Typography component='p' sx={styles.loading}>Loading...</Typography>
                 </Box>
             }
             {draftStarted &&
-                <Grid container spacing={draftingLeaders ? 3 : 1} sx={styles.pack}>
-                    {currentPack[packIndex]?.map((card) => {
-                        const cardId = `card-id-${card.id}`;
-                        return (
-                            <Grid
-                                size={draftingLeaders ? 4 : 2.4}
-                                key={cardId}
-                                id={cardId}
-                                aria-owns={open ? 'mouse-over-popover' : undefined}
-                                aria-haspopup="true"
-                                onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                onMouseLeave={handlePopoverClose}
-                                onClick={() => pickCard(card.id)}
-                                sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                <Box
-                                    component="img"
-                                    src={card.cardObj?.cardData?.FrontArt}
-                                    alt={card.cardObj?.cardData?.Name}
-                                    sx={styles.card} />
-                            </Grid>
-                        );
-                    })}
-                    <CardHover
-                        anchorEl={anchorEl}
-                        hoveredCard={hoveredCard}
-                        onHoverClose={handlePopoverClose} />
-                    <Typography variant='h3' component='p' sx={styles.loading}>Loading...</Typography>
-                </Grid>
+                <Box sx={styles.pack}>
+                    <Grid container spacing={draftingLeaders ? 3 : 1} sx={{ filter: isLoading ? 'blur(2px)' : 'blur(0)', width: '100%' }} >
+                        {currentPack[packIndex]?.map((card) => {
+                            const cardId = `card-id-${card.id}`;
+                            return (
+                                <Grid
+                                    size={draftingLeaders ? 4 : 2.4}
+                                    key={cardId}
+                                    id={cardId}
+                                    aria-owns={open ? 'mouse-over-popover' : undefined}
+                                    aria-haspopup="true"
+                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                    onMouseLeave={handlePopoverClose}
+                                    onClick={() => pickCard(card.id)}
+                                    sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                    <Box
+                                        component="img"
+                                        src={card.cardObj?.cardData?.FrontArt}
+                                        alt={card.cardObj?.cardData?.Name}
+                                        sx={styles.card} />
+                                </Grid>
+                            );
+                        })}
+                        <CardHover
+                            anchorEl={anchorEl}
+                            hoveredCard={hoveredCard}
+                            onHoverClose={handlePopoverClose} />
+                    </Grid>
+                </Box>
             }
         </Box>
     );
