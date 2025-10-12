@@ -1,8 +1,21 @@
+import { useState, useEffect } from 'react';
 import { Box, Typography, Grid } from '@mui/material';
+import GridViewIcon from '@mui/icons-material/GridView';
+import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
 
 export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading }) {
+    const layout1 = draftingLeaders ? 4 : 2.4;
+    const layout2 = draftingLeaders ? 4 : 12 / 7;
+    const [layout, setLayout] = useState((layout1));
+
+    useEffect(() => {
+        setLayout(layout1);
+    }, [layout1]);
+
+    const handleLayout = () => setLayout(prev => prev === layout1 ? layout2 : layout1);
+
     //Styles
     const styles = {
         packBox: {
@@ -12,7 +25,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             alignItems: 'center',
             justifyContent: !draftStarted ? 'center' : 'flex-start',
             width: !draftStarted ? '16rem' : '100%',
-            height: !draftStarted ? '22rem' : '100vh',
+            minHeight: !draftStarted ? '22rem' : '100vh',
             m: '1rem auto 5rem auto',
             backgroundImage: !draftStarted ? 'url(/lof_box_crop.png)' : 'url(/lof_box_wide.png)',
             backgroundSize: 'cover',
@@ -22,13 +35,24 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             borderRadius: !draftStarted ? '10px' : '0px',
             boxShadow: '-4px 4px 8px black',
         },
+        draftContent: {
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '100%', md: '900px' },
+            height: draftingLeaders ? '100vh' : 'auto',
+        },
         pack: {
+            position: 'relative',
             display: 'flex',
             alignItems: draftingLeaders ? 'center' : 'flex-start',
-            width: draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '100%', md: '900px' },
-            height: draftingLeaders && '100vh',
+            justifyContent: draftingLeaders && 'center',
+            width: draftingLeaders ? '100%' : { xs: '100%', md: '900px' },
+            height: draftingLeaders ? '100vh' : 'auto',
             mt: '0.5rem',
             p: draftStarted && '0.5rem',
+            filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
         card: {
             width: '100%',
@@ -43,8 +67,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             position: 'absolute',
             display: isLoading ? 'block' : 'none',
             fontSize: { xs: '2rem', md: '2.5rem' },
-            top: '100%',
-            right: { xs: '10%', md: '0%' },
+            top: '4rem',
             zIndex: '2',
             textShadow: '2px 2px 3px black',
         },
@@ -52,10 +75,19 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             mt: '1rem',
             boxShadow: '-3px 3px 5px black',
             backgroundColor: 'rgba(58, 58, 58, 1)',
-            p: '0.7rem 2.7rem 0.7rem 2.7rem',
+            p: { xs: '0.4rem 1.7rem 0.4rem 1.7rem', sm: '0.7rem 2.7rem 0.7rem 2.7rem' },
             borderRadius: '10px',
-            fontSize: '1rem',
+            fontSize: { xs: '0.7rem', sm: '1rem' },
             border: '1px solid rgba(61, 178, 255, 0.5)',
+        },
+        layoutButton: {
+            position: 'absolute',
+            display: !draftingLeaders ? 'block' : 'none',
+            top: { xs: '1.6rem', sm: '2.2rem' },
+            right: '0.7rem',
+            background: 'rgba(0, 0, 0, 0.7)',
+            borderRadius: '3px',
+            cursor: 'pointer',
         },
         startDraftImage: {
             position: 'absolute',
@@ -74,20 +106,25 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                     <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
                 </>
             }
-            {draftStarted &&
-                <Box sx={{ position: 'relative' }}>
-                    <Typography variant='h5' component='h3' sx={styles.packInfo}>Pack {packNum} / Pick {pickNum}</Typography>
-                    <Typography component='p' sx={styles.loading}>Loading...</Typography>
-                </Box>
-            }
-            {draftStarted &&
-                <Box sx={styles.pack}>
-                    <Grid container spacing={draftingLeaders ? 3 : 1} sx={{ filter: isLoading ? 'blur(2px)' : 'blur(0)', width: '100%' }} >
+            <Box sx={styles.draftContent}>
+                {draftStarted &&
+                    <Box>
+                        <Typography variant='h5' component='h3' sx={styles.packInfo}>Pack {packNum} / Pick {pickNum}</Typography>
+                        {layout === layout1 ?
+                            <GridViewIcon fontSize='medium' sx={styles.layoutButton} onClick={handleLayout} /> :
+                            <ViewAgendaIcon fontSize='medium' sx={styles.layoutButton} onClick={handleLayout} />
+                        }
+                        <Typography component='p' sx={styles.loading}>Loading...</Typography>
+                    </Box>
+                }
+
+                {draftStarted &&
+                    <Grid container spacing={draftingLeaders ? 3 : 1} sx={styles.pack}>
                         {currentPack[packIndex]?.map((card) => {
                             const cardId = `card-id-${card.id}`;
                             return (
                                 <Grid
-                                    size={draftingLeaders ? 4 : 2.4}
+                                    size={layout}
                                     key={cardId}
                                     id={cardId}
                                     aria-owns={open ? 'mouse-over-popover' : undefined}
@@ -109,8 +146,8 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                             hoveredCard={hoveredCard}
                             onHoverClose={handlePopoverClose} />
                     </Grid>
-                </Box>
-            }
+                }
+            </Box>
         </Box>
     );
 }
