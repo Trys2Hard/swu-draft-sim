@@ -1,8 +1,8 @@
-import { List, ListItem, Box, Typography, } from '@mui/material';
+import { List, ListItem, Box, Typography, Button } from '@mui/material';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
 
-export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading }) {
+export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading, handleFlipLeader, flippedLeaders }) {
     //Styles
     const styles = {
         packBox: {
@@ -30,8 +30,14 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             justifyContent: 'center',
             filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
+        cardContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: draftingLeaders ? '30%' : '15%',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
         card: {
-            width: draftingLeaders ? '20%' : '15%',
             p: '0rem',
             transition: 'transform 0.3s ease-in-out',
         },
@@ -50,6 +56,14 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             left: '50%',
             transform: 'translate(-50%, -50%)',
             textShadow: '2px 2px 3px black',
+        },
+        flipButton: {
+            m: '1rem',
+            backgroundColor: 'rgba(73, 73, 73, 1)',
+            borderRadius: '5px',
+            '&:hover': {
+                filter: 'brightness(1.1)',
+            },
         },
     };
 
@@ -75,17 +89,21 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                     <List sx={styles.pack}>
                         {currentPack[packIndex]?.map((card) => {
                             const cardId = `card-id-${card.id}`;
+                            const isFlipped = flippedLeaders[card.id];
                             return (
-                                <ListItem
-                                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                                    aria-haspopup="true"
-                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                    onMouseLeave={handlePopoverClose}
-                                    key={cardId}
-                                    onClick={() => pickCard(card.id)}
-                                    sx={styles.card}>
-                                    <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage}></Box>
-                                </ListItem>
+                                <Box sx={styles.cardContainer}>
+                                    <ListItem
+                                        aria-owns={open ? 'mouse-over-popover' : undefined}
+                                        aria-haspopup="true"
+                                        onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                        onMouseLeave={handlePopoverClose}
+                                        key={cardId}
+                                        onClick={() => pickCard(card.id)}
+                                        sx={styles.card}>
+                                        <Box component='img' src={isFlipped ? card.cardObj?.cardData?.BackArt : card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage}></Box>
+                                    </ListItem>
+                                    {draftingLeaders && <Button variant='contained' sx={styles.flipButton} onClick={() => handleFlipLeader(card.id)}>Flip</Button>}
+                                </Box>
                             );
                         })}
                         <CardHover
