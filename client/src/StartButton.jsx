@@ -8,12 +8,12 @@ export default function StartButton({ isLoading, children, onClick }) {
             backgroundColor: 'rgba(0, 0, 0, 0.8)',
             textShadow: '2px 2px 3px black',
             borderRadius: '20px',
-            outline: '2px solid rgba(31, 202, 255, 1)',
+            outline: '1px solid rgba(31, 202, 255, 1)',
             transition: 'all 0.5s',
             '&:hover': {
                 p: '1rem',
                 backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                boxShadow: '0 0 50px rgba(31, 202, 255, 1)',
+                boxShadow: '0 0 30px rgba(31, 202, 255, 1)',
             },
         },
     };
