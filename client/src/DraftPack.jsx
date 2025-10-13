@@ -40,7 +40,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '100%', md: '900px' },
+            width: draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '80%', md: '900px' },
             height: draftingLeaders ? '100vh' : 'auto',
         },
         pack: {
@@ -85,9 +85,14 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             display: !draftingLeaders ? 'block' : 'none',
             top: { xs: '1.6rem', sm: '2.2rem' },
             right: '0.7rem',
-            background: 'rgba(0, 0, 0, 0.7)',
+            background: 'rgba(0, 0, 0, 1)',
             borderRadius: '3px',
             cursor: 'pointer',
+            outline: '1px solid rgba(61, 178, 255, 0.8)',
+            transition: 'all 0.3s',
+            '&:hover': {
+                color: 'rgba(61, 178, 255, 0.8)',
+            },
         },
         startDraftImage: {
             position: 'absolute',
