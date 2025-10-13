@@ -26,7 +26,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             justifyContent: !draftStarted ? 'center' : 'flex-start',
             width: !draftStarted ? '16rem' : '100%',
             minHeight: !draftStarted ? '22rem' : '100vh',
-            m: '1rem auto 5rem auto',
+            m: '1rem auto 2rem auto',
             backgroundImage: !draftStarted ? 'url(/lof_box_crop.png)' : 'url(/lof_box_wide.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center top',

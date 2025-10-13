@@ -65,6 +65,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         leaders: {
             display: 'flex',
             justifyContent: 'center',
+            width: '100%',
         },
         leaderCard: {
             width: '100%',
@@ -93,7 +94,6 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         const labelId = `card-id-${card.id}`;
                         return (
                             <Grid
-                                item
                                 size={4}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
@@ -107,12 +107,11 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                     })}
                 </Grid>
 
-                <Grid container spacing={1}>
+                <Grid container spacing={1} sx={{ width: '100%' }}>
                     {sortedDeckCards.map((card) => {
                         const labelId = `card-id-${card.id}`;
                         return (
                             <Grid
-                                item
                                 size={2}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
