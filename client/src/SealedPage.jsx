@@ -58,8 +58,8 @@ export default function SealedPage() {
 
     return (
         <>
+            {/* <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '0.5rem', color: 'white' }}>Sealed</Typography> */}
             <Sets sets={sets} handleSetChange={handleSetChange} />
-            <Typography variant='h4' component='h1' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Sealed</Typography>
             <SealedPool
                 sealedStarted={sealedStarted}
                 setName={setName}
