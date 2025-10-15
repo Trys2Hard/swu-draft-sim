@@ -37,7 +37,7 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards }) {
     const styles = {
         copyJsonButton: {
             fontSize: '0.8rem',
-            background: 'rgba(73, 73, 73, 1)',
+            backgroundColor: 'rgba(65, 65, 65, 1)',
             borderRadius: '5px',
             mt: '0.5rem',
             p: '0.2rem 0.4rem',

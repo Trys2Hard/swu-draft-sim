@@ -4,17 +4,26 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
+import LeaderFlipButton from './LeaderFlipButton';
 
 export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading }) {
     const layout1 = draftingLeaders ? 4 : 2.4;
     const layout2 = draftingLeaders ? 4 : 12 / 7;
     const [layout, setLayout] = useState((layout1));
+    const [flippedLeaders, setFlippedLeaders] = useState({});
 
     useEffect(() => {
         setLayout(layout1);
     }, [layout1]);
 
     const handleLayout = () => setLayout(prev => prev === layout1 ? layout2 : layout1);
+
+    const handleFlipLeader = (id) => {
+        setFlippedLeaders((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }));
+    };
 
     //Styles
     const styles = {
@@ -41,7 +50,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: draftStarted && layout === layout2 ? {xs: '100%', md: '900px'} : draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '80%', md: '900px' },
+            width: draftStarted && layout === layout2 ? { xs: '100%', md: '900px' } : draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '80%', md: '900px' },
             height: draftingLeaders ? '100vh' : 'auto',
         },
         pack: {
@@ -100,7 +109,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
     return (
         <Box sx={styles.packBox}>
             {!draftStarted &&
-                    <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
+                <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
             }
             <Box sx={styles.draftContent}>
                 {draftStarted &&
@@ -118,6 +127,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                     <Grid container spacing={draftingLeaders ? 3 : 1} sx={styles.pack}>
                         {currentPack[packIndex]?.map((card) => {
                             const cardId = `card-id-${card.id}`;
+                            const isFlipped = flippedLeaders[card.id];
                             return (
                                 <Grid
                                     size={layout}
@@ -127,13 +137,20 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                                     aria-haspopup="true"
                                     onMouseEnter={(e) => handlePopoverOpen(e, card)}
                                     onMouseLeave={handlePopoverClose}
-                                    onClick={() => pickCard(card.id)}
-                                    sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                    sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+                                >
                                     <Box
                                         component="img"
-                                        src={card.cardObj?.cardData?.FrontArt}
+                                        src={isFlipped ? card.cardObj?.cardData?.BackArt : card.cardObj?.cardData?.FrontArt}
                                         alt={card.cardObj?.cardData?.Name}
+                                        onClick={() => pickCard(card.id)}
                                         sx={styles.card} />
+                                    {draftingLeaders &&
+                                        <LeaderFlipButton
+                                            id={card.id}
+                                            flippedLeaders={flippedLeaders}
+                                            handleFlipLeader={handleFlipLeader} />
+                                    }
                                 </Grid>
                             );
                         })}
