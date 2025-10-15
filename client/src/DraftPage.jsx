@@ -170,14 +170,16 @@ export default function DraftPage() {
                 deckCards={deckCards}
                 setDeckCards={setDeckCards}
                 setSideboardLeaders={setSideboardLeaders}
-                setSideboardCards={setSideboardCards} />
+                setSideboardCards={setSideboardCards}
+                draftStarted={draftStarted} />
             <Sideboard
                 sideboardLeaders={sideboardLeaders}
                 setSideboardLeaders={setSideboardLeaders}
                 setSideboardCards={setSideboardCards}
                 sideboardCards={sideboardCards}
                 setDeckLeaders={setDeckLeaders}
-                setDeckCards={setDeckCards} />
+                setDeckCards={setDeckCards}
+                draftStarted={draftStarted} />
         </>
     );
 }

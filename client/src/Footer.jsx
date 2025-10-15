@@ -7,7 +7,7 @@ export default function Footer() {
             justifyContent: 'center',
             backgroundColor: 'rgba(130, 130, 130, 0.5)',
             p: '0.5rem',
-            mt: '5rem',
+            mt: '2rem',
             color: 'white'
         },
     };

@@ -3,7 +3,7 @@ import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 import CopyJsonButton from './CopyJsonButton';
 
-export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setLeaderPacks, setCardPacks }) {
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
     const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost);
@@ -56,7 +56,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
             width: { xs: '100%', md: '900px' },
             height: '100%',
             m: '0 auto 0 auto',
-            display: 'flex',
+            display: !draftStarted && !sealedStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: { md: '0', lg: '10px' },

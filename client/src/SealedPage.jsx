@@ -72,6 +72,7 @@ export default function SealedPage() {
                 leaderPacks={leaderPacks}
                 cardPacks={cardPacks} />
             <Deck
+                sealedStarted={sealedStarted}
                 deckLeaders={deckLeaders}
                 setDeckLeaders={setDeckLeaders}
                 deckCards={deckCards}

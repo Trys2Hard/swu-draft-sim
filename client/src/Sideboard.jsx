@@ -2,7 +2,7 @@ import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 
-export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards }) {
+export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, draftStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
     const sortedSideboardCards = [...sideboardCards].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
@@ -34,7 +34,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
             width: { xs: '100%', md: '900px' },
             height: '100%',
             m: '2rem auto 0 auto',
-            display: 'flex',
+            display: !draftStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: { md: '0', lg: '10px' },
