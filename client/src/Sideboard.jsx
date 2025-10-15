@@ -31,7 +31,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
         deck: {
             color: 'white',
             backgroundColor: 'rgba(130, 130, 130, 0.5)',
-            width: { md: '100%', lg: '60%' },
+            width: { xs: '100%', md: '900px' },
             height: '100%',
             m: '2rem auto 0 auto',
             display: 'flex',

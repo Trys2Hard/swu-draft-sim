@@ -147,7 +147,7 @@ export default function DraftPage() {
                 <Typography variant='subtitle1' component='p' sx={{ textAlign: 'center', mt: '0rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
             </Box>
             <Sets sets={sets} handleSetChange={handleSetChange} />
-            <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography>
+            {/* <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography> */}
             <DraftPack
                 setName={setName}
                 title={title}

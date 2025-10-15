@@ -24,11 +24,12 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: !draftStarted ? 'center' : 'flex-start',
-            width: !draftStarted ? '16rem' : '100%',
-            minHeight: !draftStarted ? '22rem' : '100vh',
+            width: !draftStarted ? '281.5px' : '100%',
+            minHeight: !draftStarted ? '478.5px' : '100vh',
             m: '1rem auto 2rem auto',
-            backgroundImage: !draftStarted ? 'url(/lof_box_crop.png)' : 'url(/lof_box_wide.png)',
-            backgroundSize: 'cover',
+            // backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/LOF_box_art_full.jpg)',
+            backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/lof_box_wide.png)',
+            backgroundSize: !draftStarted ? 'contain' : 'cover',
             backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
             color: 'white',
@@ -40,7 +41,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '80%', md: '900px' },
+            width: draftStarted && layout === layout2 ? {xs: '100%', md: '900px'} : draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '80%', md: '900px' },
             height: draftingLeaders ? '100vh' : 'auto',
         },
         pack: {
@@ -94,22 +95,12 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                 color: 'rgba(61, 178, 255, 0.8)',
             },
         },
-        startDraftImage: {
-            position: 'absolute',
-            bottom: '0',
-            width: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 1)',
-            borderRadius: '0 0 10px 10px',
-        },
     };
 
     return (
         <Box sx={styles.packBox}>
             {!draftStarted &&
-                <>
-                    <Box component='img' src='./public/lof_logo.png' sx={styles.startDraftImage} />
                     <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
-                </>
             }
             <Box sx={styles.draftContent}>
                 {draftStarted &&

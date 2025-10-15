@@ -53,7 +53,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         deck: {
             color: 'white',
             backgroundColor: 'rgba(31, 202, 255, 0.2)',
-            width: { md: '100%', lg: '60%' },
+            width: { xs: '100%', md: '900px' },
             height: '100%',
             m: '0 auto 0 auto',
             display: 'flex',
