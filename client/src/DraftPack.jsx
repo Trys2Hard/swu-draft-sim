@@ -64,6 +64,13 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             p: draftStarted && '0.5rem',
             filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
+        cardContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: draftingLeaders ? '30%' : '15%',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
         card: {
             width: '100%',
             borderRadius: '5%',

@@ -20,6 +20,7 @@ export default function DraftPage() {
     const [draftStarted, setDraftStarted] = useState(false);
     const [sideboardLeaders, setSideboardLeaders] = useState([]);
     const [sideboardCards, setSideboardCards] = useState([]);
+    const [flippedLeaders, setFlippedLeaders] = useState({});
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
     const { generateLeaderPack, generateCardPack, leaderPacks, cardPacks, isLoading, resetCardPacks, resetSeenIds, setIsLoading } = useCreatePacks('');
@@ -75,6 +76,13 @@ export default function DraftPage() {
         const newSet = e.target.value;
         setSet(newSet);
     }
+
+    const handleFlipLeader = (id) => {
+        setFlippedLeaders((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }));
+    };
 
     function pickCard(id) {
         handlePopoverClose();
@@ -163,7 +171,9 @@ export default function DraftPage() {
                 pickCard={pickCard}
                 anchorEl={anchorEl}
                 hoveredCard={hoveredCard}
-                isLoading={isLoading} />
+                isLoading={isLoading}
+                handleFlipLeader={handleFlipLeader}
+                flippedLeaders={flippedLeaders} />
             <Deck
                 deckLeaders={deckLeaders}
                 setDeckLeaders={setDeckLeaders}
