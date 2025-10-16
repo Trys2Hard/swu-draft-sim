@@ -43,7 +43,8 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             borderRadius: '5%',
             cursor: 'pointer',
             '&: hover': {
-                outline: '2px solid rgb(61, 178, 255)',
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
             },
         },
         nonLeaderCard: {
@@ -51,7 +52,8 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             borderRadius: '5%',
             cursor: 'pointer',
             '&: hover': {
-                outline: '2px solid rgb(61, 178, 255)',
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
             },
         },
     };
