@@ -1,4 +1,4 @@
-import { List, ListItem, Box, Typography, } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
 
@@ -7,88 +7,71 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
 
     //Styles
     const styles = {
-        packBox: {
+        sealedPool: {
             position: 'relative',
-            width: '60%',
-            height: '100%',
-            m: '1rem auto 5rem auto',
-            p: '0.5rem',
-            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
-            borderRadius: '5px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: !sealedStarted ? 'center' : 'flex-start',
+            width: !sealedStarted ? '281.5px' : {xs: '100%', md: '900px'},
+            minHeight: !sealedStarted ? '478.5px' : '100vh',
+            backgroundImage: !sealedStarted ? 'url(/LOF_box_art_card.jpg)' : 'none',
+            backgroundSize: !sealedStarted ? 'contain' : 'cover',
+            backgroundPosition: 'center top',
+            backgroundRepeat: 'no-repeat',
+            m: '1rem auto 2rem auto',
+            backgroundColor: sealedStarted ? 'rgba(31, 202, 255, 0.2)' : 'none',
+            p: '0.5rem',
             color: 'white',
-            minHeight: '20rem',
+            borderRadius: !sealedStarted ? '10px' : {xs: '0px', md: '10px'},
+            boxShadow: '-4px 4px 8px black',
         },
-        pack: {
-            width: '100%',
+        sealedContent: {
+            position: 'relative',
             display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.5rem',
-            backdropFilter: sealedStarted && 'brightness(0.7)',
-            borderRadius: '5px',
-            p: sealedStarted && '1rem',
-            justifyContent: 'center',
-        },
-        packLeaders: {
+            flexDirection: 'column',
+            alignItems: 'center',
             width: '100%',
+        },
+        leaders: {
             display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            backdropFilter: sealedStarted && 'brightness(0.7)',
-            borderRadius: '5px',
-            p: sealedStarted && '1rem',
             justifyContent: 'center',
-        },
-        card: {
-            width: '15%',
-            p: '0rem',
-            transition: 'transform 0.3s ease-in-out',
-        },
-        cardLeaders: {
-            width: '20%',
-            p: '0rem',
-            transition: 'transform 0.3s ease-in-out',
-        },
-        cardImage: {
             width: '100%',
-            borderRadius: '10px',
+        },
+        leaderCard: {
+            width: '100%',
+            borderRadius: '5%',
+            cursor: 'pointer',
             '&: hover': {
-                cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
             },
         },
-        loading: {
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            textShadow: '2px 2px 3px black',
-        }
-    }
+        nonLeaderCard: {
+            width: '100%',
+            borderRadius: '5%',
+            cursor: 'pointer',
+            '&: hover': {
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
+            },
+        },
+    };
 
     return (
-        <Box sx={styles.packBox} >
+        <Box sx={styles.sealedPool} >
             {!sealedStarted &&
-                <>
-                    <Typography variant='h4' component='h4' sx={{ position: 'absolute', top: '1rem' }}>{setName}</Typography>
                     <StartButton onClick={() => handleStartSealedBuild()}>Start Sealed</StartButton>
-                </>
             }
+
+        <Box sx={styles.sealedContent}>
             {sealedStarted &&
-                <Box sx={{ width: '100%' }}>
-                    <Typography variant='h4' component='h2' sx={{ mb: '0.5rem', display: 'flex', justifyContent: 'center' }}>Leaders</Typography>
-                </Box>
-            }
-            {sealedStarted &&
-                <Box sx={{ position: 'relative', width: '100%' }}>
-                    <List sx={styles.packLeaders}>
+                    <Grid container spacing={2} sx={styles.leaders}>
                         {leaderPacks.flat().map((card) => {
                             const cardId = `card-id-${card.id}`;
                             return (
-                                <ListItem
+                                <Grid
+                                    size={4}
                                     aria-owns={open ? 'mouse-over-popover' : undefined}
                                     aria-haspopup="true"
                                     onMouseEnter={(e) => handlePopoverOpen(e, card)}
@@ -96,41 +79,37 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
                                     key={cardId}
                                     onClick={() => moveToDeck(card.id)}
                                     sx={styles.cardLeaders}>
-                                    <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage} />
-                                </ListItem>
+                                    <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.leaderCard} />
+                                </Grid>
                             )
                         })}
-                    </List>
-                </Box>
+                    </Grid>
             }
+
             {sealedStarted &&
-                <Box sx={{ width: '100%' }}>
-                    <Typography variant='h4' component='h2' sx={{ m: '1rem auto 0.5rem auto', display: 'flex', justifyContent: 'center' }}>Cards</Typography>
-                </Box>
-            }
-            {sealedStarted &&
-                <List sx={styles.pack}>
+                <Grid container spacing={1} sx={{width: '100%'}}>
                     {sortedCardPacks.flat().map((card) => {
                         const cardId = `card-id-${card.id}`;
                         return (
-                            <ListItem
+                            <Grid
+                                size={2}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
                                 onMouseEnter={(e) => handlePopoverOpen(e, card)}
                                 onMouseLeave={handlePopoverClose}
                                 key={cardId}
-                                onClick={() => moveToDeck(card.id)}
-                                sx={styles.card}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage} />
-                            </ListItem>
+                                onClick={() => moveToDeck(card.id)}>
+                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.nonLeaderCard} />
+                            </Grid>
                         )
                     })}
-                </List>
+                </Grid>
             }
             <CardHover
                 anchorEl={anchorEl}
                 hoveredCard={hoveredCard}
                 onHoverClose={handlePopoverClose} />
+                </Box>
         </Box>
     );
 }

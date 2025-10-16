@@ -1,9 +1,9 @@
-import { Box, Typography, List, ListItem, Button } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 import CopyJsonButton from './CopyJsonButton';
 
-export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setLeaderPacks, setCardPacks }) {
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
     const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost);
@@ -52,48 +52,37 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     const styles = {
         deck: {
             color: 'white',
-            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
-            width: '60%',
+            backgroundColor: 'rgba(31, 202, 255, 0.2)',
+            width: { xs: '100%', md: '900px' },
             height: '100%',
             m: '0 auto 0 auto',
-            display: 'flex',
+            display: !draftStarted && !sealedStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            borderRadius: '5px',
+            borderRadius: { md: '0', lg: '10px' },
             p: '0.5rem',
         },
         leaders: {
-            width: '100%',
             display: 'flex',
             justifyContent: 'center',
-            backdropFilter: deckLeaders.length > 0 && 'brightness(0.7)',
-            borderRadius: '5px',
-            gap: '1rem',
-        },
-        leaderCards: {
-            width: '20%',
-            p: '0',
-        },
-        cards: {
             width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            backdropFilter: deckCards.length > 0 && 'brightness(0.7)',
-            borderRadius: '5px',
-            gap: '0.5rem',
         },
-        nonLeaderCards: {
-            width: '13%',
-            m: '0',
-            p: '0',
-        },
-        cardImage: {
+        leaderCard: {
             width: '100%',
-            borderRadius: '10px',
+            borderRadius: '5%',
+            cursor: 'pointer',
             '&: hover': {
-                cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
+            },
+        },
+        nonLeaderCard: {
+            width: '100%',
+            borderRadius: '5%',
+            cursor: 'pointer',
+            '&: hover': {
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
             },
         },
     };
@@ -101,50 +90,46 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     return (
         <>
             <Box sx={styles.deck}>
-                <Typography variant='h4' component='h2' sx={{ mb: '1rem' }}>Deck</Typography>
-                {deckLeaders.length > 0 && <Typography variant='h4' component='h3' sx={{ mb: '0.5rem' }}>Leaders</Typography>}
-
-                <List sx={styles.leaders}>
+                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '90%', borderBottom: '2px solid white', textAlign: 'center' }}>Deck</Typography>
+                <Grid container spacing={3} sx={styles.leaders}>
                     {deckLeaders.map((card) => {
                         const labelId = `card-id-${card.id}`;
                         return (
-                            <ListItem
+                            <Grid
+                                size={4}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
                                 onMouseEnter={(e) => handlePopoverOpen(e, card)}
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
-                                sx={styles.leaderCards}
                                 onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage} />
-                            </ListItem>
+                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.leaderCard} />
+                            </Grid>
                         )
                     })}
-                </List>
+                </Grid>
 
-                {deckCards.length > 0 && <Typography variant='h4' component='h3' sx={{ m: '1rem auto 0.5rem auto' }}>Cards</Typography>}
-
-                <List sx={styles.cards}>
+                <Grid container spacing={1} sx={{ width: '100%' }}>
                     {sortedDeckCards.map((card) => {
                         const labelId = `card-id-${card.id}`;
                         return (
-                            <ListItem
+                            <Grid
+                                size={2}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
                                 onMouseEnter={(e) => handlePopoverOpen(e, card)}
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
-                                sx={styles.nonLeaderCards}
                                 onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage} />
-                            </ListItem>
+                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.nonLeaderCard} />
+                            </Grid>
                         )
                     })}
                     <CardHover
                         anchorEl={anchorEl}
                         hoveredCard={hoveredCard}
                         onHoverClose={handlePopoverClose} />
-                </List>
+                </Grid>
                 <CopyJsonButton
                     deckLeaders={deckLeaders}
                     sortedDeckCards={sortedDeckCards} />

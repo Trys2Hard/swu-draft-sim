@@ -1,33 +1,67 @@
-import { List, ListItem, Box, Typography, Button } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, Typography, Grid } from '@mui/material';
+import GridViewIcon from '@mui/icons-material/GridView';
+import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
+import LeaderFlipButton from './LeaderFlipButton';
 
-export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading, handleFlipLeader, flippedLeaders }) {
+export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading }) {
+    const layout1 = draftingLeaders ? 4 : 2.4;
+    const layout2 = draftingLeaders ? 4 : 12 / 7;
+    const [layout, setLayout] = useState((layout1));
+    const [flippedLeaders, setFlippedLeaders] = useState({});
+
+    useEffect(() => {
+        setLayout(layout1);
+    }, [layout1]);
+
+    const handleLayout = () => setLayout(prev => prev === layout1 ? layout2 : layout1);
+
+    const handleFlipLeader = (id) => {
+        setFlippedLeaders((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }));
+    };
+
     //Styles
     const styles = {
         packBox: {
             position: 'relative',
-            width: '60%',
-            minHeight: '20rem',
-            m: '1rem auto 5rem auto',
-            p: '0.5rem',
-            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
-            borderRadius: '5px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: !draftStarted ? 'center' : 'flex-start',
+            width: !draftStarted ? '281.5px' : '100%',
+            minHeight: !draftStarted ? '478.5px' : '100vh',
+            m: '1rem auto 2rem auto',
+            // backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/LOF_box_art_full.jpg)',
+            backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/lof_box_wide.png)',
+            backgroundSize: !draftStarted ? 'contain' : 'cover',
+            backgroundPosition: 'center top',
+            backgroundRepeat: 'no-repeat',
             color: 'white',
+            borderRadius: !draftStarted ? '10px' : '0px',
+            boxShadow: '-4px 4px 8px black',
+        },
+        draftContent: {
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: draftStarted && layout === layout2 ? { xs: '100%', md: '900px' } : draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '80%', md: '900px' },
+            height: draftingLeaders ? '100vh' : 'auto',
         },
         pack: {
-            width: '100%',
+            position: 'relative',
             display: 'flex',
-            flexWrap: 'wrap',
-            gap: draftingLeaders ? '1rem' : '0.5rem',
-            backdropFilter: draftStarted && 'brightness(0.7)',
-            borderRadius: '5px',
-            p: draftStarted && '1rem',
-            justifyContent: 'center',
+            alignItems: draftingLeaders ? 'center' : 'flex-start',
+            justifyContent: draftingLeaders && 'center',
+            width: draftingLeaders ? '100%' : { xs: '100%', md: '900px' },
+            height: draftingLeaders ? '100vh' : 'auto',
+            mt: '0.5rem',
+            p: draftStarted && '0.5rem',
             filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
         cardContainer: {
@@ -38,31 +72,43 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             justifyContent: 'center',
         },
         card: {
-            p: '0rem',
-            transition: 'transform 0.3s ease-in-out',
-        },
-        cardImage: {
             width: '100%',
-            borderRadius: '10px',
+            borderRadius: '5%',
             '&: hover': {
                 cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
             },
         },
         loading: {
-            display: isLoading ? 'block' : 'none',
             position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            display: isLoading ? 'block' : 'none',
+            fontSize: { xs: '2rem', md: '2.5rem' },
+            top: '4rem',
+            zIndex: '2',
             textShadow: '2px 2px 3px black',
         },
-        flipButton: {
-            m: '1rem',
-            backgroundColor: 'rgba(73, 73, 73, 1)',
-            borderRadius: '5px',
+        packInfo: {
+            mt: '1rem',
+            boxShadow: '-3px 3px 5px black',
+            backgroundColor: 'rgba(58, 58, 58, 1)',
+            p: { xs: '0.4rem 1.7rem 0.4rem 1.7rem', sm: '0.7rem 2.7rem 0.7rem 2.7rem' },
+            borderRadius: '10px',
+            fontSize: { xs: '0.7rem', sm: '1rem' },
+            border: '1px solid rgba(61, 178, 255, 0.5)',
+        },
+        layoutButton: {
+            position: 'absolute',
+            display: !draftingLeaders ? 'block' : 'none',
+            top: { xs: '1.6rem', sm: '2.2rem' },
+            right: '0.7rem',
+            background: 'rgba(0, 0, 0, 1)',
+            borderRadius: '3px',
+            cursor: 'pointer',
+            outline: '1px solid rgba(61, 178, 255, 0.8)',
+            transition: 'all 0.3s',
             '&:hover': {
-                filter: 'brightness(1.1)',
+                color: 'rgba(61, 178, 255, 0.8)',
             },
         },
     };
@@ -70,50 +116,58 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
     return (
         <Box sx={styles.packBox}>
             {!draftStarted &&
-                <>
-                    <Typography variant='h4' component='h4' sx={{ position: 'absolute', top: '1rem' }}>{setName}</Typography>
-                    <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
-                </>
+                <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
             }
-            {draftStarted &&
-                <Box sx={{ width: '100%' }}>
-                    <Typography variant='h4' component='h2' sx={{ mb: '0.5rem', display: 'flex', justifyContent: 'center' }}>{title}</Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                        <Typography variant='h5' component='h3' sx={{ mb: '1rem', mr: '1rem' }}>Pack: {packNum}</Typography>
-                        <Typography variant='h5' component='h3' sx={{ mb: '1rem', ml: '1rem' }}>Pick: {pickNum}</Typography>
+            <Box sx={styles.draftContent}>
+                {draftStarted &&
+                    <Box>
+                        <Typography variant='h5' component='h3' sx={styles.packInfo}>Pack {packNum} / Pick {pickNum}</Typography>
+                        {layout === layout1 ?
+                            <GridViewIcon fontSize='medium' sx={styles.layoutButton} onClick={handleLayout} /> :
+                            <ViewAgendaIcon fontSize='medium' sx={styles.layoutButton} onClick={handleLayout} />
+                        }
+                        <Typography component='p' sx={styles.loading}>Loading...</Typography>
                     </Box>
-                </Box>
-            }
-            {draftStarted &&
-                <Box sx={{ position: 'relative', width: '100%' }}>
-                    <List sx={styles.pack}>
+                }
+
+                {draftStarted &&
+                    <Grid container spacing={draftingLeaders ? 3 : 1} sx={styles.pack}>
                         {currentPack[packIndex]?.map((card) => {
                             const cardId = `card-id-${card.id}`;
                             const isFlipped = flippedLeaders[card.id];
                             return (
-                                <Box sx={styles.cardContainer}>
-                                    <ListItem
-                                        aria-owns={open ? 'mouse-over-popover' : undefined}
-                                        aria-haspopup="true"
-                                        onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                        onMouseLeave={handlePopoverClose}
-                                        key={cardId}
+                                <Grid
+                                    size={layout}
+                                    key={cardId}
+                                    id={cardId}
+                                    aria-owns={open ? 'mouse-over-popover' : undefined}
+                                    aria-haspopup="true"
+                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                    onMouseLeave={handlePopoverClose}
+                                    sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+                                >
+                                    <Box
+                                        component="img"
+                                        src={isFlipped ? card.cardObj?.cardData?.BackArt : card.cardObj?.cardData?.FrontArt}
+                                        alt={card.cardObj?.cardData?.Name}
                                         onClick={() => pickCard(card.id)}
-                                        sx={styles.card}>
-                                        <Box component='img' src={isFlipped ? card.cardObj?.cardData?.BackArt : card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.cardImage}></Box>
-                                    </ListItem>
-                                    {draftingLeaders && <Button variant='contained' sx={styles.flipButton} onClick={() => handleFlipLeader(card.id)}>Flip</Button>}
-                                </Box>
+                                        sx={styles.card} />
+                                    {draftingLeaders &&
+                                        <LeaderFlipButton
+                                            id={card.id}
+                                            flippedLeaders={flippedLeaders}
+                                            handleFlipLeader={handleFlipLeader} />
+                                    }
+                                </Grid>
                             );
                         })}
                         <CardHover
                             anchorEl={anchorEl}
                             hoveredCard={hoveredCard}
                             onHoverClose={handlePopoverClose} />
-                    </List>
-                    <Typography variant='h3' component='p' sx={styles.loading}>Loading...</Typography>
-                </Box>
-            }
+                    </Grid>
+                }
+            </Box>
         </Box>
     );
 }

@@ -1,8 +1,8 @@
-import { Box, Typography, List, ListItem } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 
-export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards }) {
+export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, draftStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
     const sortedSideboardCards = [...sideboardCards].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
@@ -28,100 +28,87 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
 
     //Styles
     const styles = {
-        sideboard: {
+        deck: {
             color: 'white',
-            background: 'linear-gradient(to right, rgba(31, 202, 255, 0.2), rgba(31, 202, 255, 0.3), rgba(31, 202, 255, 0.2))',
-            width: '60%',
+            backgroundColor: 'rgba(130, 130, 130, 0.5)',
+            width: { xs: '100%', md: '900px' },
             height: '100%',
-            m: '5rem auto 0 auto',
-            display: 'flex',
+            m: '2rem auto 0 auto',
+            display: !draftStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            borderRadius: '5px',
+            borderRadius: { md: '0', lg: '10px' },
             p: '0.5rem',
         },
         leaders: {
-            width: '100%',
             display: 'flex',
             justifyContent: 'center',
-            backdropFilter: sideboardLeaders.length > 0 && 'brightness(0.7)',
-            borderRadius: '5px',
-            gap: '1rem',
-        },
-        leaderCards: {
-            width: '20%',
-            p: '0',
-        },
-        cards: {
             width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            backdropFilter: sideboardCards.length > 0 && 'brightness(0.7)',
-            borderRadius: '5px',
-            gap: '0.5rem',
         },
-        nonLeaderCards: {
-            width: '13%',
-            m: '0',
-            p: '0',
-        },
-        cardImage: {
+        leaderCard: {
             width: '100%',
-            borderRadius: '10px',
+            borderRadius: '5%',
+            cursor: 'pointer',
             '&: hover': {
-                cursor: 'pointer',
-                outline: '3px solid rgb(61, 178, 255)',
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
             },
-        }
+        },
+        nonLeaderCard: {
+            width: '100%',
+            borderRadius: '5%',
+            cursor: 'pointer',
+            '&: hover': {
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
+            },
+        },
     };
 
     return (
-        <Box sx={styles.sideboard}>
-            <Typography variant='h4' component='h2' sx={{ mb: '1rem' }}>Sideboard</Typography>
-            {sideboardLeaders.length > 0 && <Typography variant='h4' component='h3' sx={{ mb: '0.5rem' }}>Leaders</Typography>}
+        <>
+            <Box sx={styles.deck}>
+                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '90%', borderBottom: '2px solid white', textAlign: 'center' }}>Sideboard</Typography>
+                <Grid container spacing={3} sx={styles.leaders}>
+                    {sideboardLeaders.map((card) => {
+                        const labelId = `card-id-${card.id}`;
+                        return (
+                            <Grid
+                                size={4}
+                                aria-owns={open ? 'mouse-over-popover' : undefined}
+                                aria-haspopup="true"
+                                onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                onMouseLeave={handlePopoverClose}
+                                key={labelId}
+                                onClick={() => { moveToDeck(card.id) }}>
+                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.leaderCard} />
+                            </Grid>
+                        )
+                    })}
+                </Grid>
 
-            <List sx={styles.leaders}>
-                {sideboardLeaders.map((card) => {
-                    const labelId = `card-id-${card.id}`;
-                    return (
-                        <ListItem
-                            aria-owns={open ? 'mouse-over-popover' : undefined}
-                            aria-haspopup="true"
-                            onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                            onMouseLeave={handlePopoverClose}
-                            key={labelId}
-                            sx={styles.leaderCards}
-                            onClick={() => moveToDeck(card.id)}>
-                            <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
-                        </ListItem>
-                    )
-                })}
-            </List>
-
-            {sideboardCards.length > 0 && <Typography variant='h4' component='h3' sx={{ m: '1rem auto 0.5rem auto' }}>Cards</Typography>}
-
-            <List sx={styles.cards}>
-                {sortedSideboardCards.map((card) => {
-                    const labelId = `card-id-${card.id}`;
-                    return (
-                        <ListItem
-                            aria-owns={open ? 'mouse-over-popover' : undefined}
-                            aria-haspopup="true"
-                            onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                            onMouseLeave={handlePopoverClose}
-                            key={labelId}
-                            sx={styles.nonLeaderCards}
-                            onClick={() => moveToDeck(card.id)}>
-                            <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.cardImage}></Box>
-                        </ListItem>
-                    )
-                })}
-                <CardHover
-                    anchorEl={anchorEl}
-                    hoveredCard={hoveredCard}
-                    onHoverClose={handlePopoverClose} />
-            </List>
-        </Box>
+                <Grid container spacing={1} sx={{ width: '100%' }}>
+                    {sortedSideboardCards.map((card) => {
+                        const labelId = `card-id-${card.id}`;
+                        return (
+                            <Grid
+                                size={2}
+                                aria-owns={open ? 'mouse-over-popover' : undefined}
+                                aria-haspopup="true"
+                                onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                onMouseLeave={handlePopoverClose}
+                                key={labelId}
+                                onClick={() => { moveToDeck(card.id) }}>
+                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.nonLeaderCard} />
+                            </Grid>
+                        )
+                    })}
+                    <CardHover
+                        anchorEl={anchorEl}
+                        hoveredCard={hoveredCard}
+                        onHoverClose={handlePopoverClose} />
+                </Grid>
+            </Box>
+        </>
     );
 }

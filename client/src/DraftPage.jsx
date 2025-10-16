@@ -12,7 +12,7 @@ export default function DraftPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
     const [pickNum, setPickNum] = useState(1);
-    const [packNum, setPackNum] = useState(null);
+    const [packNum, setPackNum] = useState(0);
     const [title, setTitle] = useState('Leaders');
     const [set, setSet] = useState('lof');
     const [setName, setSetName] = useState('Legends of the Force');
@@ -155,7 +155,7 @@ export default function DraftPage() {
                 <Typography variant='subtitle1' component='p' sx={{ textAlign: 'center', mt: '0rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
             </Box>
             <Sets sets={sets} handleSetChange={handleSetChange} />
-            <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography>
+            {/* <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography> */}
             <DraftPack
                 setName={setName}
                 title={title}
@@ -180,14 +180,16 @@ export default function DraftPage() {
                 deckCards={deckCards}
                 setDeckCards={setDeckCards}
                 setSideboardLeaders={setSideboardLeaders}
-                setSideboardCards={setSideboardCards} />
+                setSideboardCards={setSideboardCards}
+                draftStarted={draftStarted} />
             <Sideboard
                 sideboardLeaders={sideboardLeaders}
                 setSideboardLeaders={setSideboardLeaders}
                 setSideboardCards={setSideboardCards}
                 sideboardCards={sideboardCards}
                 setDeckLeaders={setDeckLeaders}
-                setDeckCards={setDeckCards} />
+                setDeckCards={setDeckCards}
+                draftStarted={draftStarted} />
         </>
     );
 }
