@@ -1,14 +1,17 @@
 import { Box, Typography, List, ListItem, Button } from '@mui/material';
 
+export default function Sets({ cardSet, handleSetChange }) {
+const cardSets = ['lof', 'sec'];
+
 //Styles
 const styles = {
-    sets: {
+    cardSets: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         color: 'white',
     },
-    setButton: {
+    cardSetButton: {
         color: 'inherit',
         borderRadius: '20px',
         backgroundColor: 'rgba(31, 202, 255, 0.3)',
@@ -19,15 +22,14 @@ const styles = {
     },
 };
 
-export default function Sets({ sets, handleSetChange }) {
     return (
-        <Box sx={styles.sets}>
+        <Box sx={styles.cardSets}>
             <Typography variant='h5' component='h2'>Sets:</Typography>
             <List>
-                {sets.map((set) => {
+                {cardSets.map((cardSet) => {
                     return (
-                        <ListItem key={set}>
-                            <Button variant="contained" value={set} onClick={handleSetChange} sx={styles.setButton}>{set}</Button>
+                        <ListItem key={cardSet}>
+                            <Button variant="contained" value={cardSet} onClick={handleSetChange} sx={styles.cardSetButton}>{cardSet}</Button>
                         </ListItem>
                     );
                 })}

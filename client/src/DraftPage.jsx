@@ -14,7 +14,7 @@ export default function DraftPage() {
     const [pickNum, setPickNum] = useState(1);
     const [packNum, setPackNum] = useState(0);
     const [title, setTitle] = useState('Leaders');
-    const [set, setSet] = useState('lof');
+    const [cardSet, setCardSet] = useState('lof');
     const [setName, setSetName] = useState('Legends of the Force');
     const [packIndex, setPackIndex] = useState(0);
     const [draftStarted, setDraftStarted] = useState(false);
@@ -32,7 +32,7 @@ export default function DraftPage() {
 
     let errorCount = 0;
     // const sets = ['lof', 'jtl', 'twi', 'shd', 'sor'];
-    const sets = ['lof'];
+    
 
     // useEffect(() => {
     //     if (set === 'lof') {
@@ -74,7 +74,7 @@ export default function DraftPage() {
 
     function handleSetChange(e) {
         const newSet = e.target.value;
-        setSet(newSet);
+        setCardSet(newSet);
     }
 
     const handleFlipLeader = (id) => {
@@ -154,7 +154,7 @@ export default function DraftPage() {
                 <Typography variant='h4' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Welcome to SWUDraftSim.com</Typography>
                 <Typography variant='subtitle1' component='p' sx={{ textAlign: 'center', mt: '0rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
             </Box>
-            <Sets sets={sets} handleSetChange={handleSetChange} />
+            <Sets handleSetChange={handleSetChange} />
             {/* <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography> */}
             <DraftPack
                 setName={setName}
@@ -173,7 +173,8 @@ export default function DraftPage() {
                 hoveredCard={hoveredCard}
                 isLoading={isLoading}
                 handleFlipLeader={handleFlipLeader}
-                flippedLeaders={flippedLeaders} />
+                flippedLeaders={flippedLeaders}
+                cardSet={cardSet} />
             <Deck
                 deckLeaders={deckLeaders}
                 setDeckLeaders={setDeckLeaders}

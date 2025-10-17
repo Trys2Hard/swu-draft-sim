@@ -2,7 +2,7 @@ import { Box, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import StartButton from './StartButton';
 
-export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setName, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks }) {
+export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setName, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, cardSet }) {
     const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
 
     //Styles
@@ -15,7 +15,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, setN
             justifyContent: !sealedStarted ? 'center' : 'flex-start',
             width: !sealedStarted ? '281.5px' : {xs: '100%', md: '900px'},
             minHeight: !sealedStarted ? '478.5px' : '100vh',
-            backgroundImage: !sealedStarted ? 'url(/LOF_box_art_card.jpg)' : 'none',
+            backgroundImage: !sealedStarted && cardSet === 'lof' ? 'url(/LOF_box_art_card.jpg)' : !sealedStarted && cardSet==='sec' ? 'url(/SEC_box_art_card.jpg)' : 'none',
             backgroundSize: !sealedStarted ? 'contain' : 'cover',
             backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',

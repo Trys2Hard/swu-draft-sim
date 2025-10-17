@@ -6,7 +6,7 @@ import CardHover from './CardHover';
 import StartButton from './StartButton';
 import LeaderFlipButton from './LeaderFlipButton';
 
-export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading }) {
+export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading, cardSet }) {
     const layout1 = draftingLeaders ? 4 : 2.4;
     const layout2 = draftingLeaders ? 4 : 12 / 7;
     const [layout, setLayout] = useState((layout1));
@@ -37,7 +37,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             minHeight: !draftStarted ? '478.5px' : '100vh',
             m: '1rem auto 2rem auto',
             // backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/LOF_box_art_full.jpg)',
-            backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/lof_box_wide.png)',
+            backgroundImage: !draftStarted && cardSet === 'sec' ? 'url(/SEC_box_art_card.jpg)' : !draftStarted && cardSet === 'lof' ? 'url(/LOF_box_art_card.jpg)' : draftStarted && cardSet === 'sec' ? 'url(/SEC_box_art_full.jpg)' : 'url(lof_box_wide.png)',
             backgroundSize: !draftStarted ? 'contain' : 'cover',
             backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',

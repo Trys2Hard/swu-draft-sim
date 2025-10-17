@@ -9,7 +9,7 @@ import SealedPool from './SealedPool';
 export default function SealedPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
-    const [set, setSet] = useState('lof');
+    const [cardSet, setCardSet] = useState('lof');
     const [setName, setSetName] = useState('Legends of the Force');
     const [sealedStarted, setSealedStarted] = useState(false);
 
@@ -53,13 +53,13 @@ export default function SealedPage() {
 
     function handleSetChange(e) {
         const newSet = e.target.value;
-        setSet(newSet);
+        setCardSet(newSet);
     }
 
     return (
         <>
             {/* <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '0.5rem', color: 'white' }}>Sealed</Typography> */}
-            <Sets sets={sets} handleSetChange={handleSetChange} />
+            <Sets handleSetChange={handleSetChange} />
             <SealedPool
                 sealedStarted={sealedStarted}
                 setName={setName}
@@ -70,7 +70,8 @@ export default function SealedPage() {
                 anchorEl={anchorEl}
                 hoveredCard={hoveredCard}
                 leaderPacks={leaderPacks}
-                cardPacks={cardPacks} />
+                cardPacks={cardPacks}
+                cardSet={cardSet} />
             <Deck
                 sealedStarted={sealedStarted}
                 deckLeaders={deckLeaders}
