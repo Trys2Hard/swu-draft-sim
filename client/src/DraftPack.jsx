@@ -64,30 +64,6 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             p: draftStarted && '0.5rem',
             filter: isLoading ? 'blur(2px)' : 'blur(0)',
         },
-        cardContainer: {
-            display: 'flex',
-            flexDirection: 'column',
-            width: draftingLeaders ? '30%' : '15%',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        card: {
-            width: '100%',
-            borderRadius: '5%',
-            '&: hover': {
-                cursor: 'pointer',
-                outline: '2px solid rgba(61, 178, 255, 1)',
-                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
-            },
-        },
-        loading: {
-            position: 'absolute',
-            display: isLoading ? 'block' : 'none',
-            fontSize: { xs: '2rem', md: '2.5rem' },
-            top: '4rem',
-            zIndex: '2',
-            textShadow: '2px 2px 3px black',
-        },
         packInfo: {
             mt: '1rem',
             boxShadow: '-3px 3px 5px black',
@@ -110,6 +86,23 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             '&:hover': {
                 color: 'rgba(61, 178, 255, 0.8)',
             },
+        },
+        card: {
+            width: '100%',
+            borderRadius: '5%',
+            '&: hover': {
+                cursor: 'pointer',
+                outline: '2px solid rgba(61, 178, 255, 1)',
+                boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
+            },
+        },
+        loading: {
+            position: 'absolute',
+            display: isLoading ? 'block' : 'none',
+            fontSize: { xs: '2rem', md: '2.5rem' },
+            top: '4rem',
+            zIndex: '2',
+            textShadow: '2px 2px 3px black',
         },
     };
 
@@ -142,8 +135,6 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                                     id={cardId}
                                     aria-owns={open ? 'mouse-over-popover' : undefined}
                                     aria-haspopup="true"
-                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                    onMouseLeave={handlePopoverClose}
                                     sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
                                 >
                                     <Box
@@ -151,6 +142,8 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                                         src={isFlipped ? card.cardObj?.cardData?.BackArt : card.cardObj?.cardData?.FrontArt}
                                         alt={card.cardObj?.cardData?.Name}
                                         onClick={() => pickCard(card.id)}
+                                        onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                        onMouseLeave={handlePopoverClose}
                                         sx={styles.card} />
                                     {draftingLeaders &&
                                         <LeaderFlipButton
