@@ -3,7 +3,7 @@ import { Typography, Box } from '@mui/material';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';
 import useCreatePacks from './useCreatePacks';
-import Sets from './Sets';
+import CardSets from './CardSets';
 import { v4 as uuid } from 'uuid';
 import DraftPack from './DraftPack';
 import Sideboard from './Sideboard';
@@ -15,7 +15,6 @@ export default function DraftPage() {
     const [packNum, setPackNum] = useState(0);
     const [title, setTitle] = useState('Leaders');
     const [cardSet, setCardSet] = useState('lof');
-    const [setName, setSetName] = useState('Legends of the Force');
     const [packIndex, setPackIndex] = useState(0);
     const [draftStarted, setDraftStarted] = useState(false);
     const [sideboardLeaders, setSideboardLeaders] = useState([]);
@@ -31,22 +30,6 @@ export default function DraftPage() {
     const draftEnded = packNum === 3 && pickNum === 14;
 
     let errorCount = 0;
-    // const sets = ['lof', 'jtl', 'twi', 'shd', 'sor'];
-    
-
-    // useEffect(() => {
-    //     if (set === 'lof') {
-    //         setSetName('Legends of the Force');
-    //     } else if (set === 'jtl') {
-    //         setSetName('Jump to Lightspeed');
-    //     } else if (set === 'twi') {
-    //         setSetName('Twilight of the Republic');
-    //     } else if (set === 'shd') {
-    //         setSetName('Shadows of the Galaxy');
-    //     } else if (set === 'sor') {
-    //         setSetName('Spark of Rebellion');
-    //     }
-    // }, [set, setName])
 
     useEffect(() => {
         if (cardPacks.length === 8) {
@@ -72,8 +55,7 @@ export default function DraftPage() {
         }
     }
 
-    function handleSetChange(e) {
-        const newSet = e.target.value;
+    function handleSetChange(newSet) {
         setCardSet(newSet);
     }
 
@@ -154,10 +136,9 @@ export default function DraftPage() {
                 <Typography variant='h4' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Welcome to SWUDraftSim.com</Typography>
                 <Typography variant='subtitle1' component='p' sx={{ textAlign: 'center', mt: '0rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
             </Box>
-            <Sets handleSetChange={handleSetChange} />
+            <CardSets handleSetChange={handleSetChange} />
             {/* <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography> */}
             <DraftPack
-                setName={setName}
                 title={title}
                 packNum={packNum}
                 pickNum={pickNum}

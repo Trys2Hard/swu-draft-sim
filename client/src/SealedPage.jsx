@@ -1,23 +1,20 @@
 import { useState } from 'react';
-import { Typography } from '@mui/material';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';
 import useCreatePacks from './useCreatePacks';
-import Sets from './Sets';
+import CardSets from './CardSets';
 import SealedPool from './SealedPool';
 
 export default function SealedPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
     const [cardSet, setCardSet] = useState('lof');
-    const [setName, setSetName] = useState('Legends of the Force');
     const [sealedStarted, setSealedStarted] = useState(false);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
     const { generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks } = useCreatePacks('');
 
     let errorCount = 0;
-    const sets = ['lof'];
 
     async function handleStartSealedBuild() {
         setSealedStarted(true);
@@ -51,18 +48,17 @@ export default function SealedPage() {
         addCard((prev) => [...prev, pickedCard]);
     }
 
-    function handleSetChange(e) {
-        const newSet = e.target.value;
+
+    function handleSetChange(newSet) {
         setCardSet(newSet);
     }
 
     return (
         <>
             {/* <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '0.5rem', color: 'white' }}>Sealed</Typography> */}
-            <Sets handleSetChange={handleSetChange} />
+            <CardSets handleSetChange={handleSetChange} />
             <SealedPool
                 sealedStarted={sealedStarted}
-                setName={setName}
                 handleStartSealedBuild={handleStartSealedBuild}
                 handlePopoverClose={handlePopoverClose}
                 handlePopoverOpen={handlePopoverOpen}
