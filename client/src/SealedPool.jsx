@@ -19,7 +19,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             backgroundSize: !sealedStarted ? 'contain' : 'cover',
             backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
-            m: '1rem auto 2rem auto',
+            m: '1rem auto 0 auto',
             backgroundColor: sealedStarted ? 'rgba(31, 202, 255, 0.2)' : 'none',
             p: '0.5rem',
             color: 'white',

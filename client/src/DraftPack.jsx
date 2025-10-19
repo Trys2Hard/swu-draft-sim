@@ -35,7 +35,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             justifyContent: !draftStarted ? 'center' : 'flex-start',
             width: !draftStarted ? '281.5px' : '100%',
             minHeight: !draftStarted ? '478.5px' : '100vh',
-            m: '1rem auto 2rem auto',
+            m: '0 auto 1rem auto',
             // backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/LOF_box_art_full.jpg)',
             backgroundImage: !draftStarted && cardSet === 'sec' ? 'url(/SEC_box_art_card.jpg)' : !draftStarted && cardSet === 'lof' ? 'url(/LOF_box_art_card.jpg)' : draftStarted && cardSet === 'sec' ? 'url(/SEC_box_art_full.jpg)' : 'url(lof_box_wide.png)',
             backgroundSize: !draftStarted ? 'contain' : 'cover',

@@ -133,7 +133,7 @@ export default function DraftPage() {
     return (
         <>
             <Box>
-                <Typography variant='h4' component='h1' sx={{ textAlign: 'center', mt: '1rem', color: 'white' }}>Welcome to SWUDraftSim.com</Typography>
+                <Typography variant='h4' component='h1' sx={{ textAlign: 'center', color: 'white' }}>Welcome to SWUDraftSim.com</Typography>
                 <Typography variant='subtitle1' component='p' sx={{ textAlign: 'center', mt: '0rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
             </Box>
             <CardSets handleSetChange={handleSetChange} />

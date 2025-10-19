@@ -55,7 +55,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
             backgroundColor: 'rgba(31, 202, 255, 0.2)',
             width: { xs: '100%', md: '900px' },
             height: '100%',
-            m: '0 auto 0 auto',
+            m: '1rem auto 0 auto',
             display: !draftStarted && !sealedStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
