@@ -27,7 +27,6 @@ export default function DraftPage() {
     const leadersDrafted = draftStarted && leaderPacks.every(arr => arr.length === 0);
     const currentPack = leadersDrafted ? cardPacks : leaderPacks;
     const draftingLeaders = draftStarted && leaderPacks.every(arr => arr.length > 0);
-    const draftEnded = packNum === 3 && pickNum === 14;
 
     let errorCount = 0;
 
@@ -124,8 +123,6 @@ export default function DraftPage() {
                     generateCardPack();
                     resetSeenIds();
                 }
-            } else if (draftEnded) {
-                setTitle('Draft Complete');
             }
         }
     }

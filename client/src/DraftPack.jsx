@@ -12,6 +12,8 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
     const [layout, setLayout] = useState((layout1));
     const [flippedLeaders, setFlippedLeaders] = useState({});
 
+    const draftEnded = packNum === 3 && pickNum === 15;
+
     useEffect(() => {
         setLayout(layout1);
     }, [layout1]);
@@ -51,7 +53,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             flexDirection: 'column',
             alignItems: 'center',
             width: draftStarted && layout === layout2 ? { xs: '100%', md: '900px' } : draftingLeaders ? { xs: '100%', md: '75%', lg: '60%' } : { xs: '80%', md: '900px' },
-            height: draftingLeaders ? '100vh' : 'auto',
+            height: draftingLeaders || draftEnded ? '100vh' : 'auto',
         },
         pack: {
             position: 'relative',
@@ -111,6 +113,15 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                 color: 'rgba(61, 178, 255, 0.8)',
             },
         },
+        draftEnd: {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            textShadow: '3px 3px 5px black',
+            fontSize: { xs: '2.5rem', md: '3.5rem' },
+            whiteSpace: 'nowrap',
+        },
     };
 
     return (
@@ -118,9 +129,10 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             {!draftStarted &&
                 <StartButton isLoading={isLoading} onClick={() => handleStartDraft()}>Start Draft</StartButton>
             }
+
             <Box sx={styles.draftContent}>
                 {draftStarted &&
-                    <Box>
+                    <Box sx={{ display: draftEnded && 'none' }}>
                         <Typography variant='h5' component='h3' sx={styles.packInfo}>Pack {packNum} / Pick {pickNum}</Typography>
                         {layout === layout1 ?
                             <GridViewIcon fontSize='medium' sx={styles.layoutButton} onClick={handleLayout} /> :
@@ -167,6 +179,8 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                             onHoverClose={handlePopoverClose} />
                     </Grid>
                 }
+
+                {draftEnded && <Typography component='h2' sx={styles.draftEnd}>Draft Complete!</Typography>}
             </Box>
         </Box>
     );

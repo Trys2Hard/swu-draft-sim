@@ -1,7 +1,8 @@
 const { MongoClient } = require('mongodb');
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 
 const uri = process.env.MONGO_URI;
+console.log('Mongo URI:', uri);
 const client = new MongoClient(uri);
 
 async function updateNonLeaderArt() {
@@ -18,7 +19,7 @@ async function updateNonLeaderArt() {
             const cardNumber = doc.Number;
 
             if (cardNumber) {
-                const newUrl = `https://swudraftsim.s3.us-west-2.amazonaws.com/LOF/${cardNumber}.webp`;
+                const newUrl = `https://cdn.swudraftsim.com/LOF/${cardNumber}.webp`;
 
                 await collection.updateOne(
                     { _id: doc._id },

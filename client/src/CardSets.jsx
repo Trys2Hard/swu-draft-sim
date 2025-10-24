@@ -4,11 +4,11 @@ export default function CardSets({ handleSetChange }) {
     const cardSets = [
         {
             name: 'lof',
-            logo: '/LOF_logo.png',
+            logo: '/lof_logo.png',
         },
         {
             name: 'sec',
-            logo: '/SEC_logo.png',
+            logo: '/sec_logo.png',
         },
     ];
 

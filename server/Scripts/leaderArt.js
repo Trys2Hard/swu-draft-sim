@@ -19,8 +19,8 @@ async function updateLeaderArt() {
             const cardNumber = doc.Number;
 
             if (cardNumber) {
-                const newFrontArtUrl = `https://swudraftsim.s3.us-west-2.amazonaws.com/LOF/${cardNumber}-front.webp`;
-                const newBackArtUrl = `https://swudraftsim.s3.us-west-2.amazonaws.com/LOF/${cardNumber}-back.webp`;
+                const newFrontArtUrl = `https://cdn.swudraftsim.com/LOF/${cardNumber}-front.webp`;
+                const newBackArtUrl = `https://cdn.swudraftsim.com/LOF/${cardNumber}-back.webp`;
 
                 await collection.updateOne(
                     { _id: doc._id },
