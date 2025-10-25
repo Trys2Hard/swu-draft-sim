@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 
-export default function StartButton({ isLoading, children, onClick }) {
+export default function StartButton({ isLoading, onClick, children }) {
     //Styles
     const styles = {
         startButton: {
@@ -19,6 +19,8 @@ export default function StartButton({ isLoading, children, onClick }) {
     };
 
     return (
-        <Button variant='contained' sx={styles.startButton} onClick={onClick}>{children}</Button>
+        <Button variant='contained' sx={styles.startButton} onClick={onClick}>
+            {children}
+        </Button>
     );
 }

@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material';
 import CardHover from './CardHover';
-import StartButton from './StartButton';
+import StartCard from './StartCard';
 
 export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, cardSet }) {
     const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
@@ -12,18 +12,17 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: !sealedStarted ? 'center' : 'flex-start',
-            width: !sealedStarted ? '281.5px' : { xs: '100%', md: '900px' },
-            minHeight: !sealedStarted ? '478.5px' : '100vh',
-            backgroundImage: !sealedStarted && cardSet === 'lof' ? 'url(/LOF_box_art_card.jpg)' : !sealedStarted && cardSet === 'sec' ? 'url(/SEC_box_art_card.jpg)' : 'none',
-            backgroundSize: !sealedStarted ? 'contain' : 'cover',
+            justifyContent: 'flex-start',
+            width: { xs: '100%', md: '900px' },
+            minHeight: '100vh',
+            backgroundSize: 'cover',
             backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
             m: '1rem auto 0 auto',
-            backgroundColor: sealedStarted ? 'rgba(31, 202, 255, 0.2)' : 'none',
+            backgroundColor: 'rgba(31, 202, 255, 0.2)',
             p: '0.5rem',
             color: 'white',
-            borderRadius: !sealedStarted ? '10px' : { xs: '0px', md: '10px' },
+            borderRadius: { xs: '0px', md: '10px' },
             boxShadow: '-4px 4px 8px black',
         },
         sealedContent: {
@@ -59,57 +58,59 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
     };
 
     return (
-        <Box sx={styles.sealedPool} >
+        <>
             {!sealedStarted &&
-                <StartButton onClick={() => handleStartSealedBuild()}>Start Sealed</StartButton>
+                <StartCard cardSet={cardSet} handleStartDraft={handleStartSealedBuild}>
+                    Start Sealed
+                </StartCard>
             }
 
-            <Box sx={styles.sealedContent}>
-                {sealedStarted &&
-                    <Grid container spacing={2} sx={styles.leaders}>
-                        {leaderPacks.flat().map((card) => {
-                            const cardId = `card-id-${card.id}`;
-                            return (
-                                <Grid
-                                    size={4}
-                                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                                    aria-haspopup="true"
-                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                    onMouseLeave={handlePopoverClose}
-                                    key={cardId}
-                                    onClick={() => moveToDeck(card.id)}
-                                    sx={styles.cardLeaders}>
-                                    <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.leaderCard} />
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
-                }
+            {sealedStarted &&
+                <Box sx={styles.sealedPool} >
+                    <Box sx={styles.sealedContent}>
+                        <Grid container spacing={2} sx={styles.leaders}>
+                            {leaderPacks.flat().map((card) => {
+                                const cardId = `card-id-${card.id}`;
+                                return (
+                                    <Grid
+                                        size={4}
+                                        aria-owns={open ? 'mouse-over-popover' : undefined}
+                                        aria-haspopup="true"
+                                        onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                        onMouseLeave={handlePopoverClose}
+                                        key={cardId}
+                                        onClick={() => moveToDeck(card.id)}
+                                        sx={styles.cardLeaders}>
+                                        <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.leaderCard} />
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
 
-                {sealedStarted &&
-                    <Grid container spacing={1} sx={{ width: '100%' }}>
-                        {sortedCardPacks.flat().map((card) => {
-                            const cardId = `card-id-${card.id}`;
-                            return (
-                                <Grid
-                                    size={2}
-                                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                                    aria-haspopup="true"
-                                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                    onMouseLeave={handlePopoverClose}
-                                    key={cardId}
-                                    onClick={() => moveToDeck(card.id)}>
-                                    <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.nonLeaderCard} />
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
-                }
-                <CardHover
-                    anchorEl={anchorEl}
-                    hoveredCard={hoveredCard}
-                    onHoverClose={handlePopoverClose} />
-            </Box>
-        </Box>
+                        <Grid container spacing={1} sx={{ width: '100%' }}>
+                            {sortedCardPacks.flat().map((card) => {
+                                const cardId = `card-id-${card.id}`;
+                                return (
+                                    <Grid
+                                        size={2}
+                                        aria-owns={open ? 'mouse-over-popover' : undefined}
+                                        aria-haspopup="true"
+                                        onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                        onMouseLeave={handlePopoverClose}
+                                        key={cardId}
+                                        onClick={() => moveToDeck(card.id)}>
+                                        <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.nonLeaderCard} />
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
+                        <CardHover
+                            anchorEl={anchorEl}
+                            hoveredCard={hoveredCard}
+                            onHoverClose={handlePopoverClose} />
+                    </Box>
+                </Box>
+            }
+        </>
     );
 }
