@@ -1,6 +1,7 @@
 import { Box, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import StartCard from './StartCard';
+import CopySealedJsonButton from './CopySealedJsonButton';
 
 export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, cardSet }) {
     const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
@@ -109,6 +110,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                             hoveredCard={hoveredCard}
                             onHoverClose={handlePopoverClose} />
                     </Box>
+                    <CopySealedJsonButton leaderPacks={leaderPacks} sortedCardPacks={sortedCardPacks} />
                 </Box>
             }
         </>
