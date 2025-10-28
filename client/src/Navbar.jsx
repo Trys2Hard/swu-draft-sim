@@ -85,7 +85,7 @@ export default function Navbar() {
                 onClose={toggleDrawer(false)}
             >
                 <Box
-                    sx={{ width: '12rem', height: '100%', backgroundColor: 'rgba(26, 26, 26, 1)' }}
+                    sx={{ width: '12rem', height: '100%', backgroundColor: 'rgba(6, 72, 93, 1)' }}
                     role="presentation"
                     onClick={toggleDrawer(false)}
                     onKeyDown={toggleDrawer(false)}
