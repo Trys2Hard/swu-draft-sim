@@ -12,14 +12,14 @@ async function updateNonLeaderArt() {
         const collection = db.collection(process.env.COLLECTION_NAME);
 
         // Select which documents to update
-        const cursor = collection.find({ Set: 'LOF', Type: { $ne: 'Leader' } });
+        const cursor = collection.find({ Set: 'SEC', Type: { $ne: 'Leader' } });
 
         while (await cursor.hasNext()) {
             const doc = await cursor.next();
             const cardNumber = doc.Number;
 
             if (cardNumber) {
-                const newUrl = `https://cdn.swudraftsim.com/LOF/${cardNumber}.webp`;
+                const newUrl = `https://cdn.swudraftsim.com/SEC/${cardNumber}.webp`;
 
                 await collection.updateOne(
                     { _id: doc._id },

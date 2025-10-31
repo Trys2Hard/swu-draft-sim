@@ -25,7 +25,7 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards }) {
                 count: 1,
             },
             base: {
-                id: "LOF_023",
+                id: "SEC_023",
                 count: 1,
             },
             deck: combinedDeck,

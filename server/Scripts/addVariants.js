@@ -17,7 +17,7 @@ async function duplicateNonLeaderCards() {
 
         // Pick set to update and non-leaders
         const cards = await collection
-            .find({ Set: "LOF", Type: { $ne: "Leader" } })
+            .find({ Set: "SEC", Type: { $ne: "Leader" } })
             .toArray();
 
         console.log(`Found ${cards.length} non-leader cards to duplicate`);
@@ -37,7 +37,7 @@ async function duplicateNonLeaderCards() {
                     continue;
                 }
 
-                const newNumber = (oldNumber + 740).toString().padStart(3, "0");
+                const newNumber = (oldNumber + 510).toString().padStart(3, "0");
 
                 // Update FrontArt URL with improved regex
                 let newFrontArt = card.FrontArt;
@@ -54,7 +54,7 @@ async function duplicateNonLeaderCards() {
                 const newCard = {
                     ...card,
                     Number: newNumber,
-                    VariantType: "Hyperspace Foil",
+                    VariantType: "Foil",
                     FrontArt: newFrontArt,
                 };
 
@@ -63,7 +63,7 @@ async function duplicateNonLeaderCards() {
 
                 await collection.insertOne(newCard);
                 console.log(
-                    `Duplicated card: ${card.Name} (${card.Number}) ➝ ${newCard.Number} [Hyperspace Foil]`
+                    `Duplicated card: ${card.Name} (${card.Number}) ➝ ${newCard.Number} [Foil]`
                 );
             } catch (cardError) {
                 console.error(`Error processing card ${card.Name}:`, cardError);

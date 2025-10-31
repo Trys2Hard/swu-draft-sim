@@ -21,11 +21,11 @@ export default function CopySealedJsonButton({ sortedCardPacks }) {
                 author: "Anonymous",
             },
             leader: {
-                id: "LOF_008",
+                id: "SEC_008",
                 count: 1,
             },
             base: {
-                id: "LOF_021",
+                id: "SEC_021",
                 count: 1,
             },
             deck: combinedDeck,

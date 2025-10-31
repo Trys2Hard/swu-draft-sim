@@ -8,11 +8,10 @@ import SealedPool from './SealedPool';
 export default function SealedPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
-    const [cardSet, setCardSet] = useState('lof');
     const [sealedStarted, setSealedStarted] = useState(false);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
-    const { generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks } = useCreatePacks('');
+    const { cardSet, setCardSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks } = useCreatePacks('');
 
     let errorCount = 0;
 

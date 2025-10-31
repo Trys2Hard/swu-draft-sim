@@ -14,7 +14,6 @@ export default function DraftPage() {
     const [pickNum, setPickNum] = useState(1);
     const [packNum, setPackNum] = useState(0);
     const [title, setTitle] = useState('Leaders');
-    const [cardSet, setCardSet] = useState('lof');
     const [packIndex, setPackIndex] = useState(0);
     const [draftStarted, setDraftStarted] = useState(false);
     const [sideboardLeaders, setSideboardLeaders] = useState([]);
@@ -22,7 +21,7 @@ export default function DraftPage() {
     const [flippedLeaders, setFlippedLeaders] = useState({});
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
-    const { generateLeaderPack, generateCardPack, leaderPacks, cardPacks, isLoading, resetCardPacks, resetSeenIds, setIsLoading } = useCreatePacks('');
+    const { cardSet, setCardSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, isLoading, resetCardPacks, resetSeenIds, setIsLoading } = useCreatePacks('');
 
     const leadersDrafted = draftStarted && leaderPacks.every(arr => arr.length === 0);
     const currentPack = leadersDrafted ? cardPacks : leaderPacks;
