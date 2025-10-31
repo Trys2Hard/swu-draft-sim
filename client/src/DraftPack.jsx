@@ -155,8 +155,6 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                                         id={cardId}
                                         aria-owns={open ? 'mouse-over-popover' : undefined}
                                         aria-haspopup="true"
-                                        onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                                        onMouseLeave={handlePopoverClose}
                                         sx={styles.cardContainer}
                                     >
                                         <Box
@@ -164,6 +162,8 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
                                             src={isFlipped ? card.cardObj?.cardData?.BackArt : card.cardObj?.cardData?.FrontArt}
                                             alt={card.cardObj?.cardData?.Name}
                                             onClick={() => pickCard(card.id)}
+                                            onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                                            onMouseLeave={handlePopoverClose}
                                             sx={styles.card} />
                                         {draftingLeaders &&
                                             <LeaderFlipButton
