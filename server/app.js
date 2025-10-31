@@ -157,6 +157,8 @@ app.get('/api/common', async (req, res) => {
 
 app.get('/api/foil', async (req, res) => {
     const set = req.query.set?.toUpperCase();
+    const variant = set !== 'LOF' ? 'Foil' : 'Hyperspace Foil';
+
     try {
         // Determine rarity based on odds (similar to leader endpoint)
         const random = Math.random();
@@ -175,14 +177,14 @@ app.get('/api/foil', async (req, res) => {
         }
 
         const foilArr = await Card.aggregate([
-            { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Hyperspace Foil', Rarity: foilRarity } },
+            { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: variant, Rarity: foilRarity } },
             { $sample: { size: 1 } }
         ]);
 
         if (!foilArr.length) {
             // Fallback: if no cards found for selected rarity, try any foil card
             const fallbackFoilArr = await Card.aggregate([
-                { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: 'Hyperspace Foil' } },
+                { $match: { Set: set, Type: { $ne: 'Leader' }, VariantType: variant } },
                 { $sample: { size: 1 } }
             ]);
 

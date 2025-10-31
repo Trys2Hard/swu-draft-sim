@@ -10,8 +10,8 @@ function App() {
     <Router>
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: 'rgba(26, 26, 26, 1)' } }} />
-      <Navbar />
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Navbar />
         <Box sx={{ flex: '1' }}>
           <Routes>
             <Route path="/" element={<DraftPage />} />

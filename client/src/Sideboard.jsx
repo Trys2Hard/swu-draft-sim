@@ -33,7 +33,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
             backgroundColor: 'rgba(130, 130, 130, 0.5)',
             width: { xs: '100%', md: '900px' },
             height: '100%',
-            m: '2rem auto 0 auto',
+            m: '1rem auto 0 auto',
             display: !draftStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
