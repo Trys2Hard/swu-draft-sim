@@ -7,6 +7,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
     const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost);
+    const deckNum = sortedDeckCards.length;
 
     function moveToSideboard(id) {
         handlePopoverClose();
@@ -51,6 +52,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     //Styles
     const styles = {
         deck: {
+            position: 'relative',
             color: 'white',
             backgroundColor: 'rgba(31, 202, 255, 0.2)',
             width: { xs: '100%', md: '900px' },
@@ -61,6 +63,12 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
             alignItems: 'center',
             borderRadius: { md: '0', lg: '10px' },
             p: '0.5rem',
+        },
+        deckNum: {
+            position: 'absolute',
+            right: '2rem',
+            top: '1rem',
+            color: deckNum === 30 ? 'rgba(19, 235, 19, 1)' : deckNum > 30 ? 'rgba(233, 233, 12, 1)' : 'rgba(229, 0, 0, 1)',
         },
         leaders: {
             display: 'flex',
@@ -90,7 +98,8 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     return (
         <>
             <Box sx={styles.deck}>
-                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '90%', borderBottom: '2px solid white', textAlign: 'center' }}>Deck</Typography>
+                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '75%', borderBottom: '2px solid white', textAlign: 'center' }}>Deck</Typography>
+                <Typography variant='h5' component='p' sx={styles.deckNum}>{deckNum}/30</Typography>
                 <Grid container spacing={3} sx={styles.leaders}>
                     {deckLeaders.map((card) => {
                         const labelId = `card-id-${card.id}`;
