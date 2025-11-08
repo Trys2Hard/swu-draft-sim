@@ -10,7 +10,7 @@ import {
     ListItem,
     ListItemText
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import { FaDiscord } from 'react-icons/fa';
 
@@ -40,11 +40,14 @@ export default function Navbar() {
         link: {
             textDecoration: 'none',
             color: 'inherit',
-            padding: '0.3rem 0.5rem',
-            borderRadius: '20px',
+            p: '0 0.4rem 0 0.4rem',
+            borderRadius: '15px',
             transition: 'background-color 0.3s ease-in-out',
             '&:hover': {
                 backgroundColor: 'rgba(31, 202, 255, 0.1)',
+            },
+            '&.active': {
+                borderBottom: '2px solid rgba(31, 202, 255, 0.3)',
             },
         },
         discordIcon: {
@@ -66,10 +69,10 @@ export default function Navbar() {
                     </Typography>
 
                     <Box sx={{ ml: '1.5rem', display: { xs: 'none', md: 'flex' } }}>
-                        <Typography component={Link} variant="h6" to="/" sx={styles.link}>
+                        <Typography component={NavLink} variant="h6" to="/" sx={styles.link}>
                             Draft
                         </Typography>
-                        <Typography component={Link} variant="h6" to="/sealed" sx={styles.link}>
+                        <Typography component={NavLink} variant="h6" to="/sealed" sx={styles.link}>
                             Sealed
                         </Typography>
                     </Box>
@@ -102,10 +105,10 @@ export default function Navbar() {
                     onKeyDown={toggleDrawer(false)}
                 >
                     <List sx={{ '& .MuiListItem-root': { color: 'white' } }}>
-                        <ListItem button component={Link} to="/">
+                        <ListItem button component={NavLink} to="/">
                             <ListItemText primary="Draft" />
                         </ListItem>
-                        <ListItem button component={Link} to="/sealed">
+                        <ListItem button component={NavLink} to="/sealed">
                             <ListItemText primary="Sealed" />
                         </ListItem>
                     </List>

@@ -30,8 +30,8 @@ export default function CardSets({ handleSetChange, currentSet }) {
             cursor: 'pointer',
             transition: 'all 0.3s ease-in-out',
             '&:hover': {
-                backgroundColor: 'rgba(31, 202, 255, 0.1)',
-                filter: 'brightness(1.2)',
+                backgroundColor: 'rgba(31, 202, 255, 0.2)',
+                filter: 'brightness(1.1)',
             },
         },
     };
@@ -40,7 +40,7 @@ export default function CardSets({ handleSetChange, currentSet }) {
         <List sx={styles.cardSets}>
             {cardSets.map((cardSet) => {
                 return (
-                    <ListItem key={cardSet.name} sx={{ ...styles.cardSetButton, backgroundColor: cardSet.name === currentSet ? 'rgba(31, 202, 255, 0.1)' : 'none' }}>
+                    <ListItem key={cardSet.name} sx={{ ...styles.cardSetButton, backgroundColor: cardSet.name === currentSet ? 'rgba(31, 202, 255, 0.2)' : 'none' }}>
                         <Box
                             component="img"
                             src={cardSet.logo}
