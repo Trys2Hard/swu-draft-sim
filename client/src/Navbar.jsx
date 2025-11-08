@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
+import { FaDiscord } from 'react-icons/fa';
 
 export default function Navbar() {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -46,6 +47,12 @@ export default function Navbar() {
                 backgroundColor: 'rgba(31, 202, 255, 0.1)',
             },
         },
+        discordIcon: {
+            position: 'absolute',
+            right: '3rem',
+            color: 'white',
+            '&:hover': { color: '#5865F2' },
+        },
     };
 
     return (
@@ -66,6 +73,10 @@ export default function Navbar() {
                             Sealed
                         </Typography>
                     </Box>
+
+                    <IconButton href="https://discord.gg/yERW2Z73wc" target="_blank" sx={styles.discordIcon}>
+                        <FaDiscord size={30} />
+                    </IconButton>
 
                     <IconButton
                         size="large"
