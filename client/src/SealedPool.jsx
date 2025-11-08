@@ -3,7 +3,7 @@ import CardHover from './CardHover';
 import StartCard from './StartCard';
 import CopySealedJsonButton from './CopySealedJsonButton';
 
-export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, cardSet }) {
+export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet }) {
     const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
 
     //Styles
@@ -61,7 +61,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
     return (
         <>
             {!sealedStarted &&
-                <StartCard cardSet={cardSet} handleStartDraft={handleStartSealedBuild}>
+                <StartCard cardSet={currentSet} handleStartDraft={handleStartSealedBuild}>
                     Start Sealed
                 </StartCard>
             }

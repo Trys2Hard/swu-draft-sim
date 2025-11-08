@@ -1,19 +1,40 @@
 import { Box, Button } from '@mui/material';
 
-export default function CopyJsonButton({ deckLeaders, sortedDeckCards }) {
+export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards }) {
 
     const handleCopyJson = () => {
         const deckCountMap = new Map();
-
         for (const card of sortedDeckCards) {
             const set = card?.cardObj?.cardData?.Set;
-            const num = card?.cardObj?.cardData?.Number;
+            let num = card?.cardObj?.cardData?.Number;
+            if (num >= 537 && num <= 774) {
+                num = (num - 510).toString();
+            } else if (num >= 767 && num <= 1004) {
+                num = (num - 740).toString();
+            }
+            if (num.length === 2) {
+                num = '0' + num;
+            } else if (num.length === 1) {
+                num = '00' + num;
+            }
+            console.log(num, num.length, typeof num)
             if (!set || !num) continue;
             const id = `${set}_${num}`;
             deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);
         }
-
         const combinedDeck = Array.from(deckCountMap, ([id, count]) => ({ id, count }));
+
+        const sideboardCountMap = new Map();
+        if (sideboardCards) {
+            for (const card of sideboardCards) {
+                const set = card?.cardObj?.cardData?.Set;
+                const num = card?.cardObj?.cardData?.Number;
+                if (!set || !num) continue;
+                const id = `${set}_${num}`;
+                sideboardCountMap.set(id, (sideboardCountMap.get(id) || 0) + 1);
+            }
+        }
+        const combinedSideboard = Array.from(sideboardCountMap, ([id, count]) => ({ id, count }));
 
         const jsonCardData = {
             metadata: {
@@ -29,6 +50,7 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards }) {
                 count: 1,
             },
             deck: combinedDeck,
+            sideboard: combinedSideboard,
         };
         navigator.clipboard.writeText(JSON.stringify(jsonCardData, null, 2));
     };

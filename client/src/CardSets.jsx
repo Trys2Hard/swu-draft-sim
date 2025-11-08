@@ -1,6 +1,6 @@
 import { Box, List, ListItem } from '@mui/material';
 
-export default function CardSets({ handleSetChange }) {
+export default function CardSets({ handleSetChange, currentSet }) {
     const cardSets = [
         {
             name: 'lof',
@@ -19,7 +19,7 @@ export default function CardSets({ handleSetChange }) {
             justifyContent: 'center',
             alignItems: 'center',
             color: 'white',
-            backgroundColor: 'rgba(50, 50, 50, 1)',
+            backgroundColor: 'rgba(14, 14, 14, 1)',
             m: '1rem 0 1rem 0',
         },
         cardSetButton: {
@@ -28,9 +28,10 @@ export default function CardSets({ handleSetChange }) {
             m: '0.5rem',
             borderRadius: '20px',
             cursor: 'pointer',
-            transition: 'background 0.3s ease-in-out',
+            transition: 'all 0.3s ease-in-out',
             '&:hover': {
-                backgroundColor: 'rgba(31, 202, 255, 0.1)',
+                backgroundColor: 'rgba(31, 202, 255, 0.2)',
+                filter: 'brightness(1.1)',
             },
         },
     };
@@ -39,7 +40,7 @@ export default function CardSets({ handleSetChange }) {
         <List sx={styles.cardSets}>
             {cardSets.map((cardSet) => {
                 return (
-                    <ListItem key={cardSet.name} sx={styles.cardSetButton}>
+                    <ListItem key={cardSet.name} sx={{ ...styles.cardSetButton, backgroundColor: cardSet.name === currentSet ? 'rgba(31, 202, 255, 0.2)' : 'none' }}>
                         <Box
                             component="img"
                             src={cardSet.logo}

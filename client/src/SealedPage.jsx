@@ -11,7 +11,7 @@ export default function SealedPage() {
     const [sealedStarted, setSealedStarted] = useState(false);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
-    const { cardSet, setCardSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks } = useCreatePacks('');
+    const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks } = useCreatePacks('');
 
     let errorCount = 0;
 
@@ -49,13 +49,13 @@ export default function SealedPage() {
 
 
     function handleSetChange(newSet) {
-        setCardSet(newSet);
+        setCurrentSet(newSet);
     }
 
     return (
         <>
             {/* <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '0.5rem', color: 'white' }}>Sealed</Typography> */}
-            <CardSets handleSetChange={handleSetChange} />
+            <CardSets handleSetChange={handleSetChange} currentSet={currentSet} />
             <SealedPool
                 sealedStarted={sealedStarted}
                 handleStartSealedBuild={handleStartSealedBuild}
@@ -66,7 +66,7 @@ export default function SealedPage() {
                 hoveredCard={hoveredCard}
                 leaderPacks={leaderPacks}
                 cardPacks={cardPacks}
-                cardSet={cardSet} />
+                currentSet={currentSet} />
             <Deck
                 sealedStarted={sealedStarted}
                 deckLeaders={deckLeaders}

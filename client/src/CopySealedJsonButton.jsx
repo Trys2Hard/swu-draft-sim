@@ -7,7 +7,17 @@ export default function CopySealedJsonButton({ sortedCardPacks }) {
 
         for (const card of sortedCardPacks) {
             const set = card?.cardObj?.cardData?.Set;
-            const num = card?.cardObj?.cardData?.Number;
+            let num = card?.cardObj?.cardData?.Number;
+            if (num >= 537 && num <= 774) {
+                num = (num - 510).toString();
+            } else if (num >= 767 && num <= 1004) {
+                num = (num - 740).toString();
+            }
+            if (num.length === 2) {
+                num = '0' + num;
+            } else if (num.length === 1) {
+                num = '00' + num;
+            }
             if (!set || !num) continue;
             const id = `${set}_${num}`;
             deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);

@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import { useState, useRef } from 'react';
 
 export default function useCreatePacks() {
-    const [cardSet, setCardSet] = useState('sec');
+    const [currentSet, setCurrentSet] = useState('sec');
     const [leaderPacks, setLeaderPacks] = useState([]);
     const [cardPacks, setCardPacks] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +14,7 @@ export default function useCreatePacks() {
 
     const fetchCard = async (rarity, seenIds = null) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${rarity}?set=${cardSet}`);
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${rarity}?set=${currentSet}`);
             const data = await res.json();
 
             if (!res.ok) {
@@ -109,8 +109,8 @@ export default function useCreatePacks() {
     }
 
     return {
-        cardSet,
-        setCardSet,
+        currentSet,
+        setCurrentSet,
         generateLeaderPack,
         generateCardPack,
         resetCardPacks,

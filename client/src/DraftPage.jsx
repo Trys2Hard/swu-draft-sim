@@ -21,7 +21,7 @@ export default function DraftPage() {
     const [flippedLeaders, setFlippedLeaders] = useState({});
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
-    const { cardSet, setCardSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, isLoading, resetCardPacks, resetSeenIds, setIsLoading } = useCreatePacks('');
+    const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, isLoading, resetCardPacks, resetSeenIds, setIsLoading } = useCreatePacks('');
 
     const leadersDrafted = draftStarted && leaderPacks.every(arr => arr.length === 0);
     const currentPack = leadersDrafted ? cardPacks : leaderPacks;
@@ -54,7 +54,7 @@ export default function DraftPage() {
     }
 
     function handleSetChange(newSet) {
-        setCardSet(newSet);
+        setCurrentSet(newSet);
     }
 
     const handleFlipLeader = (id) => {
@@ -132,7 +132,7 @@ export default function DraftPage() {
                 <Typography variant='h4' component='h1' sx={{ textAlign: 'center', color: 'white' }}>Welcome to SWUDraftSim.com</Typography>
                 <Typography variant='subtitle1' component='p' sx={{ textAlign: 'center', mt: '0rem', color: 'white' }}>Star Wars Unlimited draft simulator and sealed deckbuilder</Typography>
             </Box>
-            <CardSets handleSetChange={handleSetChange} />
+            <CardSets handleSetChange={handleSetChange} currentSet={currentSet} />
             {/* <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography> */}
             <DraftPack
                 title={title}
@@ -151,7 +151,7 @@ export default function DraftPage() {
                 isLoading={isLoading}
                 handleFlipLeader={handleFlipLeader}
                 flippedLeaders={flippedLeaders}
-                cardSet={cardSet} />
+                currentSet={currentSet} />
             <Deck
                 deckLeaders={deckLeaders}
                 setDeckLeaders={setDeckLeaders}
@@ -159,7 +159,8 @@ export default function DraftPage() {
                 setDeckCards={setDeckCards}
                 setSideboardLeaders={setSideboardLeaders}
                 setSideboardCards={setSideboardCards}
-                draftStarted={draftStarted} />
+                draftStarted={draftStarted}
+                sideboardCards={sideboardCards} />
             <Sideboard
                 sideboardLeaders={sideboardLeaders}
                 setSideboardLeaders={setSideboardLeaders}
