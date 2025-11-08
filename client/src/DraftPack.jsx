@@ -6,7 +6,7 @@ import CardHover from './CardHover';
 import LeaderFlipButton from './LeaderFlipButton';
 import StartCard from './StartCard';
 
-export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading, cardSet }) {
+export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading, currentSet }) {
     const layout1 = draftingLeaders ? 4 : 2.4;
     const layout2 = draftingLeaders ? 4 : 12 / 7;
     const [layout, setLayout] = useState((layout1));
@@ -39,7 +39,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
             minHeight: '100vh',
             m: '0 auto 1rem auto',
             // backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/LOF_box_art_full.jpg)',
-            backgroundImage: cardSet === 'sec' ? 'url(/SEC_box_art_full.jpg)' : 'url(lof_box_wide.png)',
+            backgroundImage: currentSet === 'sec' ? 'url(/SEC_box_art_full.jpg)' : 'url(lof_box_wide.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
@@ -126,7 +126,7 @@ export default function DraftPack({ setName, title, packNum, pickNum, handleStar
     return (
         <>
             {!draftStarted &&
-                <StartCard cardSet={cardSet} isLoading={isLoading} handleStartDraft={handleStartDraft}>
+                <StartCard cardSet={currentSet} isLoading={isLoading} handleStartDraft={handleStartDraft}>
                     Start Draft
                 </StartCard>
             }
