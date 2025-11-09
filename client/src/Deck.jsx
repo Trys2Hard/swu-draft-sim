@@ -97,8 +97,12 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         deckNum: {
             position: 'absolute',
             right: '2rem',
-            top: '1rem',
-            color: deckNum === 30 ? 'rgba(19, 235, 19, 1)' : deckNum > 30 ? 'rgba(233, 233, 12, 1)' : 'rgba(229, 0, 0, 1)',
+            top: '0.7rem',
+            color: deckNum === 30 ? 'rgba(19, 235, 19, 1)' : deckNum > 30 ? 'rgba(233, 233, 12, 1)' : 'rgba(228, 9, 9, 1)',
+            border: '1px solid rgba(61, 178, 255, 0.5)',
+            borderRadius: '10px',
+            p: '0 0.6rem 0 0.6rem',
+            backgroundColor: 'rgba(58, 58, 58, 1)',
         },
         leaders: {
             display: 'flex',

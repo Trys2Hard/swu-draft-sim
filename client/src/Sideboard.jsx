@@ -30,7 +30,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
     const styles = {
         deck: {
             color: 'white',
-            backgroundColor: 'rgba(50, 50, 50, 1)',
+            backgroundColor: 'rgba(63, 63, 63, 1)',
             m: '1rem auto 0 auto',
             display: !draftStarted ? 'none' : 'flex',
             flexDirection: 'column',
