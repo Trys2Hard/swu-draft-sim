@@ -49,19 +49,49 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         addCard((prev) => [...prev, pickedCard]);
     }
 
+    const aspectColorMap = {
+        Vigilance: 'rgba(101, 146, 182, 1)',
+        Aggression: 'rgba(176, 110, 110, 1)',
+        Command: 'rgba(95, 132, 103, 1)',
+        Cunning: 'rgba(213, 211, 123, 1)',
+    };
+
+    const aspects = deckLeaders[0]?.cardObj?.cardData?.Aspects || [];
+    const leaderColor = aspectColorMap[aspects.find(a => aspectColorMap[a])];
+
+    const deckCardAspects = deckCards
+        .flatMap(card => card?.cardObj?.cardData?.Aspects || [])
+        .filter(a => a !== 'Heroism' && a !== 'Villainy');
+
+    // Count all aspects
+    const aspectCounts = Object.entries(
+        deckCardAspects.reduce((acc, aspect) => {
+            acc[aspect] = (acc[aspect] || 0) + 1;
+            return acc;
+        }, {})
+    ).sort((a, b) => b[1] - a[1]); // Sort by count descending
+
+    // Get most repeated (and possibly second)
+    const [mostRepeatedAspect] = aspectCounts[0] || [null, 0];
+    let deckColor = aspectColorMap[mostRepeatedAspect];
+
+    // 🧠 If leaderColor matches deckColor, pick the second most repeated aspect instead
+    if (deckColor === leaderColor && aspectCounts.length > 1) {
+        const [secondMostAspect] = aspectCounts[1];
+        deckColor = aspectColorMap[secondMostAspect] || deckColor;
+    }
+
     //Styles
     const styles = {
         deck: {
             position: 'relative',
             color: 'white',
-            backgroundColor: 'rgba(31, 202, 255, 0.2)',
-            width: { xs: '100%', md: '900px' },
+            background: leaderColor && deckColor ? `linear-gradient(to bottom right, ${leaderColor}, ${deckColor})` : 'rgba(31, 202, 255, 0.2)',
             height: '100%',
             m: '1rem auto 0 auto',
             display: !draftStarted && !sealedStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            borderRadius: { md: '0', lg: '10px' },
             p: '0.5rem',
         },
         deckNum: {
@@ -74,6 +104,9 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
             display: 'flex',
             justifyContent: 'center',
             width: '100%',
+            pb: '0.5rem',
+            mb: '1rem',
+            borderBottom: '2px solid white',
         },
         leaderCard: {
             width: '100%',
@@ -98,14 +131,14 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     return (
         <>
             <Box sx={styles.deck}>
-                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '75%', borderBottom: '2px solid white', textAlign: 'center' }}>Deck</Typography>
+                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '100%', borderBottom: '2px solid white', textAlign: 'center' }}>Deck</Typography>
                 <Typography variant='h5' component='p' sx={styles.deckNum}>{deckNum}/30</Typography>
-                <Grid container spacing={3} sx={styles.leaders}>
+                <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={styles.leaders}>
                     {deckLeaders.map((card) => {
                         const labelId = `card-id-${card.id}`;
                         return (
                             <Grid
-                                size={4}
+                                size={{ xs: 4, md: 2 }}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
                                 onMouseEnter={(e) => handlePopoverOpen(e, card)}
@@ -118,12 +151,12 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                     })}
                 </Grid>
 
-                <Grid container spacing={1} sx={{ width: '100%' }}>
+                <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={{ width: '100%' }}>
                     {sortedDeckCards.map((card) => {
                         const labelId = `card-id-${card.id}`;
                         return (
                             <Grid
-                                size={2}
+                                size={{ xs: 2, md: 1.2 }}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
                                 onMouseEnter={(e) => handlePopoverOpen(e, card)}

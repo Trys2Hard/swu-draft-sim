@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import CardHover from './CardHover';
 import StartCard from './StartCard';
 import CopySealedJsonButton from './CopySealedJsonButton';
@@ -69,13 +69,14 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
 
             {sealedStarted &&
                 <Box sx={styles.sealedPool} >
+                    <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '100%', borderBottom: '2px solid white', textAlign: 'center' }}>Sealed Pool</Typography>
                     <Box sx={styles.sealedContent}>
                         <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={styles.leaders}>
                             {leaderPacks.flat().map((card) => {
                                 const cardId = `card-id-${card.id}`;
                                 return (
                                     <Grid
-                                        size={2}
+                                        size={{ xs: 4, md: 2 }}
                                         aria-owns={open ? 'mouse-over-popover' : undefined}
                                         aria-haspopup="true"
                                         onMouseEnter={(e) => handlePopoverOpen(e, card)}

@@ -30,20 +30,20 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
     const styles = {
         deck: {
             color: 'white',
-            backgroundColor: 'rgba(130, 130, 130, 0.5)',
-            width: { xs: '100%', md: '900px' },
-            height: '100%',
+            backgroundColor: 'rgba(50, 50, 50, 1)',
             m: '1rem auto 0 auto',
             display: !draftStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            borderRadius: { md: '0', lg: '10px' },
             p: '0.5rem',
         },
         leaders: {
             display: 'flex',
             justifyContent: 'center',
             width: '100%',
+            pb: '0.5rem',
+            mb: '1rem',
+            borderBottom: '2px solid white',
         },
         leaderCard: {
             width: '100%',
@@ -68,13 +68,13 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
     return (
         <>
             <Box sx={styles.deck}>
-                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '90%', borderBottom: '2px solid white', textAlign: 'center' }}>Sideboard</Typography>
-                <Grid container spacing={3} sx={styles.leaders}>
+                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '100%', borderBottom: '2px solid white', textAlign: 'center' }}>Sideboard</Typography>
+                <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={styles.leaders}>
                     {sideboardLeaders.map((card) => {
                         const labelId = `card-id-${card.id}`;
                         return (
                             <Grid
-                                size={4}
+                                size={{ xs: 4, md: 2 }}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
                                 onMouseEnter={(e) => handlePopoverOpen(e, card)}
@@ -87,12 +87,12 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
                     })}
                 </Grid>
 
-                <Grid container spacing={1} sx={{ width: '100%' }}>
+                <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={{ width: '100%' }}>
                     {sortedSideboardCards.map((card) => {
                         const labelId = `card-id-${card.id}`;
                         return (
                             <Grid
-                                size={2}
+                                size={{ xs: 2, md: 1.2 }}
                                 aria-owns={open ? 'mouse-over-popover' : undefined}
                                 aria-haspopup="true"
                                 onMouseEnter={(e) => handlePopoverOpen(e, card)}

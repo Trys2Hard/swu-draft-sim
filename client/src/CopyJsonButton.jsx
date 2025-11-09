@@ -17,7 +17,6 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
             } else if (num.length === 1) {
                 num = '00' + num;
             }
-            console.log(num, num.length, typeof num)
             if (!set || !num) continue;
             const id = `${set}_${num}`;
             deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);
