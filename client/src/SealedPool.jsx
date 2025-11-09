@@ -14,7 +14,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'flex-start',
-            width: { xs: '100%', md: '900px' },
             minHeight: '100vh',
             backgroundSize: 'cover',
             backgroundPosition: 'center top',
@@ -23,7 +22,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             backgroundColor: 'rgba(31, 202, 255, 0.2)',
             p: '0.5rem',
             color: 'white',
-            borderRadius: { xs: '0px', md: '10px' },
             boxShadow: '-4px 4px 8px black',
         },
         sealedContent: {
@@ -37,6 +35,9 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             display: 'flex',
             justifyContent: 'center',
             width: '100%',
+            pb: '0.5rem',
+            mb: '1rem',
+            borderBottom: '2px solid white',
         },
         leaderCard: {
             width: '100%',
@@ -69,12 +70,12 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             {sealedStarted &&
                 <Box sx={styles.sealedPool} >
                     <Box sx={styles.sealedContent}>
-                        <Grid container spacing={2} sx={styles.leaders}>
+                        <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={styles.leaders}>
                             {leaderPacks.flat().map((card) => {
                                 const cardId = `card-id-${card.id}`;
                                 return (
                                     <Grid
-                                        size={4}
+                                        size={2}
                                         aria-owns={open ? 'mouse-over-popover' : undefined}
                                         aria-haspopup="true"
                                         onMouseEnter={(e) => handlePopoverOpen(e, card)}
@@ -88,12 +89,12 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                             })}
                         </Grid>
 
-                        <Grid container spacing={1} sx={{ width: '100%' }}>
+                        <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={{ width: '100%' }}>
                             {sortedCardPacks.flat().map((card) => {
                                 const cardId = `card-id-${card.id}`;
                                 return (
                                     <Grid
-                                        size={2}
+                                        size={{ xs: 2, md: 1.2 }}
                                         aria-owns={open ? 'mouse-over-popover' : undefined}
                                         aria-haspopup="true"
                                         onMouseEnter={(e) => handlePopoverOpen(e, card)}
