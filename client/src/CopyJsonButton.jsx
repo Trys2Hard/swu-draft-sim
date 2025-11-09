@@ -1,10 +1,9 @@
 import { Box, Button } from '@mui/material';
 
-export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards }) {
-
+export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, cardPacks }) {
     const handleCopyJson = () => {
         const deckCountMap = new Map();
-        for (const card of sortedDeckCards) {
+        for (const card of sortedDeckCards || cardPacks) {
             const set = card?.cardObj?.cardData?.Set;
             let num = card?.cardObj?.cardData?.Number;
             if (num >= 537 && num <= 774) {
@@ -37,11 +36,11 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
 
         const jsonCardData = {
             metadata: {
-                name: "Imported SWUDraftSim Deck",
+                name: leaderPacks ? 'Imported SWUDraftSim Sealed Pool' : 'Imported SWUDraftSim Deck',
                 author: "Anonymous",
             },
             leader: {
-                id: `${deckLeaders[0].cardObj.cardData.Set}_${deckLeaders[0].cardObj.cardData.Number}`,
+                id: leaderPacks ? `${leaderPacks[0].cardObj?.cardData?.Set}_${leaderPacks[0].cardObj?.cardData?.Number}` : `${deckLeaders[0]?.cardObj?.cardData?.Set}_${deckLeaders[0]?.cardObj?.cardData?.Number}`,
                 count: 1,
             },
             base: {
