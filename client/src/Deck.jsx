@@ -49,15 +49,22 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         addCard((prev) => [...prev, pickedCard]);
     }
 
-    const aspectColorMap = {
-        Vigilance: 'rgba(101, 146, 182, 1)',
-        Aggression: 'rgba(176, 110, 110, 1)',
-        Command: 'rgba(95, 132, 103, 1)',
-        Cunning: 'rgba(213, 211, 123, 1)',
+    const leaderAspectColorMap = {
+        Vigilance: 'rgba(101, 146, 182, 1), rgba(101, 146, 182, 0.7)',
+        Aggression: 'rgba(216, 146, 146, 1), rgba(216, 146, 146,  0.7)',
+        Command: 'rgba(162, 216, 173, 1), rgba(162, 216, 173, 0.7)',
+        Cunning: 'rgba(242, 217, 127, 1), rgba(242, 217, 127, 0.7)',
+    };
+
+    const deckAspectColorMap = {
+        Vigilance: 'rgba(101, 146, 182, 0.7), rgba(101, 146, 182, 1)',
+        Aggression: 'rgba(216, 146, 146, 0.7), rgba(216, 146, 146,  1)',
+        Command: 'rgba(162, 216, 173, 0.7), rgba(162, 216, 173, 1)',
+        Cunning: 'rgba(242, 217, 127, 0.7), rgba(242, 217, 127, 1)',
     };
 
     const aspects = deckLeaders[0]?.cardObj?.cardData?.Aspects || [];
-    const leaderColor = aspectColorMap[aspects.find(a => aspectColorMap[a])];
+    const leaderColor = leaderAspectColorMap[aspects.find(a => leaderAspectColorMap[a])];
 
     const deckCardAspects = deckCards
         .flatMap(card => card?.cardObj?.cardData?.Aspects || [])
@@ -73,12 +80,12 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
 
     // Get most repeated (and possibly second)
     const [mostRepeatedAspect] = aspectCounts[0] || [null, 0];
-    let deckColor = aspectColorMap[mostRepeatedAspect];
+    let deckColor = deckAspectColorMap[mostRepeatedAspect];
 
     // 🧠 If leaderColor matches deckColor, pick the second most repeated aspect instead
     if (deckColor === leaderColor && aspectCounts.length > 1) {
         const [secondMostAspect] = aspectCounts[1];
-        deckColor = aspectColorMap[secondMostAspect] || deckColor;
+        deckColor = deckAspectColorMap[secondMostAspect] || deckColor;
     }
 
     //Styles
