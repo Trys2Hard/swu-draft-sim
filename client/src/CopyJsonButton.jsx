@@ -1,7 +1,17 @@
-import { Box, Button } from '@mui/material';
+import { useState } from 'react';
+import { Box, Button, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 
 export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, cardPacks }) {
+    const [open, setOpen] = useState(false);
+    const [snackbarText, setSnackbarText] = useState('JSON Copied to Clipboard!');
+    const [snackbarStatus, setSnackbarStatus] = useState('success');
+
+    const snackbarColor = snackbarStatus === 'success' ? 'rgba(75, 247, 113, 0.8)' : snackbarStatus === 'warning' ? 'rgba(236, 242, 76, 0.8)' : 'none';
+
     const handleCopyJson = () => {
+        setOpen(true);
+
         const deckCountMap = new Map();
         for (const card of sortedDeckCards || cardPacks) {
             const set = card?.cardObj?.cardData?.Set;
@@ -51,7 +61,21 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
             sideboard: combinedSideboard,
         };
         navigator.clipboard.writeText(JSON.stringify(jsonCardData, null, 2));
+        if (jsonCardData?.leader?.id === 'undefined_undefined') {
+            setSnackbarStatus('warning')
+            setSnackbarText('Copied JSON to Clipboard. No Leader Selected.');
+        } else {
+            setSnackbarStatus('success');
+            setSnackbarText('Copied JSON to Clipboard')
+        }
     };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    }
 
     //Styles
     const styles = {
@@ -68,8 +92,23 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
     };
 
     return (
-        <Box sx={{ color: "white", display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-            <Button variant='contained' sx={styles.copyJsonButton} onClick={handleCopyJson}>Copy Json</Button>
-        </Box>
+        <>
+            <Box sx={{ color: "white", display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                <Button variant='contained' sx={styles.copyJsonButton} onClick={handleCopyJson}>Copy Json</Button>
+            </Box>
+            <Snackbar
+                open={open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+            >
+                <MuiAlert
+                    onClose={handleClose}
+                    severity={snackbarStatus}
+                    sx={{ width: '100%', backgroundColor: snackbarColor, color: 'black' }}
+                >
+                    {snackbarText}
+                </MuiAlert>
+            </Snackbar>
+        </>
     );
 }
