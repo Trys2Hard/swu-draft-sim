@@ -51,16 +51,16 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
 
     const leaderAspectColorMap = {
         Vigilance: 'rgba(101, 146, 182, 1), rgba(101, 146, 182, 0.7)',
-        Aggression: 'rgba(216, 146, 146, 1), rgba(216, 146, 146,  0.7)',
+        Aggression: 'rgba(179, 128, 128, 1), rgba(179, 128, 128, 0.7)',
         Command: 'rgba(162, 216, 173, 1), rgba(162, 216, 173, 0.7)',
-        Cunning: 'rgba(242, 217, 127, 1), rgba(242, 217, 127, 0.7)',
+        Cunning: 'rgba(204, 204, 140, 1), rgba(204, 204, 140, 0.7)',
     };
 
     const deckAspectColorMap = {
         Vigilance: 'rgba(101, 146, 182, 0.7), rgba(101, 146, 182, 1)',
-        Aggression: 'rgba(216, 146, 146, 0.7), rgba(216, 146, 146,  1)',
+        Aggression: 'rgba(179, 128, 128, 0.7), rgba(179, 128, 128, 1)',
         Command: 'rgba(162, 216, 173, 0.7), rgba(162, 216, 173, 1)',
-        Cunning: 'rgba(242, 217, 127, 0.7), rgba(242, 217, 127, 1)',
+        Cunning: 'rgba(204, 204, 140, 0.7), rgba(204, 204, 140, 1)',
     };
 
     const aspects = deckLeaders[0]?.cardObj?.cardData?.Aspects || [];
@@ -105,11 +105,10 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
             position: 'absolute',
             right: '2rem',
             top: '0.7rem',
-            color: deckNum === 30 ? 'rgba(19, 235, 19, 1)' : deckNum > 30 ? 'rgba(233, 233, 12, 1)' : 'rgba(228, 9, 9, 1)',
-            border: '1px solid rgba(61, 178, 255, 0.5)',
+            color: deckNum === 30 ? 'rgba(19, 235, 19, 1)' : deckNum > 30 ? 'rgba(233, 233, 12, 1)' : 'rgba(255, 0, 0, 1)',
             borderRadius: '10px',
             p: '0 0.6rem 0 0.6rem',
-            backgroundColor: 'rgba(58, 58, 58, 1)',
+            backgroundColor: 'rgba(87, 87, 87, 1)',
         },
         leaders: {
             display: 'flex',
