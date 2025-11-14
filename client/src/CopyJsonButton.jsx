@@ -1,10 +1,19 @@
-import { Box, Button } from '@mui/material';
+import { useState } from 'react';
+import { Box, Button, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 
-export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards }) {
+export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, cardPacks }) {
+    const [open, setOpen] = useState(false);
+    const [snackbarText, setSnackbarText] = useState('JSON Copied to Clipboard!');
+    const [snackbarStatus, setSnackbarStatus] = useState('success');
+
+    const snackbarColor = snackbarStatus === 'success' ? 'rgba(75, 247, 113, 0.8)' : snackbarStatus === 'warning' ? 'rgba(236, 242, 76, 0.8)' : 'none';
 
     const handleCopyJson = () => {
+        setOpen(true);
+
         const deckCountMap = new Map();
-        for (const card of sortedDeckCards) {
+        for (const card of sortedDeckCards || cardPacks) {
             const set = card?.cardObj?.cardData?.Set;
             let num = card?.cardObj?.cardData?.Number;
             if (num >= 537 && num <= 774) {
@@ -17,7 +26,6 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
             } else if (num.length === 1) {
                 num = '00' + num;
             }
-            console.log(num, num.length, typeof num)
             if (!set || !num) continue;
             const id = `${set}_${num}`;
             deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);
@@ -38,11 +46,11 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
 
         const jsonCardData = {
             metadata: {
-                name: "Imported SWUDraftSim Deck",
+                name: leaderPacks ? 'Imported SWUDraftSim Sealed Pool' : 'Imported SWUDraftSim Deck',
                 author: "Anonymous",
             },
             leader: {
-                id: `${deckLeaders[0].cardObj.cardData.Set}_${deckLeaders[0].cardObj.cardData.Number}`,
+                id: leaderPacks ? `${leaderPacks[0].cardObj?.cardData?.Set}_${leaderPacks[0].cardObj?.cardData?.Number}` : `${deckLeaders[0]?.cardObj?.cardData?.Set}_${deckLeaders[0]?.cardObj?.cardData?.Number}`,
                 count: 1,
             },
             base: {
@@ -53,7 +61,21 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
             sideboard: combinedSideboard,
         };
         navigator.clipboard.writeText(JSON.stringify(jsonCardData, null, 2));
+        if (jsonCardData?.leader?.id === 'undefined_undefined') {
+            setSnackbarStatus('warning')
+            setSnackbarText('Copied JSON to Clipboard. No Leader Selected.');
+        } else {
+            setSnackbarStatus('success');
+            setSnackbarText('Copied JSON to Clipboard')
+        }
     };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    }
 
     //Styles
     const styles = {
@@ -70,8 +92,23 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
     };
 
     return (
-        <Box sx={{ color: "white", display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-            <Button variant='contained' sx={styles.copyJsonButton} onClick={handleCopyJson}>Copy Json</Button>
-        </Box>
+        <>
+            <Box sx={{ color: "white", display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                <Button variant='contained' sx={styles.copyJsonButton} onClick={handleCopyJson}>Copy Json</Button>
+            </Box>
+            <Snackbar
+                open={open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+            >
+                <MuiAlert
+                    onClose={handleClose}
+                    severity={snackbarStatus}
+                    sx={{ width: '100%', backgroundColor: snackbarColor, color: 'black' }}
+                >
+                    {snackbarText}
+                </MuiAlert>
+            </Snackbar>
+        </>
     );
 }
