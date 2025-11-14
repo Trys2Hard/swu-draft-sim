@@ -6,7 +6,7 @@ import CardHover from './CardHover';
 import LeaderFlipButton from './LeaderFlipButton';
 import StartCard from './StartCard';
 
-export default function DraftPack({ setName, title, packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading, currentSet }) {
+export default function DraftPack({ packNum, pickNum, handleStartDraft, draftStarted, draftingLeaders, currentPack, packIndex, handlePopoverClose, handlePopoverOpen, pickCard, anchorEl, hoveredCard, isLoading, currentSet }) {
     const layout1 = draftingLeaders ? 4 : 2.4;
     const layout2 = draftingLeaders ? 4 : 12 / 7;
     const [layout, setLayout] = useState((layout1));

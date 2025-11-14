@@ -3,7 +3,7 @@ import CardHover from './CardHover';
 import StartCard from './StartCard';
 import CopyJsonButton from './CopyJsonButton';
 
-export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet }) {
+export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet, isLoading }) {
     const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
 
     //Styles
@@ -32,6 +32,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             width: '100%',
         },
         leaders: {
+            position: 'relative',
             display: 'flex',
             justifyContent: 'center',
             width: '100%',
@@ -47,6 +48,15 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                 outline: '2px solid rgba(61, 178, 255, 1)',
                 boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
             },
+        },
+        loading: {
+            position: 'absolute',
+            display: isLoading ? 'block' : 'none',
+            fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -80%)',
+            textShadow: '2px 2px 3px black',
         },
         nonLeaderCard: {
             width: '100%',
@@ -72,6 +82,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                     <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '100%', borderBottom: '2px solid white', textAlign: 'center' }}>Sealed Pool</Typography>
                     <Box sx={styles.sealedContent}>
                         <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={styles.leaders}>
+                            <Typography component='p' sx={styles.loading}>Loading...</Typography>
                             {leaderPacks.flat().map((card) => {
                                 const cardId = `card-id-${card.id}`;
                                 return (

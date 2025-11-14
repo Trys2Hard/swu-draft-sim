@@ -8,6 +8,7 @@ import {
     Drawer,
     List,
     ListItem,
+    ListItemButton,
     ListItemText
 } from '@mui/material';
 import { NavLink } from 'react-router-dom';
@@ -105,11 +106,16 @@ export default function Navbar() {
                     onKeyDown={toggleDrawer(false)}
                 >
                     <List sx={{ '& .MuiListItem-root': { color: 'white' } }}>
-                        <ListItem button component={NavLink} to="/">
-                            <ListItemText primary="Draft" />
+                        <ListItem disablePadding>
+                            <ListItemButton component={NavLink} to="/">
+                                <ListItemText primary="Draft" />
+                            </ListItemButton>
                         </ListItem>
-                        <ListItem button component={NavLink} to="/sealed">
-                            <ListItemText primary="Sealed" />
+
+                        <ListItem disablePadding>
+                            <ListItemButton component={NavLink} to="/sealed">
+                                <ListItemText primary="Sealed" />
+                            </ListItemButton>
                         </ListItem>
                     </List>
                 </Box>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Deck from './Deck';
 import useCardHoverPopover from './useCardHoverPopover';
 import useCreatePacks from './useCreatePacks';
@@ -11,9 +11,15 @@ export default function SealedPage() {
     const [sealedStarted, setSealedStarted] = useState(false);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
-    const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks } = useCreatePacks('');
+    const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks, isLoading, setIsLoading } = useCreatePacks('');
 
     let errorCount = 0;
+
+    useEffect(() => {
+        if (cardPacks.length === 6) {
+            setIsLoading(false);
+        }
+    }, [cardPacks, setIsLoading])
 
     async function handleStartSealedBuild() {
         setSealedStarted(true);
@@ -66,7 +72,8 @@ export default function SealedPage() {
                 hoveredCard={hoveredCard}
                 leaderPacks={leaderPacks}
                 cardPacks={cardPacks}
-                currentSet={currentSet} />
+                currentSet={currentSet}
+                isLoading={isLoading} />
             <Deck
                 sealedStarted={sealedStarted}
                 deckLeaders={deckLeaders}
