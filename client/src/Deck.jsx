@@ -6,7 +6,7 @@ import CopyJsonButton from './CopyJsonButton';
 export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
-    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost);
+    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost || a.cardObj?.cardData?.Name?.localeCompare(b.cardObj?.cardData?.Name));
     const deckNum = sortedDeckCards.length;
 
     function moveToSideboard(id) {
