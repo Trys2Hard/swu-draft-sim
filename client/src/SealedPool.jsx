@@ -2,8 +2,9 @@ import { Box, Grid, Typography } from '@mui/material';
 import CardHover from './CardHover';
 import StartCard from './StartCard';
 import CopyJsonButton from './CopyJsonButton';
+import SelectBase from './SelectBase';
 
-export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet, isLoading }) {
+export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet, isLoading, base, setBase }) {
     const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
 
     //Styles
@@ -80,6 +81,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             {sealedStarted &&
                 <Box sx={styles.sealedPool} >
                     <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '100%', borderBottom: '2px solid white', textAlign: 'center' }}>Sealed Pool</Typography>
+                    <SelectBase base={base} setBase={setBase} />
                     <Box sx={styles.sealedContent}>
                         <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={styles.leaders}>
                             <Typography component='p' sx={styles.loading}>Loading...</Typography>
@@ -126,7 +128,8 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                     {/* <CopySealedJsonButton leaderPacks={leaderPacks} sortedCardPacks={sortedCardPacks} /> */}
                     <CopyJsonButton
                         leaderPacks={leaderPacks}
-                        cardPacks={cardPacks} />
+                        cardPacks={cardPacks}
+                        base={base} />
                 </Box>
             }
         </>

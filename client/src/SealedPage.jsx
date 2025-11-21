@@ -9,6 +9,7 @@ export default function SealedPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
     const [sealedStarted, setSealedStarted] = useState(false);
+    const [base, setBase] = useState('');
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
     const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks, isLoading, setIsLoading } = useCreatePacks('');
@@ -73,7 +74,9 @@ export default function SealedPage() {
                 leaderPacks={leaderPacks}
                 cardPacks={cardPacks}
                 currentSet={currentSet}
-                isLoading={isLoading} />
+                isLoading={isLoading}
+                base={base}
+                setBase={setBase} />
             <Deck
                 sealedStarted={sealedStarted}
                 deckLeaders={deckLeaders}
@@ -81,7 +84,9 @@ export default function SealedPage() {
                 deckCards={deckCards}
                 setDeckCards={setDeckCards}
                 setLeaderPacks={setLeaderPacks}
-                setCardPacks={setCardPacks} />
+                setCardPacks={setCardPacks}
+                base={base}
+                setBase={setBase} />
         </>
     );
 }
