@@ -2,42 +2,42 @@ import { Box, Grid, Typography } from '@mui/material';
 import CardHover from './CardHover';
 import StartCard from './StartCard';
 import CopyJsonButton from './CopyJsonButton';
+import SelectBase from './SelectBase';
 
-export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet, isLoading }) {
+export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet, isLoading, base, setBase }) {
     const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
 
     //Styles
     const styles = {
         sealedPool: {
             position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
             minHeight: '100vh',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center top',
-            backgroundRepeat: 'no-repeat',
-            m: '1rem auto 0 auto',
-            backgroundColor: 'rgba(31, 202, 255, 0.2)',
-            p: '0.5rem',
             color: 'white',
-            boxShadow: '-4px 4px 8px black',
+            backgroundColor: 'rgba(29, 64, 77, 1)',
+        },
+        header: {
+            width: '100%',
+            height: { xs: '7rem', sm: '4rem' },
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: 'center',
+            justifyContent: 'center',
         },
         sealedContent: {
             position: 'relative',
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: '100%',
+            p: '0.5rem',
         },
         leaders: {
             position: 'relative',
+            width: '100%',
             display: 'flex',
             justifyContent: 'center',
-            width: '100%',
-            pb: '0.5rem',
             mb: '1rem',
+            pb: '0.5rem',
             borderBottom: '2px solid white',
         },
         leaderCard: {
@@ -52,10 +52,10 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
         loading: {
             position: 'absolute',
             display: isLoading ? 'block' : 'none',
-            fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -80%)',
+            fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
             textShadow: '2px 2px 3px black',
         },
         nonLeaderCard: {
@@ -79,7 +79,13 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
 
             {sealedStarted &&
                 <Box sx={styles.sealedPool} >
-                    <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '100%', borderBottom: '2px solid white', textAlign: 'center' }}>Sealed Pool</Typography>
+                    <Box sx={styles.header}>
+                        <Typography variant='h4' component='h2' sx={{ mb: { xs: '0.8rem', sm: '0' } }}>Sealed Pool</Typography>
+                        <Box sx={{ position: { xs: 'static', sm: 'absolute' }, top: '0.7rem', right: '1rem' }}>
+                            <SelectBase base={base} setBase={setBase} currentSet={currentSet} />
+                        </Box>
+                    </Box>
+
                     <Box sx={styles.sealedContent}>
                         <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={styles.leaders}>
                             <Typography component='p' sx={styles.loading}>Loading...</Typography>
@@ -122,11 +128,13 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                             anchorEl={anchorEl}
                             hoveredCard={hoveredCard}
                             onHoverClose={handlePopoverClose} />
+                        <CopyJsonButton
+                            leaderPacks={leaderPacks}
+                            cardPacks={cardPacks}
+                            base={base}
+                            setBase={setBase} />
                     </Box>
-                    {/* <CopySealedJsonButton leaderPacks={leaderPacks} sortedCardPacks={sortedCardPacks} /> */}
-                    <CopyJsonButton
-                        leaderPacks={leaderPacks}
-                        cardPacks={cardPacks} />
+
                 </Box>
             }
         </>
