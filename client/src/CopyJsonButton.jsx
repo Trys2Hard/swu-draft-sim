@@ -64,6 +64,9 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
         if (jsonCardData?.leader?.id === 'undefined_undefined') {
             setSnackbarStatus('warning')
             setSnackbarText('Copied JSON to Clipboard. No Leader Selected.');
+        } else if (!jsonCardData?.base?.id) {
+            setSnackbarStatus('warning')
+            setSnackbarText('Copied JSON to Clipboard. No Base Selected.');
         } else {
             setSnackbarStatus('success');
             setSnackbarText('Copied JSON to Clipboard')

@@ -12,7 +12,7 @@ export default function SealedPage() {
     const [base, setBase] = useState('');
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
-    const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks, isLoading, setIsLoading } = useCreatePacks('');
+    const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks, isLoading, setIsLoading } = useCreatePacks();
 
     let errorCount = 0;
 
@@ -86,7 +86,8 @@ export default function SealedPage() {
                 setLeaderPacks={setLeaderPacks}
                 setCardPacks={setCardPacks}
                 base={base}
-                setBase={setBase} />
+                setBase={setBase}
+                currentSet={currentSet} />
         </>
     );
 }

@@ -2,9 +2,10 @@ import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import useCardHoverPopover from './useCardHoverPopover';
 import CopyJsonButton from './CopyJsonButton';
+import SelectBase from './SelectBase';
 
-export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted, base, setBase }) {
-    const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted, base, setBase, currentSet }) {
+    const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover();
 
     const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost || a.cardObj?.cardData?.Name?.localeCompare(b.cardObj?.cardData?.Name));
     const deckNum = sortedDeckCards.length;
@@ -92,34 +93,49 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     const styles = {
         deck: {
             position: 'relative',
-            color: 'white',
-            background: leaderColor && deckColor ? `linear-gradient(to bottom right, ${leaderColor}, ${deckColor})` : 'rgba(31, 202, 255, 0.2)',
             height: '100%',
-            m: '1rem auto 0 auto',
             display: !draftStarted && !sealedStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            p: '0.5rem',
+            m: '1rem auto 0 auto',
+            color: 'white',
+            background: leaderColor && deckColor ? `linear-gradient(to bottom right, ${leaderColor}, ${deckColor})` : 'rgba(90, 90, 90, 1)',
         },
-        deckNum: {
-            position: 'absolute',
-            right: '2rem',
+        header: {
+            width: '100%',
+            height: { xs: '7rem', sm: '4rem' },
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(29, 64, 77, 1)',
+        },
+        headerRight: {
+            position: { xs: 'static', sm: 'absolute' },
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             top: '0.7rem',
+            right: '1rem',
+        },
+        cardCount: {
+            ml: '1rem',
             color: deckNum === 30 ? 'rgba(19, 235, 19, 1)' : deckNum > 30 ? 'rgba(233, 233, 12, 1)' : 'rgba(255, 0, 0, 1)',
-            borderRadius: '10px',
-            p: '0 0.6rem 0 0.6rem',
-            backgroundColor: 'rgba(87, 87, 87, 1)',
         },
         leaders: {
-            display: 'flex',
-            justifyContent: 'center',
             width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mb: '0.5rem',
             pb: '0.5rem',
-            mb: '1rem',
             borderBottom: '2px solid white',
         },
         leaderCard: {
             width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             borderRadius: '5%',
             cursor: 'pointer',
             '&: hover': {
@@ -139,10 +155,16 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
     };
 
     return (
-        <>
-            <Box sx={styles.deck}>
-                <Typography variant='h4' component='h2' sx={{ mb: '1rem', width: '100%', borderBottom: '2px solid white', textAlign: 'center' }}>Deck</Typography>
-                <Typography variant='h5' component='p' sx={styles.deckNum}>{deckNum}/30</Typography>
+        <Box sx={styles.deck}>
+            <Box sx={styles.header}>
+                <Typography variant='h4' component='h2' sx={{ mb: { xs: '0.8rem', sm: '0' } }}>Deck</Typography>
+                <Box sx={styles.headerRight}>
+                    <SelectBase base={base} setBase={setBase} currentSet={currentSet} />
+                    <Typography variant='h5' component='p' sx={styles.cardCount}>{deckNum}/30</Typography>
+                </Box>
+            </Box>
+
+            <Box sx={{ width: '100%', p: '0.5rem' }}>
                 <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={styles.leaders}>
                     {deckLeaders.map((card) => {
                         const labelId = `card-id-${card.id}`;
@@ -189,6 +211,6 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                     base={base}
                     setBase={setBase} />
             </Box>
-        </>
+        </Box>
     );
 }

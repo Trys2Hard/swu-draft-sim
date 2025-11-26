@@ -19,6 +19,7 @@ export default function DraftPage() {
     const [sideboardLeaders, setSideboardLeaders] = useState([]);
     const [sideboardCards, setSideboardCards] = useState([]);
     const [flippedLeaders, setFlippedLeaders] = useState({});
+    const [base, setBase] = useState('');
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
     const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, isLoading, resetCardPacks, resetSeenIds, setIsLoading } = useCreatePacks('');
@@ -160,7 +161,10 @@ export default function DraftPage() {
                 setSideboardLeaders={setSideboardLeaders}
                 setSideboardCards={setSideboardCards}
                 draftStarted={draftStarted}
-                sideboardCards={sideboardCards} />
+                sideboardCards={sideboardCards}
+                base={base}
+                setBase={setBase}
+                currentSet={currentSet} />
             <Sideboard
                 sideboardLeaders={sideboardLeaders}
                 setSideboardLeaders={setSideboardLeaders}
