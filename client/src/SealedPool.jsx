@@ -13,6 +13,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             position: 'relative',
             minHeight: '100vh',
             color: 'white',
+            backgroundColor: 'rgba(29, 64, 77, 1)',
         },
         header: {
             width: '100%',
@@ -21,7 +22,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             flexDirection: { xs: 'column', sm: 'row' },
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(29, 64, 77, 1)',
         },
         sealedContent: {
             position: 'relative',
@@ -30,7 +30,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             flexDirection: 'column',
             alignItems: 'center',
             p: '0.5rem',
-            backgroundColor: 'rgba(90, 90, 90, 1)',
         },
         leaders: {
             position: 'relative',

@@ -99,7 +99,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
             alignItems: 'center',
             m: '1rem auto 0 auto',
             color: 'white',
-            background: leaderColor && deckColor ? `linear-gradient(to bottom right, ${leaderColor}, ${deckColor})` : 'rgba(90, 90, 90, 1)',
+            background: leaderColor && deckColor ? `linear-gradient(to bottom right, ${leaderColor}, ${deckColor})` : 'rgba(29, 64, 77, 1)',
         },
         header: {
             width: '100%',
