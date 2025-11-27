@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Button, Snackbar } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 
-export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, cardPacks, base }) {
+export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base }) {
     const [open, setOpen] = useState(false);
     const [snackbarText, setSnackbarText] = useState('JSON Copied to Clipboard!');
     const [snackbarStatus, setSnackbarStatus] = useState('success');
@@ -13,9 +13,12 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
         setOpen(true);
 
         const deckCountMap = new Map();
-        for (const card of sortedDeckCards || cardPacks) {
+        for (const card of sortedDeckCards || sortedCardPacks) {
             const set = card?.cardObj?.cardData?.Set;
             let num = card?.cardObj?.cardData?.Number;
+
+            if (!set || !num) continue;
+
             if (num >= 537 && num <= 774) {
                 num = (num - 510).toString();
             } else if (num >= 767 && num <= 1004) {
@@ -26,7 +29,7 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
             } else if (num.length === 1) {
                 num = '00' + num;
             }
-            if (!set || !num) continue;
+
             const id = `${set}_${num}`;
             deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);
         }
@@ -46,11 +49,11 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
 
         const jsonCardData = {
             metadata: {
-                name: leaderPacks ? 'Imported SWUDraftSim Sealed Pool' : 'Imported SWUDraftSim Deck',
-                author: "Anonymous",
+                name: leaderPacks ? 'SWUDraftSim Sealed Pool' : 'SWUDraftSim Deck',
+                author: "Unknown",
             },
             leader: {
-                id: leaderPacks ? `${leaderPacks[0].cardObj?.cardData?.Set}_${leaderPacks[0].cardObj?.cardData?.Number}` : `${deckLeaders[0]?.cardObj?.cardData?.Set}_${deckLeaders[0]?.cardObj?.cardData?.Number}`,
+                id: leaderPacks ? `${leaderPacks.flat()[0].cardObj?.cardData?.Set}_${leaderPacks.flat()[0].cardObj?.cardData?.Number}` : `${deckLeaders[0]?.cardObj?.cardData?.Set}_${deckLeaders[0]?.cardObj?.cardData?.Number}`,
                 count: 1,
             },
             base: {

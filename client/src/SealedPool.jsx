@@ -130,7 +130,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                             onHoverClose={handlePopoverClose} />
                         <CopyJsonButton
                             leaderPacks={leaderPacks}
-                            cardPacks={cardPacks}
+                            sortedCardPacks={sortedCardPacks}
                             base={base}
                             setBase={setBase} />
                     </Box>

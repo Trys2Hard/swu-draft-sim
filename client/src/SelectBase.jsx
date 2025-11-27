@@ -124,6 +124,7 @@ export default function SelectBase({ base, setBase, currentSet }) {
                     labelId="select-base-label"
                     id="select-base"
                     value={base}
+                    name="base"
                     label="Select Base"
                     onChange={handleChange}
                     sx={{ color: 'white' }}
