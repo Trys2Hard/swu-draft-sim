@@ -4,7 +4,7 @@ import useCardHoverPopover from './useCardHoverPopover';
 import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
 
-export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted, base, setBase, currentSet }) {
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted, base, setBase, currentSet, sealedImportStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover();
 
     const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost || a.cardObj?.cardData?.Name?.localeCompare(b.cardObj?.cardData?.Name));
@@ -94,7 +94,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         deck: {
             position: 'relative',
             height: '100%',
-            display: !draftStarted && !sealedStarted ? 'none' : 'flex',
+            display: !draftStarted && !sealedStarted && !sealedImportStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             m: '1rem auto 0 auto',
@@ -195,7 +195,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
                                 onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.nonLeaderCard} />
+                                <Box component='img' src={card.cardData?.FrontArt} id={labelId} sx={styles.nonLeaderCard} />
                             </Grid>
                         )
                     })}

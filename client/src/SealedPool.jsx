@@ -4,8 +4,12 @@ import StartCard from './StartCard';
 import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
 
-export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet, isLoading, base, setBase }) {
-    const sortedCardPacks = [...cardPacks].flat().sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
+export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet, isLoading, base, setBase, handleImportSealedPool, sealedImportStarted }) {
+    const sortedCardPacks = [...cardPacks].flat().sort(
+        (a, b) =>
+            Number(a.cardData?.Number) -
+            Number(b.cardData?.Number)
+    )
 
     //Styles
     const styles = {
@@ -71,16 +75,18 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
 
     return (
         <>
-            {!sealedStarted &&
-                <StartCard cardSet={currentSet} handleStartDraft={handleStartSealedBuild}>
+            {(!sealedStarted && !sealedImportStarted) &&
+                <StartCard cardSet={currentSet} handleStartDraft={handleStartSealedBuild} handleImportSealedPool={handleImportSealedPool}>
                     Start Sealed
                 </StartCard>
             }
 
-            {sealedStarted &&
+            {(sealedStarted || sealedImportStarted) &&
                 <Box sx={styles.sealedPool} >
                     <Box sx={styles.header}>
-                        <Typography variant='h4' component='h2' sx={{ mb: { xs: '0.8rem', sm: '0' } }}>Sealed Pool</Typography>
+                        <Typography variant='h4' component='h2' sx={{ mb: { xs: '0.8rem', sm: '0' } }}>
+                            {sealedStarted ? 'Random Sealed Pool' : 'Cloned Sealed Pool'}
+                        </Typography>
                         <Box sx={{ position: { xs: 'static', sm: 'absolute' }, top: '0.7rem', right: '1rem' }}>
                             <SelectBase base={base} setBase={setBase} currentSet={currentSet} />
                         </Box>
@@ -101,14 +107,14 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                                         key={cardId}
                                         onClick={() => moveToDeck(card.id)}
                                         sx={styles.cardLeaders}>
-                                        <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.leaderCard} />
+                                        <Box component='img' src={card?.cardData?.FrontArt} id={cardId} sx={styles.leaderCard} />
                                     </Grid>
                                 )
                             })}
                         </Grid>
 
                         <Grid container spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }} sx={{ width: '100%' }}>
-                            {sortedCardPacks.flat().map((card) => {
+                            {sortedCardPacks.map((card) => {
                                 const cardId = `card-id-${card.id}`;
                                 return (
                                     <Grid
@@ -119,7 +125,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                                         onMouseLeave={handlePopoverClose}
                                         key={cardId}
                                         onClick={() => moveToDeck(card.id)}>
-                                        <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={cardId} sx={styles.nonLeaderCard} />
+                                        <Box component='img' src={card?.cardData?.FrontArt} id={cardId} sx={styles.nonLeaderCard} />
                                     </Grid>
                                 )
                             })}
@@ -134,7 +140,6 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                             base={base}
                             setBase={setBase} />
                     </Box>
-
                 </Box>
             }
         </>

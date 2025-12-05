@@ -5,6 +5,7 @@ export default function StartButton({ isLoading, onClick, children }) {
     const styles = {
         startButton: {
             display: isLoading ? 'none' : 'flex',
+            mb: '1rem',
             backgroundColor: 'rgba(0, 0, 0, 0.8)',
             textShadow: '2px 2px 3px black',
             borderRadius: '20px',

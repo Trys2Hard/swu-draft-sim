@@ -4,12 +4,14 @@ import useCardHoverPopover from './useCardHoverPopover';
 import useCreatePacks from './useCreatePacks';
 import CardSets from './CardSets';
 import SealedPool from './SealedPool';
+import { v4 as uuid } from 'uuid';
 
 export default function SealedPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
     const [sealedStarted, setSealedStarted] = useState(false);
     const [base, setBase] = useState('');
+    const [sealedImportStarted, setSealedImportStarted] = useState(false);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
     const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks, isLoading, setIsLoading } = useCreatePacks();
@@ -35,13 +37,55 @@ export default function SealedPage() {
         }
     }
 
+    const fetchCardById = async (cardId) => {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/card/${cardId}`);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || `Failed to fetch ${cardId}`);
+
+        return data.cardData;
+    };
+
+
+    async function handleImportSealedPool() {
+        setSealedImportStarted(true);
+        const text = await navigator.clipboard.readText();
+
+        try {
+            //Cards
+            const json = JSON.parse(text);
+            const ids = json.deck.map(card => card.id);
+            const cards = await Promise.all(ids.map(id => fetchCardById(id)));
+
+            const idCards = cards.map(card => ({
+                id: uuid(),
+                cardData: { ...card },
+            }));
+
+            setCardPacks(idCards);
+
+            //Leaders
+            // const leaderId = json.leader.id;
+            // const leader = await fetchCardById(leaderId);
+
+            // const idLeader = {
+            //     id: uuid(),
+            //     cardData: { ...leader },
+            // };
+
+            // setLeaderPacks(idLeader);
+        } catch (err) {
+            console.error("Clipboard did not contain valid JSON:", err);
+        }
+    }
+
     function moveToDeck(id) {
         handlePopoverClose();
 
         let pickedCard = leaderPacks.flat().find((card) => card.id === id) || cardPacks.flat().find((card) => card.id === id);
         if (!pickedCard) return;
 
-        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
+        const isLeader = pickedCard.cardData?.Type === 'Leader';
 
         const stateToUpdate = isLeader ? leaderPacks : cardPacks;
         const setStateToUpdate = isLeader ? setLeaderPacks : setCardPacks;
@@ -61,7 +105,6 @@ export default function SealedPage() {
 
     return (
         <>
-            {/* <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '0.5rem', color: 'white' }}>Sealed</Typography> */}
             <CardSets handleSetChange={handleSetChange} currentSet={currentSet} />
             <SealedPool
                 sealedStarted={sealedStarted}
@@ -73,10 +116,14 @@ export default function SealedPage() {
                 hoveredCard={hoveredCard}
                 leaderPacks={leaderPacks}
                 cardPacks={cardPacks}
+                setCardPacks={setCardPacks}
                 currentSet={currentSet}
                 isLoading={isLoading}
                 base={base}
-                setBase={setBase} />
+                setBase={setBase}
+                handleImportSealedPool={handleImportSealedPool}
+                sealedImportStarted={sealedImportStarted}
+            />
             <Deck
                 sealedStarted={sealedStarted}
                 deckLeaders={deckLeaders}
@@ -87,7 +134,8 @@ export default function SealedPage() {
                 setCardPacks={setCardPacks}
                 base={base}
                 setBase={setBase}
-                currentSet={currentSet} />
+                currentSet={currentSet}
+                sealedImportStarted={sealedImportStarted} />
         </>
     );
 }

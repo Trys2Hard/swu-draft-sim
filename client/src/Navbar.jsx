@@ -55,6 +55,7 @@ export default function Navbar() {
             position: 'absolute',
             right: '3rem',
             color: 'white',
+            transition: 'color 0.2s ease-in-out',
             '&:hover': { color: '#5865F2' },
         },
     };

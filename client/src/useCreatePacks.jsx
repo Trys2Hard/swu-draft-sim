@@ -45,7 +45,7 @@ export default function useCreatePacks() {
         for (let i = 0; i < count; i++) {
             const card = await fetchCard(rarity, seenIds);
             if (card) {
-                cards.push({ cardObj: card, id: uuid() });
+                cards.push({ ...card, id: uuid() });
             }
         }
         if (errorCount > 0) {

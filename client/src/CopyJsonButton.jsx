@@ -14,8 +14,8 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
 
         const deckCountMap = new Map();
         for (const card of sortedDeckCards || sortedCardPacks) {
-            const set = card?.cardObj?.cardData?.Set;
-            let num = card?.cardObj?.cardData?.Number;
+            const set = card?.cardData?.Set;
+            let num = card?.cardData?.Number;
 
             if (!set || !num) continue;
 
@@ -38,8 +38,8 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
         const sideboardCountMap = new Map();
         if (sideboardCards) {
             for (const card of sideboardCards) {
-                const set = card?.cardObj?.cardData?.Set;
-                const num = card?.cardObj?.cardData?.Number;
+                const set = card?.cardData?.Set;
+                const num = card?.cardData?.Number;
                 if (!set || !num) continue;
                 const id = `${set}_${num}`;
                 sideboardCountMap.set(id, (sideboardCountMap.get(id) || 0) + 1);
@@ -53,7 +53,7 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
                 author: "Unknown",
             },
             leader: {
-                id: leaderPacks ? `${leaderPacks.flat()[0].cardObj?.cardData?.Set}_${leaderPacks.flat()[0].cardObj?.cardData?.Number}` : `${deckLeaders[0]?.cardObj?.cardData?.Set}_${deckLeaders[0]?.cardObj?.cardData?.Number}`,
+                id: leaderPacks ? `${leaderPacks.flat()[0].cardData?.Set}_${leaderPacks.flat()[0].cardData?.Number}` : `${deckLeaders[0]?.cardData?.Set}_${deckLeaders[0]?.cardData?.Number}`,
                 count: 1,
             },
             base: {
