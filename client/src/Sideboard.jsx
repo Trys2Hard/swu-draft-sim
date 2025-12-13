@@ -5,7 +5,7 @@ import useCardHoverPopover from './useCardHoverPopover';
 export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, draftStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
 
-    const sortedSideboardCards = [...sideboardCards].sort((a, b) => a.cardObj?.cardData?.Number - b.cardObj?.cardData?.Number);
+    const sortedSideboardCards = [...sideboardCards].sort((a, b) => a.cardData?.Number - b.cardData?.Number);
 
     function moveToDeck(id) {
         handlePopoverClose();
@@ -13,7 +13,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
         let pickedCard = sideboardLeaders.find((card) => card.id === id) || sideboardCards.find((card) => card.id === id);
         if (!pickedCard) return;
 
-        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
+        const isLeader = pickedCard.cardData?.Type === 'Leader';
 
         const stateToUpdate = isLeader ? sideboardLeaders : sideboardCards;
         const setStateToUpdate = isLeader ? setSideboardLeaders : setSideboardCards;
@@ -81,7 +81,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
                                 onClick={() => { moveToDeck(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.leaderCard} />
+                                <Box component='img' src={card.cardData?.FrontArt} id={labelId} sx={styles.leaderCard} />
                             </Grid>
                         )
                     })}
@@ -99,7 +99,7 @@ export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLea
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
                                 onClick={() => { moveToDeck(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.nonLeaderCard} />
+                                <Box component='img' src={card.cardData?.FrontArt} id={labelId} sx={styles.nonLeaderCard} />
                             </Grid>
                         )
                     })}

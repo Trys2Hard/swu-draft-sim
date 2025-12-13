@@ -7,7 +7,7 @@ import SelectBase from './SelectBase';
 export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted, base, setBase, currentSet, sealedImportStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover();
 
-    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost || a.cardObj?.cardData?.Name?.localeCompare(b.cardObj?.cardData?.Name));
+    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardData?.Cost - b.cardData?.Cost || a.cardData?.Name?.localeCompare(b.cardData?.Name));
     const deckNum = sortedDeckCards.length;
 
     function moveToSideboard(id) {
@@ -16,7 +16,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         let pickedCard = deckLeaders.find((card) => card.id === id) || deckCards.find((card) => card.id === id);
         if (!pickedCard) return;
 
-        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
+        const isLeader = pickedCard.cardData?.Type === 'Leader';
 
         const stateToUpdate = isLeader ? deckLeaders : deckCards;
         const setStateToUpdate = isLeader ? setDeckLeaders : setDeckCards;
@@ -36,7 +36,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         let pickedCard = deckLeaders.find((card) => card.id === id) || deckCards.find((card) => card.id === id);
         if (!pickedCard) return;
 
-        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
+        const isLeader = pickedCard.cardData?.Type === 'Leader';
 
         const stateToUpdate = isLeader ? deckLeaders : deckCards;
         const setStateToUpdate = isLeader ? setDeckLeaders : setDeckCards;
@@ -64,11 +64,11 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         Cunning: 'rgba(204, 204, 140, 0.7), rgba(204, 204, 140, 1)',
     };
 
-    const aspects = deckLeaders[0]?.cardObj?.cardData?.Aspects || [];
+    const aspects = deckLeaders[0]?.cardData?.Aspects || [];
     const leaderColor = leaderAspectColorMap[aspects.find(a => leaderAspectColorMap[a])];
 
     const deckCardAspects = deckCards
-        .flatMap(card => card?.cardObj?.cardData?.Aspects || [])
+        .flatMap(card => card?.cardData?.Aspects || [])
         .filter(a => a !== 'Heroism' && a !== 'Villainy');
 
     // Count all aspects
@@ -177,7 +177,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
                                 onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.leaderCard} />
+                                <Box component='img' src={card.cardData?.FrontArt} id={labelId} sx={styles.leaderCard} />
                             </Grid>
                         )
                     })}
@@ -209,7 +209,9 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                     sortedDeckCards={sortedDeckCards}
                     sideboardCards={sideboardCards}
                     base={base}
-                    setBase={setBase} />
+                    setBase={setBase}>
+                    Copy JSON
+                </ CopyJsonButton>
             </Box>
         </Box>
     );

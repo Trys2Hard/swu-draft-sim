@@ -88,13 +88,13 @@ export default function DraftPage() {
 
             setPackIndex((prev) => prev + 1);
 
-            const pickedCardIndex = packs[packIndex]?.findIndex((item) => item.id === pickedCard.cardObj?.id);
+            const pickedCardIndex = packs[packIndex]?.findIndex((item) => item.id === pickedCard.id);
             packs[packIndex].splice(pickedCardIndex, 1);
 
             packs.map((pack) => {
                 if (packs.indexOf(pack) !== packIndex) {
                     const cardPick = pack.reduce((highest, card) => {
-                        if (!highest || (card.cardObj?.cardData?.Rank ?? 0) > (highest.cardObj?.cardData?.Rank ?? 0)) {
+                        if (!highest || (card.cardData?.Rank ?? 0) > (highest.cardData?.Rank ?? 0)) {
                             return card;
                         }
                         return highest;

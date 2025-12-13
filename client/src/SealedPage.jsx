@@ -65,19 +65,30 @@ export default function SealedPage() {
             setCardPacks(idCards);
 
             //Leaders
-            // const leaderId = json.leader.id;
-            // const leader = await fetchCardById(leaderId);
+            const leaderJson = JSON.parse(text);
 
-            // const idLeader = {
-            //     id: uuid(),
-            //     cardData: { ...leader },
-            // };
+            const leaderIds = leaderJson.leader.flatMap(leader => {
+                const ids = [];
+                for (let i = 0; i < leader.count; i++) {
+                    ids.push(leader.id);
+                }
+                return ids;
+            });
 
-            // setLeaderPacks(idLeader);
+            const leaders = await Promise.all(
+                leaderIds.map(id => fetchCardById(id))
+            );
+
+            const idLeaders = leaders.map(leader => ({
+                id: uuid(),
+                cardData: { ...leader },
+            }));
+
+            setLeaderPacks(idLeaders);
         } catch (err) {
             console.error("Clipboard did not contain valid JSON:", err);
         }
-    }
+    };
 
     function moveToDeck(id) {
         handlePopoverClose();

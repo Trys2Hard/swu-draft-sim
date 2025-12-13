@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Button, Snackbar } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 
-export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base, children }) {
+export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base }) {
     const [open, setOpen] = useState(false);
     const [snackbarText, setSnackbarText] = useState('JSON Copied to Clipboard!');
     const [snackbarStatus, setSnackbarStatus] = useState('success');
@@ -11,6 +11,17 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
 
     const handleCopyJson = () => {
         setOpen(true);
+        const flatLeaderPacks = leaderPacks.flat();
+
+        const leaderCountMap = new Map();
+        for (const card of flatLeaderPacks) {
+            const set = card?.cardData?.Set;
+            const num = card?.cardData?.Number;
+            if (!set || !num) continue;
+            const id = `${set}_${num}`;
+            leaderCountMap.set(id, (leaderCountMap.get(id) || 0) + 1);
+        }
+        const combinedLeaders = Array.from(leaderCountMap, ([id, count]) => ({ id, count }));
 
         const deckCountMap = new Map();
         for (const card of sortedDeckCards || sortedCardPacks) {
@@ -52,10 +63,7 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
                 name: leaderPacks ? 'SWUDraftSim Sealed Pool' : 'SWUDraftSim Deck',
                 author: "Unknown",
             },
-            leader: {
-                id: leaderPacks ? `${leaderPacks.flat()[0].cardData?.Set}_${leaderPacks.flat()[0].cardData?.Number}` : `${deckLeaders[0]?.cardData?.Set}_${deckLeaders[0]?.cardData?.Number}`,
-                count: 1,
-            },
+            leader: combinedLeaders,
             base: {
                 id: base,
                 count: 1,
@@ -86,34 +94,21 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
     //Styles
     const styles = {
         copyJsonButton: {
-            ...(sortedCardPacks && {
-                width: '100%',
-                background: 'none',
+            width: '100%',
+            background: 'none',
+            boxShadow: 'none',
+            '&:hover': {
                 boxShadow: 'none',
-                '&:hover': {
-                    boxShadow: 'none',
-                },
-                display: 'flex',
-                justifyContent: 'flex-start',
-            }),
-
-            ...(sortedDeckCards && {
-                fontSize: '0.8rem',
-                backgroundColor: 'rgba(65, 65, 65, 1)',
-                borderRadius: '5px',
-                mt: '0.5rem',
-                p: '0.3rem 0.5rem',
-                '&:hover': {
-                    filter: 'brightness(1.2)',
-                },
-            }),
+            },
+            display: 'flex',
+            justifyContent: 'flex-start',
         },
     };
 
     return (
         <>
             <Box sx={{ color: "white", display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-                <Button variant='contained' sx={styles.copyJsonButton} onClick={handleCopyJson}>{children}</Button>
+                <Button variant='contained' sx={styles.copyJsonButton} onClick={handleCopyJson}>All Leaders</Button>
             </Box>
             <Snackbar
                 open={open}

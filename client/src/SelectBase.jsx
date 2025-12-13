@@ -84,7 +84,7 @@ export default function SelectBase({ base, setBase, currentSet }) {
 
     return (
         <Box>
-            <FormControl size='small'
+            <FormControl size='small' variant='filled'
                 sx={{
                     width: '10rem',
 
@@ -127,7 +127,7 @@ export default function SelectBase({ base, setBase, currentSet }) {
                     name="base"
                     label="Select Base"
                     onChange={handleChange}
-                    sx={{ color: 'white' }}
+                    sx={{ color: 'white', backgroundColor: 'rgba(65, 65, 65, 1)', borderRadius: '5px', transition: 'all 0.3s ease-in-out' }}
                 >
                     {baseOptions.map((b) => (
                         <MenuItem key={b.number} value={b.number}>{b.name}</MenuItem>

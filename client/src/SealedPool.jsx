@@ -3,6 +3,7 @@ import CardHover from './CardHover';
 import StartCard from './StartCard';
 import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
+import ExportDropdown from './ExportDropdown';
 
 export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anchorEl, hoveredCard, moveToDeck, handleStartSealedBuild, sealedStarted, leaderPacks, cardPacks, currentSet, isLoading, base, setBase, handleImportSealedPool, sealedImportStarted }) {
     const sortedCardPacks = [...cardPacks].flat().sort(
@@ -85,7 +86,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                 <Box sx={styles.sealedPool} >
                     <Box sx={styles.header}>
                         <Typography variant='h4' component='h2' sx={{ mb: { xs: '0.8rem', sm: '0' } }}>
-                            {sealedStarted ? 'Random Sealed Pool' : 'Cloned Sealed Pool'}
+                            {sealedStarted ? 'Generated Sealed Pool' : 'Imported Sealed Pool'}
                         </Typography>
                         <Box sx={{ position: { xs: 'static', sm: 'absolute' }, top: '0.7rem', right: '1rem' }}>
                             <SelectBase base={base} setBase={setBase} currentSet={currentSet} />
@@ -134,7 +135,7 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
                             anchorEl={anchorEl}
                             hoveredCard={hoveredCard}
                             onHoverClose={handlePopoverClose} />
-                        <CopyJsonButton
+                        <ExportDropdown
                             leaderPacks={leaderPacks}
                             sortedCardPacks={sortedCardPacks}
                             base={base}
