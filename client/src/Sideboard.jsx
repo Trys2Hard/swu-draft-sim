@@ -1,6 +1,6 @@
 import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
-import useCardHoverPopover from './useCardHoverPopover';
+import { useCardHoverPopover } from './useCardHoverPopover';
 
 export default function Sideboard({ sideboardLeaders, sideboardCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, draftStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');

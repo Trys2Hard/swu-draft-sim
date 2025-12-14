@@ -1,6 +1,6 @@
 import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
-import useCardHoverPopover from './useCardHoverPopover';
+import { useCardHoverPopover } from './useCardHoverPopover';
 import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
 
@@ -204,14 +204,16 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         hoveredCard={hoveredCard}
                         onHoverClose={handlePopoverClose} />
                 </Grid>
-                <CopyJsonButton
-                    deckLeaders={deckLeaders}
-                    sortedDeckCards={sortedDeckCards}
-                    sideboardCards={sideboardCards}
-                    base={base}
-                    setBase={setBase}>
-                    Copy JSON
-                </ CopyJsonButton>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                    <CopyJsonButton
+                        deckLeaders={deckLeaders}
+                        sortedDeckCards={sortedDeckCards}
+                        sideboardCards={sideboardCards}
+                        base={base}
+                        setBase={setBase}>
+                        JSON
+                    </ CopyJsonButton>
+                </Box>
             </Box>
         </Box>
     );

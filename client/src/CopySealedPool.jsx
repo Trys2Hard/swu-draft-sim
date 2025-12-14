@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Box, Button, Snackbar } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base }) {
+export default function CopyJsonButton({ sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base }) {
     const [open, setOpen] = useState(false);
     const [snackbarText, setSnackbarText] = useState('JSON Copied to Clipboard!');
     const [snackbarStatus, setSnackbarStatus] = useState('success');
@@ -108,7 +109,14 @@ export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboard
     return (
         <>
             <Box sx={{ color: "white", display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-                <Button variant='contained' sx={styles.copyJsonButton} onClick={handleCopyJson}>All Leaders</Button>
+                <Button
+                    variant='contained'
+                    sx={styles.copyJsonButton}
+                    onClick={handleCopyJson}
+                    startIcon={<ContentCopyIcon />}
+                >
+                    All Leaders
+                </Button>
             </Box>
             <Snackbar
                 open={open}

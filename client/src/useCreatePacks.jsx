@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { useState, useRef } from 'react';
 
-export default function useCreatePacks() {
+export function useCreatePacks() {
     const [currentSet, setCurrentSet] = useState('sec');
     const [leaderPacks, setLeaderPacks] = useState([]);
     const [cardPacks, setCardPacks] = useState([]);
