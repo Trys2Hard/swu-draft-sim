@@ -15,28 +15,16 @@ export default function CopySealedPool({ sortedDeckCards, sideboardCards, leader
         }
         const combinedLeaders = Array.from(leaderCountMap, ([id, count]) => ({ id, count }));
 
-        const deckCountMap = new Map();
+        const deckCountMap = [];
         for (const card of sortedDeckCards || sortedCardPacks) {
             const set = card?.cardData?.Set;
             let num = card?.cardData?.Number;
 
             if (!set || !num) continue;
 
-            if (num >= 537 && num <= 774) {
-                num = (num - 510).toString();
-            } else if (num >= 767 && num <= 1004) {
-                num = (num - 740).toString();
-            }
-            if (num.length === 2) {
-                num = '0' + num;
-            } else if (num.length === 1) {
-                num = '00' + num;
-            }
-
             const id = `${set}_${num}`;
-            deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);
+            deckCountMap.push({ id, count: 1 });
         }
-        const combinedDeck = Array.from(deckCountMap, ([id, count]) => ({ id, count }));
 
         const sideboardCountMap = new Map();
         if (sideboardCards) {
@@ -60,14 +48,14 @@ export default function CopySealedPool({ sortedDeckCards, sideboardCards, leader
                 id: base,
                 count: 1,
             },
-            deck: combinedDeck,
+            deck: deckCountMap,
             sideboard: combinedSideboard,
         };
 
         navigator.clipboard.writeText(JSON.stringify(jsonCardData, null, 2));
 
         if (onSnackbar) {
-            if (!jsonCardData.leader.id || jsonCardData?.leader?.id === 'undefined_undefined') {
+            if (!jsonCardData?.leader[0]?.id || jsonCardData?.leader?.id === 'undefined_undefined') {
                 onSnackbar('Copied JSON to Clipboard. No Leader Selected.', 'warning');
             } else if (!jsonCardData?.base?.id) {
                 onSnackbar('Copied JSON to Clipboard. No Base Selected.', 'warning');

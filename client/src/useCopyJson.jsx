@@ -59,7 +59,7 @@ export function useCopyJson({
 
         navigator.clipboard.writeText(JSON.stringify(jsonCardData, null, 2));
 
-        if (!jsonCardData.leader.id || jsonCardData.leader.id === 'undefined_undefined') {
+        if (!jsonCardData?.leader?.id || jsonCardData?.leader?.id === 'undefined_undefined') {
             return {
                 text: 'Copied JSON to Clipboard. No Leader Selected.',
                 status: 'warning'
