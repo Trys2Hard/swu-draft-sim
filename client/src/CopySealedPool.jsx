@@ -1,17 +1,8 @@
-import { useState } from 'react';
-import { Box, Button, Snackbar } from '@mui/material';
-import MuiAlert from '@mui/material/Alert';
+import { Box, Button } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-export default function CopyJsonButton({ sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base }) {
-    const [open, setOpen] = useState(false);
-    const [snackbarText, setSnackbarText] = useState('JSON Copied to Clipboard!');
-    const [snackbarStatus, setSnackbarStatus] = useState('success');
-
-    const snackbarColor = snackbarStatus === 'success' ? 'rgba(75, 247, 113, 0.8)' : snackbarStatus === 'warning' ? 'rgba(236, 242, 76, 0.8)' : 'none';
-
+export default function CopySealedPool({ sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base, onSnackbar }) {
     const handleCopyJson = () => {
-        setOpen(true);
         const flatLeaderPacks = leaderPacks.flat();
 
         const leaderCountMap = new Map();
@@ -72,25 +63,19 @@ export default function CopyJsonButton({ sortedDeckCards, sideboardCards, leader
             deck: combinedDeck,
             sideboard: combinedSideboard,
         };
+
         navigator.clipboard.writeText(JSON.stringify(jsonCardData, null, 2));
-        if (jsonCardData?.leader?.id === 'undefined_undefined') {
-            setSnackbarStatus('warning')
-            setSnackbarText('Copied JSON to Clipboard. No Leader Selected.');
-        } else if (!jsonCardData?.base?.id) {
-            setSnackbarStatus('warning')
-            setSnackbarText('Copied JSON to Clipboard. No Base Selected.');
-        } else {
-            setSnackbarStatus('success');
-            setSnackbarText('Copied JSON to Clipboard')
+
+        if (onSnackbar) {
+            if (!jsonCardData.leader.id || jsonCardData?.leader?.id === 'undefined_undefined') {
+                onSnackbar('Copied JSON to Clipboard. No Leader Selected.', 'warning');
+            } else if (!jsonCardData?.base?.id) {
+                onSnackbar('Copied JSON to Clipboard. No Base Selected.', 'warning');
+            } else {
+                onSnackbar('Copied JSON to Clipboard', 'success');
+            }
         }
     };
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    }
 
     //Styles
     const styles = {
@@ -107,30 +92,15 @@ export default function CopyJsonButton({ sortedDeckCards, sideboardCards, leader
     };
 
     return (
-        <>
-            <Box sx={{ color: "white", display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-                <Button
-                    variant='contained'
-                    sx={styles.copyJsonButton}
-                    onClick={handleCopyJson}
-                    startIcon={<ContentCopyIcon />}
-                >
-                    All Leaders
-                </Button>
-            </Box>
-            <Snackbar
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleClose}
+        <Box sx={{ color: "white", display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+            <Button
+                variant='contained'
+                sx={styles.copyJsonButton}
+                onClick={handleCopyJson}
+                startIcon={<ContentCopyIcon />}
             >
-                <MuiAlert
-                    onClose={handleClose}
-                    severity={snackbarStatus}
-                    sx={{ width: '100%', backgroundColor: snackbarColor, color: 'black' }}
-                >
-                    {snackbarText}
-                </MuiAlert>
-            </Snackbar>
-        </>
+                All Leaders
+            </Button>
+        </Box>
     );
 }

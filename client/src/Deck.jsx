@@ -3,12 +3,23 @@ import CardHover from './CardHover';
 import { useCardHoverPopover } from './useCardHoverPopover';
 import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
+import { useState } from 'react';
+import CustomSnackbar from './CustomSnackbar';
 
 export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted, base, setBase, currentSet, sealedImportStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover();
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarText, setSnackbarText] = useState('');
+    const [snackbarStatus, setSnackbarStatus] = useState('success');
 
     const sortedDeckCards = [...deckCards].sort((a, b) => a.cardData?.Cost - b.cardData?.Cost || a.cardData?.Name?.localeCompare(b.cardData?.Name));
     const deckNum = sortedDeckCards.length;
+
+    const handleSnackbar = (text, status) => {
+        setSnackbarText(text);
+        setSnackbarStatus(status);
+        setSnackbarOpen(true);
+    };
 
     function moveToSideboard(id) {
         handlePopoverClose();
@@ -210,11 +221,18 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         sortedDeckCards={sortedDeckCards}
                         sideboardCards={sideboardCards}
                         base={base}
-                        setBase={setBase}>
+                        setBase={setBase}
+                        onSnackbar={handleSnackbar}>
                         JSON
                     </ CopyJsonButton>
                 </Box>
             </Box>
+            <CustomSnackbar
+                open={snackbarOpen}
+                message={snackbarText}
+                severity={snackbarStatus}
+                onClose={() => setSnackbarOpen(false)}
+            />
         </Box>
     );
 }

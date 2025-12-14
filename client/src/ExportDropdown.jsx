@@ -4,6 +4,8 @@ import { Button, Box, Menu, MenuItem } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CopyJsonButton from './CopyJsonButton';
 import CopySealedPool from './CopySealedPool';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CustomSnackbar from './CustomSnackbar';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -33,11 +35,8 @@ const StyledMenu = styled((props) => (
         '& .MuiMenuItem-root': {
             '& .MuiSvgIcon-root': {
                 fontSize: 18,
-                color: 'theme.palette.text.secondary',
+                color: 'white',
                 marginRight: theme.spacing(1.5),
-                ...theme.applyStyles('dark', {
-                    color: 'inherit',
-                }),
             },
             '&:active': {
                 backgroundColor: alpha(
@@ -46,20 +45,29 @@ const StyledMenu = styled((props) => (
                 ),
             },
         },
-        ...theme.applyStyles('dark', {
-            color: 'theme.palette.grey[300]',
-        }),
     },
 }));
 
 export default function ExportDropdown({ leaderPacks, sortedCardPacks, base, setBase }) {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarText, setSnackbarText] = useState('');
+    const [snackbarStatus, setSnackbarStatus] = useState('success');
+
     const open = Boolean(anchorEl);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleSnackbar = (text, status) => {
+        setSnackbarText(text);
+        setSnackbarStatus(status);
+        setSnackbarOpen(true);
     };
 
     return (
@@ -73,10 +81,11 @@ export default function ExportDropdown({ leaderPacks, sortedCardPacks, base, set
                     variant="contained"
                     disableElevation
                     onClick={handleClick}
+                    startIcon={<ContentCopyIcon />}
                     endIcon={<KeyboardArrowDownIcon />}
                     sx={{ backgroundColor: 'rgba(65, 65, 65, 1)', '&:hover': { filter: 'brightness(1.2)' } }}
                 >
-                    Copy JSON
+                    JSON
                 </Button>
             </Box>
 
@@ -96,7 +105,8 @@ export default function ExportDropdown({ leaderPacks, sortedCardPacks, base, set
                         leaderPacks={leaderPacks}
                         sortedCardPacks={sortedCardPacks}
                         base={base}
-                        setBase={setBase}>
+                        setBase={setBase}
+                        onSnackbar={handleSnackbar}>
                         One Leader
                     </CopyJsonButton>
                 </MenuItem>
@@ -105,9 +115,17 @@ export default function ExportDropdown({ leaderPacks, sortedCardPacks, base, set
                         leaderPacks={leaderPacks}
                         sortedCardPacks={sortedCardPacks}
                         base={base}
-                        setBase={setBase} />
+                        setBase={setBase}
+                        onSnackbar={handleSnackbar} />
                 </MenuItem>
             </StyledMenu>
+
+            <CustomSnackbar
+                open={snackbarOpen}
+                message={snackbarText}
+                severity={snackbarStatus}
+                onClose={() => setSnackbarOpen(false)}
+            />
         </>
     );
 }
