@@ -64,6 +64,7 @@ export default function DraftPack({ packNum, pickNum, handleStartDraft, draftSta
             mt: '0.5rem',
             p: '0.5rem',
             filter: isLoading ? 'blur(2px)' : 'blur(0)',
+            zIndex: 1,
         },
         cardContainer: {
             display: 'flex',

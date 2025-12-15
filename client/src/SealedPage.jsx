@@ -5,6 +5,7 @@ import { useCreatePacks } from './useCreatePacks';
 import CardSets from './CardSets';
 import SealedPool from './SealedPool';
 import { v4 as uuid } from 'uuid';
+import LZString from 'lz-string';
 
 export default function SealedPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
@@ -52,8 +53,25 @@ export default function SealedPage() {
         const text = await navigator.clipboard.readText();
 
         try {
-            //Cards
-            const json = JSON.parse(text);
+            let json;
+
+            // 🔽🔽🔽 NEW: Detect deck link vs raw JSON 🔽🔽🔽
+            if (text.startsWith('http')) {
+                const url = new URL(text);
+                const deckParam = url.searchParams.get('deck');
+
+                if (!deckParam) {
+                    throw new Error('No deck parameter found');
+                }
+
+                const decompressed = LZString.decompressFromEncodedURIComponent(deckParam);
+                json = JSON.parse(decompressed);
+            } else {
+                json = JSON.parse(text);
+            }
+            // 🔼🔼🔼 END NEW SECTION 🔼🔼🔼
+
+            // Cards
             const ids = json.deck.map(card => card.id);
             const cards = await Promise.all(ids.map(id => fetchCardById(id)));
 
@@ -64,29 +82,33 @@ export default function SealedPage() {
 
             setCardPacks(idCards);
 
-            //Leaders
-            const leaderJson = JSON.parse(text);
+            // Leaders
+            if (!json.leader.id) {
 
-            const leaderIds = leaderJson.leader.flatMap(leader => {
-                const ids = [];
-                for (let i = 0; i < leader.count; i++) {
-                    ids.push(leader.id);
-                }
-                return ids;
-            });
 
-            const leaders = await Promise.all(
-                leaderIds.map(id => fetchCardById(id))
-            );
+                const leaderIds = json.leader.flatMap(leader => {
+                    const ids = [];
+                    for (let i = 0; i < leader.count; i++) {
+                        ids.push(leader.id);
+                    }
+                    return ids;
+                });
 
-            const idLeaders = leaders.map(leader => ({
-                id: uuid(),
-                cardData: { ...leader },
-            }));
 
-            setLeaderPacks(idLeaders);
+                const leaders = await Promise.all(
+                    leaderIds.map(id => fetchCardById(id))
+                );
+
+                const idLeaders = leaders.map(leader => ({
+                    id: uuid(),
+                    cardData: { ...leader },
+                }));
+
+                setLeaderPacks(idLeaders);
+            }
+
         } catch (err) {
-            console.error("Clipboard did not contain valid JSON:", err);
+            console.error('Import failed:', err);
         }
     };
 
@@ -108,7 +130,6 @@ export default function SealedPage() {
 
         addCard((prev) => [...prev, pickedCard]);
     }
-
 
     function handleSetChange(newSet) {
         setCurrentSet(newSet);

@@ -22,9 +22,9 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
         },
         header: {
             width: '100%',
-            height: { xs: '7rem', sm: '4rem' },
+            height: { xs: '7rem', md: '4rem' },
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
+            flexDirection: { xs: 'column', md: 'row' },
             alignItems: 'center',
             justifyContent: 'center',
         },
@@ -85,10 +85,10 @@ export default function SealedPool({ handlePopoverClose, handlePopoverOpen, anch
             {(sealedStarted || sealedImportStarted) &&
                 <Box sx={styles.sealedPool} >
                     <Box sx={styles.header}>
-                        <Typography variant='h4' component='h2' sx={{ mb: { xs: '0.8rem', sm: '0' } }}>
+                        <Typography variant='h4' component='h2' sx={{ mb: { xs: '0.8rem', md: '0' }, fontSize: { xs: '1.6rem', sm: '2.125rem' } }}>
                             {sealedStarted ? 'Generated Sealed Pool' : 'Imported Sealed Pool'}
                         </Typography>
-                        <Box sx={{ position: { xs: 'static', sm: 'absolute' }, top: '0.7rem', right: '1rem' }}>
+                        <Box sx={{ position: { xs: 'static', md: 'absolute' }, top: '0.7rem', right: '1rem' }}>
                             <SelectBase base={base} setBase={setBase} currentSet={currentSet} />
                         </Box>
                     </Box>

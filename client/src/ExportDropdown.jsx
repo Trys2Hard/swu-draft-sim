@@ -85,7 +85,7 @@ export default function ExportDropdown({ leaderPacks, sortedCardPacks, base, set
                     endIcon={<KeyboardArrowDownIcon />}
                     sx={{ backgroundColor: 'rgba(65, 65, 65, 1)', '&:hover': { filter: 'brightness(1.2)' } }}
                 >
-                    JSON
+                    Export
                 </Button>
             </Box>
 
@@ -107,7 +107,7 @@ export default function ExportDropdown({ leaderPacks, sortedCardPacks, base, set
                         base={base}
                         setBase={setBase}
                         onSnackbar={handleSnackbar}>
-                        One Leader
+                        JSON (One Leader)
                     </CopyJsonButton>
                 </MenuItem>
                 <MenuItem onClick={handleClose} disableRipple>

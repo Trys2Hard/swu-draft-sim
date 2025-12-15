@@ -1,10 +1,18 @@
 import { Box, Button } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LZString from 'lz-string';
 
-export default function CopySealedPool({ sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base, onSnackbar }) {
+export default function CopySealedPool({
+    sortedDeckCards,
+    sideboardCards,
+    leaderPacks,
+    sortedCardPacks,
+    base,
+    onSnackbar
+}) {
+
     const handleCopyJson = () => {
         const flatLeaderPacks = leaderPacks.flat();
-
         const leaderCountMap = new Map();
         for (const card of flatLeaderPacks) {
             const set = card?.cardData?.Set;
@@ -13,15 +21,17 @@ export default function CopySealedPool({ sortedDeckCards, sideboardCards, leader
             const id = `${set}_${num}`;
             leaderCountMap.set(id, (leaderCountMap.get(id) || 0) + 1);
         }
-        const combinedLeaders = Array.from(leaderCountMap, ([id, count]) => ({ id, count }));
+
+        const combinedLeaders = Array.from(
+            leaderCountMap,
+            ([id, count]) => ({ id, count })
+        );
 
         const deckCountMap = [];
         for (const card of sortedDeckCards || sortedCardPacks) {
             const set = card?.cardData?.Set;
-            let num = card?.cardData?.Number;
-
+            const num = card?.cardData?.Number;
             if (!set || !num) continue;
-
             const id = `${set}_${num}`;
             deckCountMap.push({ id, count: 1 });
         }
@@ -52,15 +62,22 @@ export default function CopySealedPool({ sortedDeckCards, sideboardCards, leader
             sideboard: combinedSideboard,
         };
 
-        navigator.clipboard.writeText(JSON.stringify(jsonCardData, null, 2));
+        // 🔽🔽🔽 NEW: ENCODE + CREATE DECK LINK 🔽🔽🔽
+        const jsonString = JSON.stringify(jsonCardData);
+        const compressed = LZString.compressToEncodedURIComponent(jsonString);
+
+        const deckLink = `${window.location.origin}?deck=${compressed}`;
+
+        navigator.clipboard.writeText(deckLink);
+        // 🔼🔼🔼 END NEW SECTION 🔼🔼🔼
 
         if (onSnackbar) {
             if (!jsonCardData?.leader[0]?.id || jsonCardData?.leader?.id === 'undefined_undefined') {
-                onSnackbar('Copied JSON to Clipboard. No Leader Selected.', 'warning');
+                onSnackbar('Copied Sealed Pool Link to Clipboard (No Leader Selected)', 'warning');
             } else if (!jsonCardData?.base?.id) {
-                onSnackbar('Copied JSON to Clipboard. No Base Selected.', 'warning');
+                onSnackbar('Copied Sealed Pool Link to Clipboard (No Base Selected)', 'warning');
             } else {
-                onSnackbar('Copied JSON to Clipboard', 'success');
+                onSnackbar('Copied Sealed Pool Link to Clipboard', 'success');
             }
         }
     };
@@ -71,9 +88,7 @@ export default function CopySealedPool({ sortedDeckCards, sideboardCards, leader
             width: '100%',
             background: 'none',
             boxShadow: 'none',
-            '&:hover': {
-                boxShadow: 'none',
-            },
+            '&:hover': { boxShadow: 'none' },
             display: 'flex',
             justifyContent: 'flex-start',
         },
@@ -87,7 +102,7 @@ export default function CopySealedPool({ sortedDeckCards, sideboardCards, leader
                 onClick={handleCopyJson}
                 startIcon={<ContentCopyIcon />}
             >
-                All Leaders
+                Sealed Pool Link
             </Button>
         </Box>
     );
