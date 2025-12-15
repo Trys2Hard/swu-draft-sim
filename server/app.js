@@ -204,6 +204,31 @@ app.get('/api/foil', async (req, res) => {
     }
 })
 
+app.get('/api/card/:id', async (req, res) => {
+    const id = req.params.id;
+
+    if (!id.includes('_')) {
+        return res.status(400).json({ error: 'Invalid card ID format. Expected SET_NUMBER.' });
+    }
+
+    const [set, number] = id.split('_');
+    const upperSet = set.toUpperCase();
+
+    try {
+        const card = await Card.findOne({ Set: upperSet, Number: number });
+
+        if (!card) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
+
+        res.json({ cardData: card });
+    } catch (error) {
+        console.error('Error fetching card by ID:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {

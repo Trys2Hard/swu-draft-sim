@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import Deck from './Deck';
-import useCardHoverPopover from './useCardHoverPopover';
-import useCreatePacks from './useCreatePacks';
+import { useCardHoverPopover } from './useCardHoverPopover';
+import { useCreatePacks } from './useCreatePacks';
 import CardSets from './CardSets';
 import SealedPool from './SealedPool';
+import { v4 as uuid } from 'uuid';
+import LZString from 'lz-string';
 
 export default function SealedPage() {
     const [deckLeaders, setDeckLeaders] = useState([]);
     const [deckCards, setDeckCards] = useState([]);
     const [sealedStarted, setSealedStarted] = useState(false);
     const [base, setBase] = useState('');
+    const [sealedImportStarted, setSealedImportStarted] = useState(false);
 
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover('');
     const { currentSet, setCurrentSet, generateLeaderPack, generateCardPack, leaderPacks, cardPacks, setLeaderPacks, setCardPacks, isLoading, setIsLoading } = useCreatePacks();
@@ -35,13 +38,87 @@ export default function SealedPage() {
         }
     }
 
+    const fetchCardById = async (cardId) => {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/card/${cardId}`);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || `Failed to fetch ${cardId}`);
+
+        return data.cardData;
+    };
+
+
+    async function handleImportSealedPool() {
+        setSealedImportStarted(true);
+        const text = await navigator.clipboard.readText();
+
+        try {
+            let json;
+
+            // 🔽🔽🔽 NEW: Detect deck link vs raw JSON 🔽🔽🔽
+            if (text.startsWith('http')) {
+                const url = new URL(text);
+                const deckParam = url.searchParams.get('deck');
+
+                if (!deckParam) {
+                    throw new Error('No deck parameter found');
+                }
+
+                const decompressed = LZString.decompressFromEncodedURIComponent(deckParam);
+                json = JSON.parse(decompressed);
+            } else {
+                json = JSON.parse(text);
+            }
+            // 🔼🔼🔼 END NEW SECTION 🔼🔼🔼
+
+            // Cards
+            const ids = json.deck.map(card => card.id);
+            const cards = await Promise.all(ids.map(id => fetchCardById(id)));
+
+            const idCards = cards.map(card => ({
+                id: uuid(),
+                cardData: { ...card },
+            }));
+
+            setCardPacks(idCards);
+
+            // Leaders
+            if (!json.leader.id) {
+
+
+                const leaderIds = json.leader.flatMap(leader => {
+                    const ids = [];
+                    for (let i = 0; i < leader.count; i++) {
+                        ids.push(leader.id);
+                    }
+                    return ids;
+                });
+
+
+                const leaders = await Promise.all(
+                    leaderIds.map(id => fetchCardById(id))
+                );
+
+                const idLeaders = leaders.map(leader => ({
+                    id: uuid(),
+                    cardData: { ...leader },
+                }));
+
+                setLeaderPacks(idLeaders);
+            }
+
+        } catch (err) {
+            console.error('Import failed:', err);
+        }
+    };
+
     function moveToDeck(id) {
         handlePopoverClose();
 
         let pickedCard = leaderPacks.flat().find((card) => card.id === id) || cardPacks.flat().find((card) => card.id === id);
         if (!pickedCard) return;
 
-        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
+        const isLeader = pickedCard.cardData?.Type === 'Leader';
 
         const stateToUpdate = isLeader ? leaderPacks : cardPacks;
         const setStateToUpdate = isLeader ? setLeaderPacks : setCardPacks;
@@ -54,14 +131,12 @@ export default function SealedPage() {
         addCard((prev) => [...prev, pickedCard]);
     }
 
-
     function handleSetChange(newSet) {
         setCurrentSet(newSet);
     }
 
     return (
         <>
-            {/* <Typography variant='h3' component='h1' sx={{ textAlign: 'center', mt: '0.5rem', color: 'white' }}>Sealed</Typography> */}
             <CardSets handleSetChange={handleSetChange} currentSet={currentSet} />
             <SealedPool
                 sealedStarted={sealedStarted}
@@ -73,10 +148,14 @@ export default function SealedPage() {
                 hoveredCard={hoveredCard}
                 leaderPacks={leaderPacks}
                 cardPacks={cardPacks}
+                setCardPacks={setCardPacks}
                 currentSet={currentSet}
                 isLoading={isLoading}
                 base={base}
-                setBase={setBase} />
+                setBase={setBase}
+                handleImportSealedPool={handleImportSealedPool}
+                sealedImportStarted={sealedImportStarted}
+            />
             <Deck
                 sealedStarted={sealedStarted}
                 deckLeaders={deckLeaders}
@@ -87,7 +166,8 @@ export default function SealedPage() {
                 setCardPacks={setCardPacks}
                 base={base}
                 setBase={setBase}
-                currentSet={currentSet} />
+                currentSet={currentSet}
+                sealedImportStarted={sealedImportStarted} />
         </>
     );
 }

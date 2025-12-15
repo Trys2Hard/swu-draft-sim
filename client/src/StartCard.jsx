@@ -1,7 +1,12 @@
 import { Box } from '@mui/material';
 import StartButton from './StartButton';
+import { useLocation } from 'react-router-dom';
 
-export default function StartCard({ cardSet, isLoading, handleStartDraft, draftPage, sealedPage, children }) {
+export default function StartCard({ cardSet, isLoading, handleStartDraft, draftPage, sealedPage, children, handleImportSealedPool }) {
+    const location = useLocation();
+    const path = location.pathname;
+    const isSealedPage = path === "/sealed";
+
     const styles = {
         packBox: {
             position: 'relative',
@@ -28,6 +33,12 @@ export default function StartCard({ cardSet, isLoading, handleStartDraft, draftP
             <StartButton isLoading={isLoading} draftPage={draftPage} sealedPage={sealedPage} onClick={() => handleStartDraft()}>
                 {children}
             </StartButton>
+
+            {isSealedPage &&
+                <StartButton onClick={() => handleImportSealedPool()}>
+                    Import Sealed Pool
+                </StartButton>
+            }
         </Box>
     );
 }

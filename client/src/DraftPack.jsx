@@ -64,6 +64,7 @@ export default function DraftPack({ packNum, pickNum, handleStartDraft, draftSta
             mt: '0.5rem',
             p: '0.5rem',
             filter: isLoading ? 'blur(2px)' : 'blur(0)',
+            zIndex: 1,
         },
         cardContainer: {
             display: 'flex',
@@ -159,8 +160,8 @@ export default function DraftPack({ packNum, pickNum, handleStartDraft, draftSta
                                     >
                                         <Box
                                             component="img"
-                                            src={isFlipped ? card.cardObj?.cardData?.BackArt : card.cardObj?.cardData?.FrontArt}
-                                            alt={card.cardObj?.cardData?.Name}
+                                            src={isFlipped ? card.cardData?.BackArt : card.cardData?.FrontArt}
+                                            alt={card.cardData?.Name}
                                             onClick={() => pickCard(card.id)}
                                             onMouseEnter={(e) => handlePopoverOpen(e, card)}
                                             onMouseLeave={handlePopoverClose}

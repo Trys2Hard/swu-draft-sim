@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { useState, useRef } from 'react';
 
-export default function useCreatePacks() {
+export function useCreatePacks() {
     const [currentSet, setCurrentSet] = useState('sec');
     const [leaderPacks, setLeaderPacks] = useState([]);
     const [cardPacks, setCardPacks] = useState([]);
@@ -45,7 +45,7 @@ export default function useCreatePacks() {
         for (let i = 0; i < count; i++) {
             const card = await fetchCard(rarity, seenIds);
             if (card) {
-                cards.push({ cardObj: card, id: uuid() });
+                cards.push({ ...card, id: uuid() });
             }
         }
         if (errorCount > 0) {

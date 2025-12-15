@@ -2,7 +2,7 @@ import { Box, Popover } from '@mui/material';
 
 export default function CardHover({ anchorEl, hoveredCard, onHoverClose }) {
     const open = Boolean(anchorEl);
-    const hoveredCardData = hoveredCard?.cardObj?.cardData;
+    const hoveredCardData = hoveredCard?.cardData;
 
     //Styles
     const styles = {

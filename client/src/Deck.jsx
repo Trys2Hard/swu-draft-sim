@@ -1,14 +1,25 @@
 import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
-import useCardHoverPopover from './useCardHoverPopover';
+import { useCardHoverPopover } from './useCardHoverPopover';
 import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
+import { useState } from 'react';
+import CustomSnackbar from './CustomSnackbar';
 
-export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted, base, setBase, currentSet }) {
+export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCards, setSideboardLeaders, setSideboardCards, sideboardCards, setLeaderPacks, setCardPacks, draftStarted, sealedStarted, base, setBase, currentSet, sealedImportStarted }) {
     const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } = useCardHoverPopover();
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarText, setSnackbarText] = useState('');
+    const [snackbarStatus, setSnackbarStatus] = useState('success');
 
-    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardObj?.cardData?.Cost - b.cardObj?.cardData?.Cost || a.cardObj?.cardData?.Name?.localeCompare(b.cardObj?.cardData?.Name));
+    const sortedDeckCards = [...deckCards].sort((a, b) => a.cardData?.Cost - b.cardData?.Cost || a.cardData?.Name?.localeCompare(b.cardData?.Name));
     const deckNum = sortedDeckCards.length;
+
+    const handleSnackbar = (text, status) => {
+        setSnackbarText(text);
+        setSnackbarStatus(status);
+        setSnackbarOpen(true);
+    };
 
     function moveToSideboard(id) {
         handlePopoverClose();
@@ -16,7 +27,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         let pickedCard = deckLeaders.find((card) => card.id === id) || deckCards.find((card) => card.id === id);
         if (!pickedCard) return;
 
-        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
+        const isLeader = pickedCard.cardData?.Type === 'Leader';
 
         const stateToUpdate = isLeader ? deckLeaders : deckCards;
         const setStateToUpdate = isLeader ? setDeckLeaders : setDeckCards;
@@ -36,7 +47,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         let pickedCard = deckLeaders.find((card) => card.id === id) || deckCards.find((card) => card.id === id);
         if (!pickedCard) return;
 
-        const isLeader = pickedCard.cardObj?.cardData?.Type === 'Leader';
+        const isLeader = pickedCard.cardData?.Type === 'Leader';
 
         const stateToUpdate = isLeader ? deckLeaders : deckCards;
         const setStateToUpdate = isLeader ? setDeckLeaders : setDeckCards;
@@ -64,11 +75,11 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         Cunning: 'rgba(204, 204, 140, 0.7), rgba(204, 204, 140, 1)',
     };
 
-    const aspects = deckLeaders[0]?.cardObj?.cardData?.Aspects || [];
+    const aspects = deckLeaders[0]?.cardData?.Aspects || [];
     const leaderColor = leaderAspectColorMap[aspects.find(a => leaderAspectColorMap[a])];
 
     const deckCardAspects = deckCards
-        .flatMap(card => card?.cardObj?.cardData?.Aspects || [])
+        .flatMap(card => card?.cardData?.Aspects || [])
         .filter(a => a !== 'Heroism' && a !== 'Villainy');
 
     // Count all aspects
@@ -94,7 +105,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
         deck: {
             position: 'relative',
             height: '100%',
-            display: !draftStarted && !sealedStarted ? 'none' : 'flex',
+            display: !draftStarted && !sealedStarted && !sealedImportStarted ? 'none' : 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             m: '1rem auto 0 auto',
@@ -177,7 +188,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
                                 onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.leaderCard} />
+                                <Box component='img' src={card.cardData?.FrontArt} id={labelId} sx={styles.leaderCard} />
                             </Grid>
                         )
                     })}
@@ -195,7 +206,7 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                                 onMouseLeave={handlePopoverClose}
                                 key={labelId}
                                 onClick={() => { moveToSideboard(card.id); moveToSealedPool(card.id) }}>
-                                <Box component='img' src={card.cardObj?.cardData?.FrontArt} id={labelId} sx={styles.nonLeaderCard} />
+                                <Box component='img' src={card.cardData?.FrontArt} id={labelId} sx={styles.nonLeaderCard} />
                             </Grid>
                         )
                     })}
@@ -204,13 +215,24 @@ export default function Deck({ deckLeaders, deckCards, setDeckLeaders, setDeckCa
                         hoveredCard={hoveredCard}
                         onHoverClose={handlePopoverClose} />
                 </Grid>
-                <CopyJsonButton
-                    deckLeaders={deckLeaders}
-                    sortedDeckCards={sortedDeckCards}
-                    sideboardCards={sideboardCards}
-                    base={base}
-                    setBase={setBase} />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                    <CopyJsonButton
+                        deckLeaders={deckLeaders}
+                        sortedDeckCards={sortedDeckCards}
+                        sideboardCards={sideboardCards}
+                        base={base}
+                        setBase={setBase}
+                        onSnackbar={handleSnackbar}>
+                        JSON
+                    </ CopyJsonButton>
+                </Box>
             </Box>
+            <CustomSnackbar
+                open={snackbarOpen}
+                message={snackbarText}
+                severity={snackbarStatus}
+                onClose={() => setSnackbarOpen(false)}
+            />
         </Box>
     );
 }

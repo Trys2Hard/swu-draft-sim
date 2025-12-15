@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 
-const useCardHoverPopover = () => {
+export function useCardHoverPopover() {
     const [anchorEl, setAnchorEl] = useState(null);
     const [hoveredCard, setHoveredCard] = useState(null);
     const hoverTimeoutRef = useRef(null);
@@ -23,5 +23,3 @@ const useCardHoverPopover = () => {
 
     return { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose };
 }
-
-export default useCardHoverPopover;
