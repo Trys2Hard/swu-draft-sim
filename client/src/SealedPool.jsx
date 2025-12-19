@@ -5,7 +5,9 @@ import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
 import ExportDropdown from './ExportDropdown';
 import CardSort from './CardSort';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import CardFilter from './FilterButton';
+import FilterOptions from './FilterOptions';
 
 export default function SealedPool({
   handlePopoverClose,
@@ -25,23 +27,39 @@ export default function SealedPool({
   sealedImportStarted,
 }) {
   const [sortBy, setSortBy] = useState('Number');
+  const [sortedCardPacks, setSortedCardPacks] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
+  const [selectedCosts, setSelectedCosts] = useState([]);
+  const [selectedRarities, setSelectedRarities] = useState([]);
 
-  const sortedCardPacks = [...cardPacks]
-    .flat()
-    .sort(
-      (a, b) =>
-        (a.cardData?.[sortBy] ?? 0) - (b.cardData?.[sortBy] ?? 0) ||
-        (a.cardData?.Number ?? 0) - (b.cardData?.Number ?? 0),
-    );
+  useEffect(() => {
+    const initialCards = [...cardPacks]
+      .flat()
+      .sort(
+        (a, b) =>
+          (a.cardData?.[sortBy] ?? 0) - (b.cardData?.[sortBy] ?? 0) ||
+          (a.cardData?.Number ?? 0) - (b.cardData?.Number ?? 0),
+      );
+
+    setSortedCardPacks(initialCards);
+  }, [cardPacks, sortBy]);
+
+  // Apply filtering whenever selectedCosts changes
+  useEffect(() => {
+    if (selectedCosts.length === 0) {
+      setFilteredCards(sortedCardPacks);
+    } else {
+      setFilteredCards(
+        sortedCardPacks.filter((card) =>
+          selectedCosts.includes(card?.cardData?.Cost),
+        ),
+      );
+    }
+  }, [selectedCosts, sortedCardPacks]);
 
   function handleSort() {
-    if (sortBy === 'Number') {
-      setSortBy('Cost');
-    } else {
-      setSortBy('Number');
-    }
+    setSortBy((prev) => (prev === 'Number' ? 'Cost' : 'Number'));
   }
-
 
   //Styles
   const styles = {
@@ -140,6 +158,8 @@ export default function SealedPool({
                 right: '1rem',
               }}
             >
+              <CardFilter />
+
               <Box sx={{ mr: '1rem' }}>
                 <CardSort handleSort={handleSort} />
               </Box>
@@ -150,6 +170,15 @@ export default function SealedPool({
                 currentSet={currentSet}
               />
             </Box>
+          </Box>
+
+          <Box>
+            <FilterOptions
+              selectedCosts={selectedCosts}
+              setSelectedCosts={setSelectedCosts}
+              selectedRarities={selectedRarities}
+              setSelectedRarities={setSelectedRarities}
+            />
           </Box>
 
           <Box sx={styles.sealedContent}>
@@ -190,7 +219,7 @@ export default function SealedPool({
               spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }}
               sx={{ width: '100%' }}
             >
-              {sortedCardPacks.map((card) => {
+              {filteredCards.map((card) => {
                 const cardId = `card-id-${card.id}`;
                 return (
                   <Grid
