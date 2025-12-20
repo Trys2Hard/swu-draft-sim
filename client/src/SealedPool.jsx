@@ -46,16 +46,18 @@ export default function SealedPool({
 
   // Apply filtering whenever selectedCosts changes
   useEffect(() => {
-    if (selectedCosts.length === 0) {
+    if (selectedCosts.length === 0 && selectedRarities.length === 0) {
       setFilteredCards(sortedCardPacks);
     } else {
       setFilteredCards(
-        sortedCardPacks.filter((card) =>
-          selectedCosts.includes(card?.cardData?.Cost),
+        sortedCardPacks.filter(
+          (card) =>
+            selectedCosts.includes(card?.cardData?.Cost) ||
+            selectedRarities.includes(card?.cardData?.Rarity),
         ),
       );
     }
-  }, [selectedCosts, sortedCardPacks]);
+  }, [selectedCosts, selectedRarities, sortedCardPacks]);
 
   function handleSort() {
     setSortBy((prev) => (prev === 'Number' ? 'Cost' : 'Number'));
