@@ -1,7 +1,6 @@
 import { Box, Grid, Typography } from '@mui/material';
 import CardHover from './CardHover';
 import StartCard from './StartCard';
-import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
 import ExportDropdown from './ExportDropdown';
 import CardSort from './CardSort';
@@ -29,6 +28,7 @@ export default function SealedPool({
   const [sortBy, setSortBy] = useState('Number');
   const [sortedCardPacks, setSortedCardPacks] = useState([]);
   const [filteredCards, setFilteredCards] = useState([]);
+  const [selectedAspects, setSelectedAspects] = useState([]);
   const [selectedCosts, setSelectedCosts] = useState([]);
   const [selectedRarities, setSelectedRarities] = useState([]);
 
@@ -44,20 +44,29 @@ export default function SealedPool({
     setSortedCardPacks(initialCards);
   }, [cardPacks, sortBy]);
 
-  // Apply filtering whenever selectedCosts changes
+  // Apply filtering
   useEffect(() => {
-    if (selectedCosts.length === 0 && selectedRarities.length === 0) {
+    if (
+      selectedAspects.length === 0 &&
+      selectedCosts.length === 0 &&
+      selectedRarities.length === 0
+    ) {
       setFilteredCards(sortedCardPacks);
     } else {
       setFilteredCards(
         sortedCardPacks.filter(
           (card) =>
+            card?.cardData?.Aspects?.some((aspect) =>
+              selectedAspects.includes(aspect),
+            ) ||
+            (selectedAspects.includes('Neutral') &&
+              card?.cardData?.Aspects.length === 0) ||
             selectedCosts.includes(card?.cardData?.Cost) ||
             selectedRarities.includes(card?.cardData?.Rarity),
         ),
       );
     }
-  }, [selectedCosts, selectedRarities, sortedCardPacks]);
+  }, [selectedAspects, selectedCosts, selectedRarities, sortedCardPacks]);
 
   function handleSort() {
     setSortBy((prev) => (prev === 'Number' ? 'Cost' : 'Number'));
@@ -180,6 +189,8 @@ export default function SealedPool({
               setSelectedCosts={setSelectedCosts}
               selectedRarities={selectedRarities}
               setSelectedRarities={setSelectedRarities}
+              selectedAspects={selectedAspects}
+              setSelectedAspects={setSelectedAspects}
             />
           </Box>
 

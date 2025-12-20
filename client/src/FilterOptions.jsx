@@ -9,13 +9,30 @@ import {
 
 const costOptions = ['1', '2', '3', '4', '5', '6', '7'];
 const rarityOptions = ['Common', 'Uncommon', 'Rare', 'Legendary', 'Special'];
+const aspectOptions = [
+  'Vigilance',
+  'Command',
+  'Aggression',
+  'Cunning',
+  'Villainy',
+  'Heroism',
+  'Neutral',
+];
 
 export default function FilterOptions({
+  selectedAspects,
+  setSelectedAspects,
   selectedCosts,
   setSelectedCosts,
   selectedRarities,
   setSelectedRarities,
 }) {
+  const handleAspectToggle = (aspect, checked) => {
+    setSelectedAspects((prev) =>
+      checked ? [...prev, aspect] : prev.filter((a) => a !== aspect),
+    );
+  };
+
   const handleCostToggle = (cost, checked) => {
     setSelectedCosts((prev) =>
       checked ? [...prev, cost] : prev.filter((c) => c !== cost),
@@ -30,6 +47,25 @@ export default function FilterOptions({
 
   return (
     <Box component="form">
+      {/* Aspect FILTER */}
+      <FormControl component="fieldset">
+        <FormLabel component="legend">Aspect</FormLabel>
+        <FormGroup>
+          {aspectOptions.map((aspect) => (
+            <FormControlLabel
+              key={aspect}
+              label={aspect}
+              control={
+                <Checkbox
+                  checked={selectedAspects.includes(aspect)}
+                  onChange={(e) => handleAspectToggle(aspect, e.target.checked)}
+                />
+              }
+            />
+          ))}
+        </FormGroup>
+      </FormControl>
+
       {/* COST FILTER */}
       <FormControl component="fieldset" sx={{ mb: 2 }}>
         <FormLabel component="legend">Cost</FormLabel>
