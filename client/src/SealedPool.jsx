@@ -7,6 +7,7 @@ import CardSort from './CardSort';
 import { useState, useEffect } from 'react';
 import CardFilter from './FilterButton';
 import FilterOptions from './FilterOptions';
+import FilterSwitch from './FilterSwitch';
 
 export default function SealedPool({
   handlePopoverClose,
@@ -32,6 +33,7 @@ export default function SealedPool({
   const [selectedCosts, setSelectedCosts] = useState([]);
   const [selectedRarities, setSelectedRarities] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
+  const [filterSwitchState, setFilterSwitchState] = useState('and');
 
   useEffect(() => {
     const initialCards = [...cardPacks]
@@ -45,29 +47,43 @@ export default function SealedPool({
     setSortedCardPacks(initialCards);
   }, [cardPacks, sortBy]);
 
-  // Apply filtering
-  useEffect(() => {
-    if (
-      selectedAspects.length === 0 &&
-      selectedCosts.length === 0 &&
-      selectedRarities.length === 0 &&
-      selectedTypes.length === 0
-    ) {
-      setFilteredCards(sortedCardPacks);
+  function handleFilter() {
+    if (filterSwitchState === 'and') {
+      setFilterSwitchState('or');
     } else {
-      setFilteredCards(
-        sortedCardPacks.filter(
-          (card) =>
-            card?.cardData?.Aspects?.some((aspect) =>
-              selectedAspects.includes(aspect),
-            ) ||
-            (selectedAspects.includes('Neutral') &&
-              card?.cardData?.Aspects.length === 0) ||
-            selectedCosts.includes(card?.cardData?.Cost) ||
-            selectedRarities.includes(card?.cardData?.Rarity) ||
-            selectedTypes.includes(card?.cardData?.Type),
-        ),
-      );
+      setFilterSwitchState('and');
+    }
+  }
+
+  // Apply filtering 'AND'
+  useEffect(() => {
+    if (filterSwitchState === 'and') {
+      if (
+        selectedAspects.length === 0 &&
+        selectedCosts.length === 0 &&
+        selectedRarities.length === 0 &&
+        selectedTypes.length === 0
+      ) {
+        setFilteredCards(sortedCardPacks);
+      } else {
+        setFilteredCards(
+          sortedCardPacks.filter(
+            (card) =>
+              (selectedAspects.every((aspect) =>
+                card?.cardData?.Aspects?.includes(aspect),
+              ) &&
+                (selectedCosts.length === 0 ||
+                  selectedCosts.length === 0 ||
+                  selectedCosts.includes(card?.cardData?.Cost)) &&
+                (selectedRarities.length === 0 ||
+                  selectedRarities.includes(card?.cardData?.Rarity)) &&
+                (selectedTypes.length === 0 ||
+                  selectedTypes.includes(card?.cardData?.Type))) ||
+              (selectedAspects.includes('Neutral') &&
+                card?.cardData?.Aspects.length === 0),
+          ),
+        );
+      }
     }
   }, [
     selectedAspects,
@@ -75,6 +91,42 @@ export default function SealedPool({
     selectedRarities,
     selectedTypes,
     sortedCardPacks,
+    filterSwitchState,
+  ]);
+
+  // Apply filtering 'OR'
+  useEffect(() => {
+    if (filterSwitchState === 'or') {
+      if (
+        selectedAspects.length === 0 &&
+        selectedCosts.length === 0 &&
+        selectedRarities.length === 0 &&
+        selectedTypes.length === 0
+      ) {
+        setFilteredCards(sortedCardPacks);
+      } else {
+        setFilteredCards(
+          sortedCardPacks.filter(
+            (card) =>
+              card?.cardData?.Aspects?.some((aspect) =>
+                selectedAspects.includes(aspect),
+              ) ||
+              (selectedAspects.includes('Neutral') &&
+                card?.cardData?.Aspects.length === 0) ||
+              selectedCosts.includes(card?.cardData?.Cost) ||
+              selectedRarities.includes(card?.cardData?.Rarity) ||
+              selectedTypes.includes(card?.cardData?.Type),
+          ),
+        );
+      }
+    }
+  }, [
+    selectedAspects,
+    selectedCosts,
+    selectedRarities,
+    selectedTypes,
+    sortedCardPacks,
+    filterSwitchState,
   ]);
 
   function handleSort() {
@@ -193,6 +245,7 @@ export default function SealedPool({
           </Box>
 
           <Box>
+            <FilterSwitch handleFilter={handleFilter} />
             <FilterOptions
               selectedAspects={selectedAspects}
               setSelectedAspects={setSelectedAspects}
