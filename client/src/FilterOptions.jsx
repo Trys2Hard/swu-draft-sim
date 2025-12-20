@@ -18,6 +18,7 @@ const aspectOptions = [
   'Heroism',
   'Neutral',
 ];
+const typeOptions = ['Unit', 'Upgrade', 'Event'];
 
 export default function FilterOptions({
   selectedAspects,
@@ -26,6 +27,8 @@ export default function FilterOptions({
   setSelectedCosts,
   selectedRarities,
   setSelectedRarities,
+  selectedTypes,
+  setSelectedTypes,
 }) {
   const handleAspectToggle = (aspect, checked) => {
     setSelectedAspects((prev) =>
@@ -42,6 +45,12 @@ export default function FilterOptions({
   const handleRarityToggle = (rarity, checked) => {
     setSelectedRarities((prev) =>
       checked ? [...prev, rarity] : prev.filter((r) => r !== rarity),
+    );
+  };
+
+  const handleTypeToggle = (type, checked) => {
+    setSelectedTypes((prev) =>
+      checked ? [...prev, type] : prev.filter((t) => t !== type),
     );
   };
 
@@ -97,6 +106,25 @@ export default function FilterOptions({
                 <Checkbox
                   checked={selectedRarities.includes(rarity)}
                   onChange={(e) => handleRarityToggle(rarity, e.target.checked)}
+                />
+              }
+            />
+          ))}
+        </FormGroup>
+      </FormControl>
+
+      {/* Type FILTER */}
+      <FormControl component="fieldset">
+        <FormLabel component="legend">Type</FormLabel>
+        <FormGroup>
+          {typeOptions.map((type) => (
+            <FormControlLabel
+              key={type}
+              label={type}
+              control={
+                <Checkbox
+                  checked={selectedTypes.includes(type)}
+                  onChange={(e) => handleTypeToggle(type, e.target.checked)}
                 />
               }
             />

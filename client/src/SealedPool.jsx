@@ -31,6 +31,7 @@ export default function SealedPool({
   const [selectedAspects, setSelectedAspects] = useState([]);
   const [selectedCosts, setSelectedCosts] = useState([]);
   const [selectedRarities, setSelectedRarities] = useState([]);
+  const [selectedTypes, setSelectedTypes] = useState([]);
 
   useEffect(() => {
     const initialCards = [...cardPacks]
@@ -49,7 +50,8 @@ export default function SealedPool({
     if (
       selectedAspects.length === 0 &&
       selectedCosts.length === 0 &&
-      selectedRarities.length === 0
+      selectedRarities.length === 0 &&
+      selectedTypes.length === 0
     ) {
       setFilteredCards(sortedCardPacks);
     } else {
@@ -62,11 +64,18 @@ export default function SealedPool({
             (selectedAspects.includes('Neutral') &&
               card?.cardData?.Aspects.length === 0) ||
             selectedCosts.includes(card?.cardData?.Cost) ||
-            selectedRarities.includes(card?.cardData?.Rarity),
+            selectedRarities.includes(card?.cardData?.Rarity) ||
+            selectedTypes.includes(card?.cardData?.Type),
         ),
       );
     }
-  }, [selectedAspects, selectedCosts, selectedRarities, sortedCardPacks]);
+  }, [
+    selectedAspects,
+    selectedCosts,
+    selectedRarities,
+    selectedTypes,
+    sortedCardPacks,
+  ]);
 
   function handleSort() {
     setSortBy((prev) => (prev === 'Number' ? 'Cost' : 'Number'));
@@ -185,12 +194,14 @@ export default function SealedPool({
 
           <Box>
             <FilterOptions
+              selectedAspects={selectedAspects}
+              setSelectedAspects={setSelectedAspects}
               selectedCosts={selectedCosts}
               setSelectedCosts={setSelectedCosts}
               selectedRarities={selectedRarities}
               setSelectedRarities={setSelectedRarities}
-              selectedAspects={selectedAspects}
-              setSelectedAspects={setSelectedAspects}
+              selectedTypes={selectedTypes}
+              setSelectedTypes={setSelectedTypes}
             />
           </Box>
 
