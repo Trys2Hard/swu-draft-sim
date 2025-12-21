@@ -147,7 +147,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
     checkboxContainer: {
       display: 'flex',
       flexDirection: 'row',
-      backgroundColor: 'rgba(110, 110, 110, 0.7)',
+      backgroundColor: 'rgba(110, 110, 110, 0.5)',
       borderRadius: '5px',
       m: '0.5rem',
       p: '0.2rem',
@@ -160,6 +160,10 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
       '&.Mui-focused': {
         color: 'white',
       },
+    },
+    checkbox: {
+      color: 'rgba(37, 37, 37, 1)',
+      pr: '0.3rem',
     },
   };
 
@@ -180,6 +184,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
                   label={aspect}
                   control={
                     <Checkbox
+                      sx={styles.checkbox}
                       checked={selectedAspects.includes(aspect)}
                       onChange={(e) =>
                         handleAspectToggle(aspect, e.target.checked)
@@ -203,6 +208,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
                   label={parseInt(cost) < 7 ? cost : '7+'}
                   control={
                     <Checkbox
+                      sx={styles.checkbox}
                       checked={selectedCosts.includes(cost)}
                       onChange={(e) => handleCostToggle(cost, e.target.checked)}
                     />
@@ -226,6 +232,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
                   label={rarity}
                   control={
                     <Checkbox
+                      sx={styles.checkbox}
                       checked={selectedRarities.includes(rarity)}
                       onChange={(e) =>
                         handleRarityToggle(rarity, e.target.checked)
@@ -249,6 +256,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
                   label={type}
                   control={
                     <Checkbox
+                      sx={styles.checkbox}
                       checked={selectedTypes.includes(type)}
                       onChange={(e) => handleTypeToggle(type, e.target.checked)}
                     />
