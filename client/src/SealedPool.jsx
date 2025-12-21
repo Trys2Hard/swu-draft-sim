@@ -244,7 +244,14 @@ export default function SealedPool({
             </Box>
           </Box>
 
-          <Box>
+          <Box
+            sx={{
+              mt: '0.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
             <FilterSwitch handleFilter={handleFilter} />
             <FilterOptions
               selectedAspects={selectedAspects}
