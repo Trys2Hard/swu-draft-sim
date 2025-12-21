@@ -196,6 +196,30 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
             </FormGroup>
           </FormControl>
 
+          {/* Type FILTER */}
+          <FormControl component="fieldset">
+            <FormLabel component="legend" sx={styles.filterLabel}>
+              Type
+            </FormLabel>
+            <FormGroup sx={styles.checkboxContainer}>
+              {typeOptions.map((type) => (
+                <FormControlLabel
+                  key={type}
+                  label={type}
+                  control={
+                    <Checkbox
+                      sx={styles.checkbox}
+                      checked={selectedTypes.includes(type)}
+                      onChange={(e) => handleTypeToggle(type, e.target.checked)}
+                    />
+                  }
+                />
+              ))}
+            </FormGroup>
+          </FormControl>
+        </Box>
+
+        <Box>
           {/* COST FILTER */}
           <FormControl component="fieldset" sx={styles.filterOption}>
             <FormLabel component="legend" sx={styles.filterLabel}>
@@ -217,9 +241,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
               ))}
             </FormGroup>
           </FormControl>
-        </Box>
 
-        <Box>
           {/* RARITY FILTER */}
           <FormControl component="fieldset">
             <FormLabel component="legend" sx={styles.filterLabel}>
@@ -237,28 +259,6 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
                       onChange={(e) =>
                         handleRarityToggle(rarity, e.target.checked)
                       }
-                    />
-                  }
-                />
-              ))}
-            </FormGroup>
-          </FormControl>
-
-          {/* Type FILTER */}
-          <FormControl component="fieldset">
-            <FormLabel component="legend" sx={styles.filterLabel}>
-              Type
-            </FormLabel>
-            <FormGroup sx={styles.checkboxContainer}>
-              {typeOptions.map((type) => (
-                <FormControlLabel
-                  key={type}
-                  label={type}
-                  control={
-                    <Checkbox
-                      sx={styles.checkbox}
-                      checked={selectedTypes.includes(type)}
-                      onChange={(e) => handleTypeToggle(type, e.target.checked)}
                     />
                   }
                 />
