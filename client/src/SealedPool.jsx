@@ -1,11 +1,12 @@
 import { Box, Grid, Typography } from '@mui/material';
 import CardHover from './CardHover';
 import StartCard from './StartCard';
-import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
 import ExportDropdown from './ExportDropdown';
 import CardSort from './CardSort';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import CardFilter from './FilterButton';
+import FilterOptions from './FilterOptions';
 
 export default function SealedPool({
   handlePopoverClose,
@@ -25,23 +26,27 @@ export default function SealedPool({
   sealedImportStarted,
 }) {
   const [sortBy, setSortBy] = useState('Number');
+  const [sortedCardPacks, setSortedCardPacks] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
+  const [filterSelected, setFilterSelected] = useState(false);
 
-  const sortedCardPacks = [...cardPacks]
-    .flat()
-    .sort(
-      (a, b) =>
-        (a.cardData?.[sortBy] ?? 0) - (b.cardData?.[sortBy] ?? 0) ||
-        (a.cardData?.Number ?? 0) - (b.cardData?.Number ?? 0),
-    );
+  const cards = filterSelected ? filteredCards : sortedCardPacks;
+
+  useEffect(() => {
+    const initialCards = [...cardPacks]
+      .flat()
+      .sort(
+        (a, b) =>
+          (a.cardData?.[sortBy] ?? 0) - (b.cardData?.[sortBy] ?? 0) ||
+          (a.cardData?.Number ?? 0) - (b.cardData?.Number ?? 0),
+      );
+
+    setSortedCardPacks(initialCards);
+  }, [cardPacks, sortBy]);
 
   function handleSort() {
-    if (sortBy === 'Number') {
-      setSortBy('Cost');
-    } else {
-      setSortBy('Number');
-    }
+    setSortBy((prev) => (prev === 'Number' ? 'Cost' : 'Number'));
   }
-
 
   //Styles
   const styles = {
@@ -53,9 +58,9 @@ export default function SealedPool({
     },
     header: {
       width: '100%',
-      height: { xs: '7rem', md: '4rem' },
+      height: { xs: '13rem', sm: '7rem', lg: '4rem' },
       display: 'flex',
-      flexDirection: { xs: 'column', md: 'row' },
+      flexDirection: { xs: 'column', lg: 'row' },
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -121,11 +126,10 @@ export default function SealedPool({
         <Box sx={styles.sealedPool}>
           <Box sx={styles.header}>
             <Typography
-              variant="h4"
               component="h2"
               sx={{
-                mb: { xs: '0.8rem', md: '0' },
-                fontSize: { xs: '1.6rem', sm: '2.125rem' },
+                mb: { xs: '0.8rem', lg: '0' },
+                fontSize: { xs: '1.6rem', sm: '1.8rem' },
               }}
             >
               {sealedStarted ? 'Generated Sealed Pool' : 'Imported Sealed Pool'}
@@ -134,13 +138,19 @@ export default function SealedPool({
             <Box
               sx={{
                 display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
                 alignItems: 'center',
-                position: { xs: 'static', md: 'absolute' },
+                position: { xs: 'static', lg: 'absolute' },
                 top: '0.7rem',
                 right: '1rem',
               }}
             >
-              <Box sx={{ mr: '1rem' }}>
+              <CardFilter
+                filterSelected={filterSelected}
+                setFilterSelected={setFilterSelected}
+              />
+
+              <Box sx={{ m: { xs: '0.5rem', sm: '0 1rem 0 0' } }}>
                 <CardSort handleSort={handleSort} />
               </Box>
 
@@ -150,6 +160,22 @@ export default function SealedPool({
                 currentSet={currentSet}
               />
             </Box>
+          </Box>
+
+          <Box
+            sx={{
+              mt: '0.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {filterSelected && (
+              <FilterOptions
+                setFilteredCards={setFilteredCards}
+                sortedCardPacks={sortedCardPacks}
+              />
+            )}
           </Box>
 
           <Box sx={styles.sealedContent}>
@@ -190,7 +216,7 @@ export default function SealedPool({
               spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }}
               sx={{ width: '100%' }}
             >
-              {sortedCardPacks.map((card) => {
+              {cards.map((card) => {
                 const cardId = `card-id-${card.id}`;
                 return (
                   <Grid
