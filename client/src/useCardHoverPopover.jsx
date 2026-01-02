@@ -1,25 +1,45 @@
 import { useState, useRef } from 'react';
 
 export function useCardHoverPopover() {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [hoveredCard, setHoveredCard] = useState(null);
-    const hoverTimeoutRef = useRef(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const hoverTimeoutRef = useRef(null);
+  const currentTargetRef = useRef(null); // Track current hover target
 
-    const handlePopoverOpen = (event, card) => {
-        const target = event.currentTarget;
-        if (!target) return;
+  const handlePopoverOpen = (event, card) => {
+    const target = event.currentTarget;
+    if (!target) return;
 
-        hoverTimeoutRef.current = setTimeout(() => {
-            setAnchorEl(target);
-            setHoveredCard(card);
-        }, 400);
-    };
+    currentTargetRef.current = target; // Store the target
 
-    const handlePopoverClose = () => {
-        clearTimeout(hoverTimeoutRef.current);
-        setAnchorEl(null);
-        setHoveredCard(null);
-    };
+    // Clear any existing timeout
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
 
-    return { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose };
+    hoverTimeoutRef.current = setTimeout(() => {
+      // Only show if we're still hovering the same element
+      if (currentTargetRef.current === target) {
+        setAnchorEl(target);
+        setHoveredCard(card);
+      }
+    }, 400);
+  };
+
+  const handlePopoverClose = () => {
+    // Clear the timeout
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+
+    // Clear the current target reference
+    currentTargetRef.current = null;
+
+    // Close the popover
+    setAnchorEl(null);
+    setHoveredCard(null);
+  };
+
+  return { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose };
 }
