@@ -5,6 +5,7 @@ import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
 import { useState } from 'react';
 import CustomSnackbar from './CustomSnackbar';
+import LeaderCardContainer from './LeaderCardContainer';
 
 export default function Deck({
   deckLeaders,
@@ -170,27 +171,6 @@ export default function Deck({
             ? 'rgba(233, 233, 12, 1)'
             : 'rgba(255, 0, 0, 1)',
     },
-    leaders: {
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      mb: '0.5rem',
-      pb: '0.5rem',
-      borderBottom: '2px solid white',
-    },
-    leaderCard: {
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: '5%',
-      cursor: 'pointer',
-      '&: hover': {
-        outline: '2px solid rgba(61, 178, 255, 1)',
-        boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
-      },
-    },
     nonLeaderCard: {
       width: '100%',
       borderRadius: '5%',
@@ -221,36 +201,18 @@ export default function Deck({
       </Box>
 
       <Box sx={{ width: '100%', p: '0.5rem' }}>
-        <Grid
-          container
-          spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }}
-          sx={styles.leaders}
-        >
-          {deckLeaders.map((card) => {
-            const labelId = `card-id-${card.id}`;
-            return (
-              <Grid
-                size={{ xs: 4, md: 2 }}
-                aria-owns={open ? 'mouse-over-popover' : undefined}
-                aria-haspopup="true"
-                onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                onMouseLeave={handlePopoverClose}
-                key={labelId}
-                onClick={() => {
-                  moveToSideboard(card.id);
-                  moveToSealedPool(card.id);
-                }}
-              >
-                <Box
-                  component="img"
-                  src={card.cardData?.FrontArt}
-                  id={labelId}
-                  sx={styles.leaderCard}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <LeaderCardContainer
+            deckLeaders={deckLeaders}
+            moveToSideboard={moveToSideboard}
+            moveToSealedPool={moveToSealedPool}
+            handlePopoverOpen={handlePopoverOpen}
+            handlePopoverClose={handlePopoverClose}
+            draftStarted={draftStarted}
+            sealedStarted={sealedStarted}
+            sealedImportStarted={sealedImportStarted}
+          />
+        </Box>
 
         <Grid
           container
