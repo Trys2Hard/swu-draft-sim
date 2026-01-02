@@ -210,6 +210,7 @@ export default function Deck({
             handlePopoverClose={handlePopoverClose}
             draftStarted={draftStarted}
             sealedStarted={sealedStarted}
+            sealedImportStarted={sealedImportStarted}
           />
         </Box>
 
