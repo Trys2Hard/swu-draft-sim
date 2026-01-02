@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
 import { useCardHoverPopover } from './useCardHoverPopover';
-import LeaderFlipButton from './LeaderFlipButton';
+import LeaderCardContainer from './LeaderCardContainer';
 
 export default function Sideboard({
   sideboardLeaders,
@@ -16,17 +15,9 @@ export default function Sideboard({
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover('');
 
-  const [flippedLeaders, setFlippedLeaders] = useState({});
   const sortedSideboardCards = [...sideboardCards].sort(
     (a, b) => a.cardData?.Number - b.cardData?.Number,
   );
-
-  const handleFlipLeader = (id) => {
-    setFlippedLeaders((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
 
   function moveToDeck(id) {
     handlePopoverClose();
@@ -60,23 +51,6 @@ export default function Sideboard({
       alignItems: 'center',
       p: '0.5rem',
     },
-    leaders: {
-      display: 'flex',
-      justifyContent: 'center',
-      width: '100%',
-      pb: '0.5rem',
-      mb: '1rem',
-      borderBottom: '2px solid white',
-    },
-    leaderCard: {
-      width: '100%',
-      borderRadius: '5%',
-      cursor: 'pointer',
-      '&: hover': {
-        outline: '2px solid rgba(61, 178, 255, 1)',
-        boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
-      },
-    },
     nonLeaderCard: {
       width: '100%',
       borderRadius: '5%',
@@ -103,40 +77,14 @@ export default function Sideboard({
         >
           Sideboard
         </Typography>
-        <Grid
-          container
-          spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }}
-          sx={styles.leaders}
-        >
-          {sideboardLeaders.map((card) => {
-            const labelId = `card-id-${card.id}`;
-            return (
-              <Grid
-                size={{ xs: 4, md: 2 }}
-                aria-owns={open ? 'mouse-over-popover' : undefined}
-                aria-haspopup="true"
-                onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                onMouseLeave={handlePopoverClose}
-                key={labelId}
-                onClick={() => {
-                  moveToDeck(card.id);
-                }}
-              >
-                <Box
-                  component="img"
-                  src={card.cardData?.FrontArt}
-                  id={labelId}
-                  sx={styles.leaderCard}
-                />
-                <LeaderFlipButton
-                  id={card.id}
-                  flippedLeaders={flippedLeaders}
-                  handleFlipLeader={handleFlipLeader}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
+
+        <LeaderCardContainer
+          handlePopoverOpen={handlePopoverOpen}
+          handlePopoverClose={handlePopoverClose}
+          sideboardLeaders={sideboardLeaders}
+          draftStarted={draftStarted}
+          moveToDeck={moveToDeck}
+        />
 
         <Grid
           container

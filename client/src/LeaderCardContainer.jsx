@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import LeaderFlipButton from './LeaderFlipButton';
 
 export default function LeaderCardContainer({
@@ -17,6 +17,9 @@ export default function LeaderCardContainer({
   pickCard,
   draftingLeaders,
   isLoading,
+  layout,
+  sideboardLeaders,
+  sealedImportStarted,
 }) {
   const [flippedLeaders, setFlippedLeaders] = useState({});
   const [leaders, setLeaders] = useState([]);
@@ -26,8 +29,10 @@ export default function LeaderCardContainer({
       ? setLeaders(leaderPacks.flat())
       : deckLeaders?.length
         ? setLeaders(deckLeaders)
-        : setLeaders(currentPack?.[packIndex] || []);
-  }, [leaderPacks, deckLeaders, currentPack, packIndex]);
+        : sideboardLeaders?.length
+          ? setLeaders(sideboardLeaders)
+          : setLeaders(currentPack?.[packIndex] || []);
+  }, [leaderPacks, deckLeaders, currentPack, packIndex, sideboardLeaders]);
 
   const handleFlipLeader = (id) => {
     setFlippedLeaders((prev) => ({
@@ -51,7 +56,6 @@ export default function LeaderCardContainer({
       p: '0.5rem',
       filter: isLoading ? 'blur(2px)' : 'blur(0)',
       borderBottom: currentPack ? 'none' : '2px solid white',
-      border: isLoading ? '1px solid red' : '2px dashed green',
     },
     leaderCardContainer: {
       display: 'flex',
@@ -68,55 +72,77 @@ export default function LeaderCardContainer({
         boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
       },
     },
+    loading: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -80%)',
+      fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
+      textShadow: '2px 2px 3px black',
+      zIndex: 1,
+    },
   };
 
   return (
-    <Grid container spacing={2} sx={styles.leaders}>
-      {/* add sealed import */}
-      {(sealedStarted || draftStarted) &&
-        leaders.map((card) => {
-          const cardId = `card-id-${card.id}`;
-          const isFlipped = flippedLeaders[card.id];
-          return (
-            <Grid
-              size={
-                currentPack && !draftingLeaders ? 2.4 : leaderPacks ? 2 : 3.5
-              }
-              key={cardId}
-              id={cardId}
-              aria-owns={open ? 'mouse-over-popover' : undefined}
-              aria-haspopup="true"
-              sx={styles.leaderCardContainer}
-            >
-              <Box
-                component="img"
-                src={
-                  isFlipped ? card.cardData?.BackArt : card.cardData?.FrontArt
+    <>
+      {isLoading && (
+        <Typography component="p" sx={styles.loading}>
+          Loading...
+        </Typography>
+      )}
+      <Grid container spacing={2} sx={styles.leaders}>
+        {(sealedStarted || draftStarted || sealedImportStarted) &&
+          leaders.map((card) => {
+            const cardId = `card-id-${card.id}`;
+            const isFlipped = flippedLeaders[card.id];
+            return (
+              <Grid
+                size={
+                  currentPack && !draftingLeaders
+                    ? layout
+                    : leaderPacks
+                      ? 2
+                      : 3.5
                 }
-                alt={card.cardData?.Name}
-                onClick={() => {
-                  moveToDeck && moveToDeck(card.id);
-                  moveToSideboard && moveToSideboard(card.id);
-                  moveToSealedPool && moveToSealedPool(card.id);
-                  pickCard && pickCard(card.id);
-                }}
-                onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                onMouseLeave={handlePopoverClose}
-                sx={{
-                  ...styles.leaderCard,
-                  width: isFlipped ? '55%' : '100%',
-                }}
-              />
-              {(draftingLeaders || deckLeaders || leaderPacks) && (
-                <LeaderFlipButton
-                  id={card.id}
-                  flippedLeaders={flippedLeaders}
-                  handleFlipLeader={handleFlipLeader}
+                key={cardId}
+                id={cardId}
+                aria-owns={open ? 'mouse-over-popover' : undefined}
+                aria-haspopup="true"
+                sx={styles.leaderCardContainer}
+              >
+                <Box
+                  component="img"
+                  src={
+                    isFlipped ? card.cardData?.BackArt : card.cardData?.FrontArt
+                  }
+                  alt={card.cardData?.Name}
+                  onClick={() => {
+                    moveToDeck && moveToDeck(card.id);
+                    moveToSideboard && moveToSideboard(card.id);
+                    moveToSealedPool && moveToSealedPool(card.id);
+                    pickCard && pickCard(card.id);
+                  }}
+                  onMouseEnter={(e) => handlePopoverOpen(e, card)}
+                  onMouseLeave={handlePopoverClose}
+                  sx={{
+                    ...styles.leaderCard,
+                    width: isFlipped ? '55%' : '100%',
+                  }}
                 />
-              )}
-            </Grid>
-          );
-        })}
-    </Grid>
+                {(draftingLeaders ||
+                  deckLeaders ||
+                  leaderPacks ||
+                  sideboardLeaders) && (
+                  <LeaderFlipButton
+                    id={card.id}
+                    flippedLeaders={flippedLeaders}
+                    handleFlipLeader={handleFlipLeader}
+                  />
+                )}
+              </Grid>
+            );
+          })}
+      </Grid>
+    </>
   );
 }

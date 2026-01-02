@@ -69,15 +69,6 @@ export default function DraftPack({
             : { xs: '80%', md: '900px' },
       height: draftingLeaders || draftEnded ? '100vh' : '100%',
     },
-    loading: {
-      position: 'absolute',
-      display: isLoading ? 'block' : 'none',
-      fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -80%)',
-      textShadow: '2px 2px 3px black',
-    },
     packInfo: {
       mt: '1rem',
       boxShadow: '-3px 3px 5px black',
@@ -149,10 +140,6 @@ export default function DraftPack({
               )}
             </Box>
 
-            {/* <Typography component="p" sx={styles.loading}>
-                Loading...
-              </Typography> */}
-
             <LeaderCardContainer
               handlePopoverOpen={handlePopoverOpen}
               handlePopoverClose={handlePopoverClose}
@@ -162,6 +149,7 @@ export default function DraftPack({
               pickCard={pickCard}
               draftingLeaders={draftingLeaders}
               isLoading={isLoading}
+              layout={layout}
             />
             <CardHover
               anchorEl={anchorEl}

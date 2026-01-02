@@ -74,33 +74,6 @@ export default function SealedPool({
       alignItems: 'center',
       p: '0.5rem',
     },
-    leaders: {
-      position: 'relative',
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      mb: '1rem',
-      pb: '0.5rem',
-      borderBottom: '2px solid white',
-    },
-    leaderCard: {
-      width: '100%',
-      borderRadius: '5%',
-      cursor: 'pointer',
-      '&: hover': {
-        outline: '2px solid rgba(61, 178, 255, 1)',
-        boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
-      },
-    },
-    loading: {
-      position: 'absolute',
-      display: isLoading ? 'block' : 'none',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -80%)',
-      fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
-      textShadow: '2px 2px 3px black',
-    },
     nonLeaderCard: {
       width: '100%',
       borderRadius: '5%',
@@ -181,10 +154,6 @@ export default function SealedPool({
           </Box>
 
           <Box sx={styles.sealedContent}>
-            {/* <Typography component="p" sx={styles.loading}>
-                Loading...
-              </Typography> */}
-
             <LeaderCardContainer
               deckLeaders={deckLeaders}
               moveToDeck={moveToDeck}
@@ -192,6 +161,8 @@ export default function SealedPool({
               handlePopoverClose={handlePopoverClose}
               leaderPacks={leaderPacks}
               sealedStarted={sealedStarted}
+              sealedImportStarted={sealedImportStarted}
+              isLoading={isLoading}
             />
 
             <Grid
