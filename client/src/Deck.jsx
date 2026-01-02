@@ -5,7 +5,7 @@ import CopyJsonButton from './CopyJsonButton';
 import SelectBase from './SelectBase';
 import { useState } from 'react';
 import CustomSnackbar from './CustomSnackbar';
-import LeaderFlipButton from './LeaderFlipButton';
+import LeaderCardContainer from './LeaderCardContainer';
 
 export default function Deck({
   deckLeaders,
@@ -26,7 +26,6 @@ export default function Deck({
 }) {
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover();
-  const [flippedLeaders, setFlippedLeaders] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarText, setSnackbarText] = useState('');
   const [snackbarStatus, setSnackbarStatus] = useState('success');
@@ -42,13 +41,6 @@ export default function Deck({
     setSnackbarText(text);
     setSnackbarStatus(status);
     setSnackbarOpen(true);
-  };
-
-  const handleFlipLeader = (id) => {
-    setFlippedLeaders((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
   };
 
   function moveToSideboard(id) {
@@ -179,30 +171,6 @@ export default function Deck({
             ? 'rgba(233, 233, 12, 1)'
             : 'rgba(255, 0, 0, 1)',
     },
-    leaders: {
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      mb: '0.5rem',
-      pb: '0.5rem',
-      borderBottom: '2px solid white',
-    },
-    leaderCardContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    leaderCard: {
-      width: '100%',
-      borderRadius: '5%',
-      cursor: 'pointer',
-      '&: hover': {
-        outline: '2px solid rgba(61, 178, 255, 1)',
-        boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
-      },
-    },
     nonLeaderCard: {
       width: '100%',
       borderRadius: '5%',
@@ -233,49 +201,15 @@ export default function Deck({
       </Box>
 
       <Box sx={{ width: '100%', p: '0.5rem' }}>
-        <Grid
-          container
-          spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }}
-          sx={styles.leaders}
-        >
-          {deckLeaders.map((card) => {
-            const cardId = `card-id-${card.id}`;
-            const isFlipped = flippedLeaders[card.id];
-            return (
-              <Grid
-                size={{ xs: 4, md: 2 }}
-                key={cardId}
-                id={cardId}
-                aria-owns={open ? 'mouse-over-popover' : undefined}
-                aria-haspopup="true"
-                sx={styles.leaderCardContainer}
-              >
-                <Box
-                  component="img"
-                  src={
-                    isFlipped ? card.cardData?.BackArt : card.cardData?.FrontArt
-                  }
-                  alt={card.cardData?.Name}
-                  onClick={() => {
-                    moveToSideboard(card.id);
-                    moveToSealedPool(card.id);
-                  }}
-                  onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                  onMouseLeave={handlePopoverClose}
-                  sx={{
-                    ...styles.leaderCard,
-                    width: isFlipped ? '55%' : '100%',
-                  }}
-                />
-                <LeaderFlipButton
-                  id={card.id}
-                  flippedLeaders={flippedLeaders}
-                  handleFlipLeader={handleFlipLeader}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
+        <LeaderCardContainer
+          deckLeaders={deckLeaders}
+          moveToSideboard={moveToSideboard}
+          moveToSealedPool={moveToSealedPool}
+          handlePopoverOpen={handlePopoverOpen}
+          handlePopoverClose={handlePopoverClose}
+          draftStarted={draftStarted}
+          sealedStarted={sealedStarted}
+        />
 
         <Grid
           container

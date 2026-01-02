@@ -7,6 +7,7 @@ import CardSort from './CardSort';
 import { useState, useEffect } from 'react';
 import CardFilter from './FilterButton';
 import FilterOptions from './FilterOptions';
+import LeaderCardContainer from './LeaderCardContainer';
 
 export default function SealedPool({
   handlePopoverClose,
@@ -24,6 +25,7 @@ export default function SealedPool({
   setBase,
   handleImportSealedPool,
   sealedImportStarted,
+  deckLeaders,
 }) {
   const [sortBy, setSortBy] = useState('Number');
   const [sortedCardPacks, setSortedCardPacks] = useState([]);
@@ -179,37 +181,18 @@ export default function SealedPool({
           </Box>
 
           <Box sx={styles.sealedContent}>
-            <Grid
-              container
-              spacing={{ xs: 0.2, sm: 0.4, lg: 0.8, xl: 1 }}
-              sx={styles.leaders}
-            >
-              <Typography component="p" sx={styles.loading}>
+            {/* <Typography component="p" sx={styles.loading}>
                 Loading...
-              </Typography>
-              {leaderPacks.flat().map((card) => {
-                const cardId = `card-id-${card.id}`;
-                return (
-                  <Grid
-                    size={{ xs: 4, md: 2 }}
-                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                    aria-haspopup="true"
-                    onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                    onMouseLeave={handlePopoverClose}
-                    key={cardId}
-                    onClick={() => moveToDeck(card.id)}
-                    sx={styles.cardLeaders}
-                  >
-                    <Box
-                      component="img"
-                      src={card?.cardData?.FrontArt}
-                      id={cardId}
-                      sx={styles.leaderCard}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
+              </Typography> */}
+
+            <LeaderCardContainer
+              deckLeaders={deckLeaders}
+              moveToDeck={moveToDeck}
+              handlePopoverOpen={handlePopoverOpen}
+              handlePopoverClose={handlePopoverClose}
+              leaderPacks={leaderPacks}
+              sealedStarted={sealedStarted}
+            />
 
             <Grid
               container
