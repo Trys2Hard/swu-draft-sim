@@ -201,15 +201,17 @@ export default function Deck({
       </Box>
 
       <Box sx={{ width: '100%', p: '0.5rem' }}>
-        <LeaderCardContainer
-          deckLeaders={deckLeaders}
-          moveToSideboard={moveToSideboard}
-          moveToSealedPool={moveToSealedPool}
-          handlePopoverOpen={handlePopoverOpen}
-          handlePopoverClose={handlePopoverClose}
-          draftStarted={draftStarted}
-          sealedStarted={sealedStarted}
-        />
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <LeaderCardContainer
+            deckLeaders={deckLeaders}
+            moveToSideboard={moveToSideboard}
+            moveToSealedPool={moveToSealedPool}
+            handlePopoverOpen={handlePopoverOpen}
+            handlePopoverClose={handlePopoverClose}
+            draftStarted={draftStarted}
+            sealedStarted={sealedStarted}
+          />
+        </Box>
 
         <Grid
           container

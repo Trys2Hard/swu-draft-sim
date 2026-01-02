@@ -3,8 +3,8 @@ import { Box, Typography, Grid } from '@mui/material';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import CardHover from './CardHover';
-import LeaderFlipButton from './LeaderFlipButton';
 import StartCard from './StartCard';
+import LeaderCardContainer from './LeaderCardContainer';
 
 export default function DraftPack({
   packNum,
@@ -25,7 +25,6 @@ export default function DraftPack({
   const layout1 = draftingLeaders ? 4 : 2.4;
   const layout2 = draftingLeaders ? 4 : 12 / 7;
   const [layout, setLayout] = useState(layout1);
-  const [flippedLeaders, setFlippedLeaders] = useState({});
 
   const draftEnded = packNum === 3 && pickNum === 15;
 
@@ -35,13 +34,6 @@ export default function DraftPack({
 
   const handleLayout = () =>
     setLayout((prev) => (prev === layout1 ? layout2 : layout1));
-
-  const handleFlipLeader = (id) => {
-    setFlippedLeaders((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
 
   //Styles
   const styles = {
@@ -76,34 +68,6 @@ export default function DraftPack({
             ? { xs: '100%', md: '75%', lg: '60%' }
             : { xs: '80%', md: '900px' },
       height: draftingLeaders || draftEnded ? '100vh' : '100%',
-    },
-    pack: {
-      position: 'relative',
-      display: 'flex',
-      alignItems: draftingLeaders ? 'center' : 'flex-start',
-      justifyContent: draftingLeaders && 'center',
-      width: draftingLeaders ? '100%' : { xs: '100%', md: '900px' },
-      height: draftingLeaders ? '100vh' : '100%',
-      minHeight: isLoading ? '50vh' : '0',
-      mt: '0.5rem',
-      p: '0.5rem',
-      filter: isLoading ? 'blur(2px)' : 'blur(0)',
-      zIndex: 1,
-    },
-    cardContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    card: {
-      width: '100%',
-      borderRadius: '5%',
-      '&: hover': {
-        cursor: 'pointer',
-        outline: '2px solid rgba(61, 178, 255, 1)',
-        boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
-      },
     },
     loading: {
       position: 'absolute',
@@ -185,51 +149,25 @@ export default function DraftPack({
               )}
             </Box>
 
-            <Grid container spacing={draftingLeaders ? 3 : 1} sx={styles.pack}>
-              <Typography component="p" sx={styles.loading}>
+            {/* <Typography component="p" sx={styles.loading}>
                 Loading...
-              </Typography>
-              {currentPack[packIndex]?.map((card) => {
-                const cardId = `card-id-${card.id}`;
-                const isFlipped = flippedLeaders[card.id];
-                return (
-                  <Grid
-                    size={layout}
-                    key={cardId}
-                    id={cardId}
-                    aria-owns={open ? 'mouse-over-popover' : undefined}
-                    aria-haspopup="true"
-                    sx={styles.cardContainer}
-                  >
-                    <Box
-                      component="img"
-                      src={
-                        isFlipped
-                          ? card.cardData?.BackArt
-                          : card.cardData?.FrontArt
-                      }
-                      alt={card.cardData?.Name}
-                      onClick={() => pickCard(card.id)}
-                      onMouseEnter={(e) => handlePopoverOpen(e, card)}
-                      onMouseLeave={handlePopoverClose}
-                      sx={{ ...styles.card, width: isFlipped ? '55%' : '100%' }}
-                    />
-                    {draftingLeaders && (
-                      <LeaderFlipButton
-                        id={card.id}
-                        flippedLeaders={flippedLeaders}
-                        handleFlipLeader={handleFlipLeader}
-                      />
-                    )}
-                  </Grid>
-                );
-              })}
-              <CardHover
-                anchorEl={anchorEl}
-                hoveredCard={hoveredCard}
-                onHoverClose={handlePopoverClose}
-              />
-            </Grid>
+              </Typography> */}
+
+            <LeaderCardContainer
+              handlePopoverOpen={handlePopoverOpen}
+              handlePopoverClose={handlePopoverClose}
+              draftStarted={draftStarted}
+              currentPack={currentPack}
+              packIndex={packIndex}
+              pickCard={pickCard}
+              draftingLeaders={draftingLeaders}
+              isLoading={isLoading}
+            />
+            <CardHover
+              anchorEl={anchorEl}
+              hoveredCard={hoveredCard}
+              onHoverClose={handlePopoverClose}
+            />
 
             {draftEnded && (
               <Typography component="h2" sx={styles.draftEnd}>
