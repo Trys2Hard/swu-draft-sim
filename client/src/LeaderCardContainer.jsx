@@ -47,7 +47,10 @@ export default function LeaderCardContainer({
       position: 'relative',
       height: currentPack && draftingLeaders ? '100vh' : '100%',
       minHeight: currentPack && isLoading ? '50vh' : '0',
-      width: leaderPacks ? '100%' : { xs: '100%', md: '900px' },
+      width:
+        leaderPacks || deckLeaders || sideboardLeaders
+          ? '100%'
+          : { xs: '100%', md: '900px' },
       display: 'flex',
       alignItems: currentPack && !draftingLeaders ? 'flex-start' : 'center',
       justifyContent: currentPack && !draftingLeaders ? 'flex-start' : 'center',
@@ -90,7 +93,11 @@ export default function LeaderCardContainer({
           Loading...
         </Typography>
       )}
-      <Grid container spacing={2} sx={styles.leaders}>
+      <Grid
+        container
+        spacing={draftStarted && draftingLeaders ? 2 : 1}
+        sx={styles.leaders}
+      >
         {(sealedStarted || draftStarted || sealedImportStarted) &&
           leaders.map((card) => {
             const cardId = `card-id-${card.id}`;
@@ -100,8 +107,8 @@ export default function LeaderCardContainer({
                 size={
                   currentPack && !draftingLeaders
                     ? layout
-                    : leaderPacks
-                      ? 2
+                    : leaderPacks || deckLeaders || sideboardLeaders
+                      ? { xs: 4, md: 2 }
                       : 3.5
                 }
                 key={cardId}
@@ -126,7 +133,7 @@ export default function LeaderCardContainer({
                   onMouseLeave={handlePopoverClose}
                   sx={{
                     ...styles.leaderCard,
-                    width: isFlipped ? '55%' : '100%',
+                    width: isFlipped ? '65%' : '100%',
                   }}
                 />
                 {(draftingLeaders ||
