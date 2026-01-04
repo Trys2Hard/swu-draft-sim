@@ -1,8 +1,8 @@
 import { CssBaseline, GlobalStyles, Box } from '@mui/material';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import DraftPage from './DraftPage';
-import SealedPage from './SealedPage';
+import Navbar from './Components/Navbar';
+import Footer from './Components/Footer';
+import DraftPage from './DraftPage/DraftPage';
+import SealedPage from './SealedPage/SealedPage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {

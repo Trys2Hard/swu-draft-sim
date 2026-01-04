@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { useCopyJson } from './useCopyJson';
+import { useCopyJson } from '../Hooks/useCopyJson';
 
 export default function CopyJsonButton({ deckLeaders, sortedDeckCards, sideboardCards, leaderPacks, sortedCardPacks, base, children, onSnackbar }) {
     const { handleCopyJson } = useCopyJson({

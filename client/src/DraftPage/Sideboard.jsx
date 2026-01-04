@@ -1,7 +1,7 @@
 import { Box, Typography, Grid } from '@mui/material';
-import CardHover from './CardHover';
-import { useCardHoverPopover } from './useCardHoverPopover';
-import LeaderCardContainer from './LeaderCardContainer';
+import CardHover from '../Components/CardHover';
+import { useCardHoverPopover } from '../Hooks/useCardHoverPopover';
+import LeaderCardContainer from '../Components/LeaderCardContainer/LeaderCardContainer';
 
 export default function Sideboard({
   sideboardLeaders,

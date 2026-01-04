@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
-import LeaderFlipButton from './LeaderFlipButton';
+import LeaderFlipButton from './LeaderFlipButton'; 
 
 export default function LeaderCardContainer({
   deckLeaders,

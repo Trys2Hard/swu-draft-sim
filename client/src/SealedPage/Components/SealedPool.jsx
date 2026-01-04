@@ -1,13 +1,13 @@
 import { Box, Grid, Typography } from '@mui/material';
-import CardHover from './CardHover';
-import StartCard from './StartCard';
+import CardHover from '../../Components/CardHover';
+import StartCard from '../../Components/StartCard/StartCard';
 import SelectBase from './SelectBase';
-import ExportDropdown from './ExportDropdown';
+import ExportDropdown from '../../SealedPage/Components/ExportDropdown';
 import CardSort from './CardSort';
 import { useState, useEffect } from 'react';
-import CardFilter from './FilterButton';
-import FilterOptions from './FilterOptions';
-import LeaderCardContainer from './LeaderCardContainer';
+import CardFilter from './Filter/FilterButton';
+import FilterOptions from './Filter/FilterOptions';
+import LeaderCardContainer from '../../Components/LeaderCardContainer/LeaderCardContainer';
 
 export default function SealedPool({
   handlePopoverClose,

@@ -7,7 +7,7 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
-import FilterSwitch from './FilterSwitch';
+import FilterSwitch from '../../Components/Filter/FilterSwitch';
 
 const costOptions = ['1', '2', '3', '4', '5', '6', '7'];
 const rarityOptions = ['Common', 'Uncommon', 'Rare', 'Legendary', 'Special'];
