@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Typography, Box } from '@mui/material';
-import Deck from '../Components/Deck';
+import Deck from '../Components/Deck/Deck';
 import { useCardHoverPopover } from '../Hooks/useCardHoverPopover';
 import { useCreatePacks } from '../Hooks/useCreatePacks';
 import CardSets from '../Components/CardSets';
