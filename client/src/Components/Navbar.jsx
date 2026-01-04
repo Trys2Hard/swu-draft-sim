@@ -14,6 +14,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import { FaDiscord } from 'react-icons/fa';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -56,6 +57,13 @@ export default function Navbar() {
     },
     discordIcon: {
       position: 'absolute',
+      right: '5.5rem',
+      color: 'white',
+      transition: 'color 0.2s ease-in-out',
+      '&:hover': { color: '#5865F2' },
+    },
+    gitHubIcon: {
+      position: 'absolute',
       right: '3rem',
       color: 'white',
       transition: 'color 0.2s ease-in-out',
@@ -73,7 +81,11 @@ export default function Navbar() {
             sx={{ width: '3.5rem', mr: '0.2rem' }}
           />
 
-          <Typography variant="h5" component="p">
+          <Typography
+            variant="h5"
+            component="p"
+            sx={{ display: { xs: 'none', sm: 'block' } }}
+          >
             SWUDraftSim
           </Typography>
 
@@ -101,7 +113,15 @@ export default function Navbar() {
             target="_blank"
             sx={styles.discordIcon}
           >
-            <FaDiscord size={30} />
+            <FaDiscord size={28} />
+          </IconButton>
+
+          <IconButton
+            href="https://github.com/Trys2Hard/swu-draft-sim"
+            target="_blank"
+            sx={styles.gitHubIcon}
+          >
+            <GitHubIcon />
           </IconButton>
 
           <IconButton
