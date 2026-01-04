@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Deck from '../Components/Deck';
 import { useCardHoverPopover } from '../Hooks/useCardHoverPopover';
-import { useCreatePacks } from '../Hooks/useCreatePacks';  
+import { useCreatePacks } from '../Hooks/useCreatePacks';
 import CardSets from '../Components/CardSets';
 import SealedPool from '../SealedPage/Components/SealedPool';
 import { v4 as uuid } from 'uuid';
