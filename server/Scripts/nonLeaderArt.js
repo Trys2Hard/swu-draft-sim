@@ -6,36 +6,36 @@ console.log('Mongo URI:', uri);
 const client = new MongoClient(uri);
 
 async function updateNonLeaderArt() {
-    try {
-        await client.connect();
-        const db = client.db(process.env.DB_NAME);
-        const collection = db.collection(process.env.COLLECTION_NAME);
+  try {
+    await client.connect();
+    const db = client.db(process.env.DB_NAME);
+    const collection = db.collection(process.env.COLLECTION_NAME);
 
-        // Select which documents to update
-        const cursor = collection.find({ Set: 'SEC', Type: { $ne: 'Leader' } });
+    // Select which documents to update
+    const cursor = collection.find({ Set: 'SEC', Type: { $ne: 'Leader' } });
 
-        while (await cursor.hasNext()) {
-            const doc = await cursor.next();
-            const cardNumber = doc.Number;
+    while (await cursor.hasNext()) {
+      const doc = await cursor.next();
+      const cardNumber = doc.Number;
 
-            if (cardNumber) {
-                const newUrl = `https://cdn.swudraftsim.com/SEC/${cardNumber}.webp`;
+      if (cardNumber) {
+        const newUrl = `https://cdn.swudraftsim.com/SEC/${cardNumber}.webp`;
 
-                await collection.updateOne(
-                    { _id: doc._id },
-                    { $set: { FrontArt: newUrl } }
-                );
+        await collection.updateOne(
+          { _id: doc._id },
+          { $set: { FrontArt: newUrl } },
+        );
 
-                console.log(`Updated ${doc.Name} (${cardNumber})`);
-            }
-        }
-
-        console.log('✅ All documents updated.');
-    } catch (err) {
-        console.error('❌ Error:', err);
-    } finally {
-        await client.close();
+        console.log(`Updated ${doc.Name} (${cardNumber})`);
+      }
     }
+
+    console.log('✅ All documents updated.');
+  } catch (err) {
+    console.error('❌ Error:', err);
+  } finally {
+    await client.close();
+  }
 }
 
 updateNonLeaderArt();

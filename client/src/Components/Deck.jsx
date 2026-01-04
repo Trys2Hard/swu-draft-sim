@@ -1,11 +1,11 @@
 import { Box, Typography, Grid } from '@mui/material';
 import CardHover from './CardHover';
-import { useCardHoverPopover } from './useCardHoverPopover';
+import { useCardHoverPopover } from '../Hooks/useCardHoverPopover';
 import CopyJsonButton from './CopyJsonButton';
-import SelectBase from './SelectBase';
+import SelectBase from '../SealedPage/Components/SelectBase';
 import { useState } from 'react';
 import CustomSnackbar from './CustomSnackbar';
-import LeaderCardContainer from './LeaderCardContainer';
+import LeaderCardContainer from './LeaderCardContainer/LeaderCardContainer';
 
 export default function Deck({
   deckLeaders,

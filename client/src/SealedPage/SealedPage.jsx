@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import Deck from './Deck';
-import { useCardHoverPopover } from './useCardHoverPopover';
-import { useCreatePacks } from './useCreatePacks';
-import CardSets from './CardSets';
-import SealedPool from './SealedPool';
+import Deck from '../Components/Deck';
+import { useCardHoverPopover } from '../Hooks/useCardHoverPopover';
+import { useCreatePacks } from '../Hooks/useCreatePacks';
+import CardSets from '../Components/CardSets';
+import SealedPool from '../SealedPage/Components/SealedPool';
 import { v4 as uuid } from 'uuid';
 import LZString from 'lz-string';
 

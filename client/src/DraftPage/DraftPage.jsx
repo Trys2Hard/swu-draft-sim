@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Typography, Box } from '@mui/material';
-import Deck from './Deck';
-import { useCardHoverPopover } from './useCardHoverPopover';
-import { useCreatePacks } from './useCreatePacks';
-import CardSets from './CardSets';
+import Deck from '../Components/Deck';
+import { useCardHoverPopover } from '../Hooks/useCardHoverPopover';
+import { useCreatePacks } from '../Hooks/useCreatePacks';
+import CardSets from '../Components/CardSets';
 import { v4 as uuid } from 'uuid';
-import DraftPack from './DraftPack';
-import Sideboard from './Sideboard';
+import DraftPack from '../DraftPage/DraftPack';
+import Sideboard from '../DraftPage/Sideboard';
 
 export default function DraftPage() {
   const [deckLeaders, setDeckLeaders] = useState([]);

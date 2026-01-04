@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Box, Typography, Grid } from '@mui/material';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
-import CardHover from './CardHover';
-import StartCard from './StartCard';
-import LeaderCardContainer from './LeaderCardContainer';
+import CardHover from '../Components/CardHover';
+import StartCard from '../Components/StartCard/StartCard';
+import LeaderCardContainer from '../Components/LeaderCardContainer/LeaderCardContainer';
 
 export default function DraftPack({
   packNum,
