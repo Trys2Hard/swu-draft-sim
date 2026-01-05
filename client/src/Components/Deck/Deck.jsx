@@ -89,23 +89,12 @@ export default function Deck({
     addCard((prev) => [...prev, pickedCard]);
   }
 
-  const leaderAspectColorMap = {
-    Vigilance: 'rgba(101, 146, 182, 1), rgba(101, 146, 182, 0.7)',
-    Aggression: 'rgba(179, 128, 128, 1), rgba(179, 128, 128, 0.7)',
-    Command: 'rgba(162, 216, 173, 1), rgba(162, 216, 173, 0.7)',
-    Cunning: 'rgba(204, 204, 140, 1), rgba(204, 204, 140, 0.7)',
-  };
-
   const deckAspectColorMap = {
     Vigilance: 'rgba(101, 146, 182, 0.7), rgba(101, 146, 182, 1)',
     Aggression: 'rgba(179, 128, 128, 0.7), rgba(179, 128, 128, 1)',
     Command: 'rgba(162, 216, 173, 0.7), rgba(162, 216, 173, 1)',
     Cunning: 'rgba(204, 204, 140, 0.7), rgba(204, 204, 140, 1)',
   };
-
-  const aspects = deckLeaders[0]?.cardData?.Aspects || [];
-  const leaderColor =
-    leaderAspectColorMap[aspects.find((a) => leaderAspectColorMap[a])];
 
   const deckCardAspects = deckCards
     .flatMap((card) => card?.cardData?.Aspects || [])
@@ -119,15 +108,12 @@ export default function Deck({
     }, {}),
   ).sort((a, b) => b[1] - a[1]); // Sort by count descending
 
-  // Get most repeated (and possibly second)
-  const [mostRepeatedAspect] = aspectCounts[0] || [null, 0];
-  let deckColor = deckAspectColorMap[mostRepeatedAspect];
+  // Get most and second most prevalent aspects from deck
+  const [mostPrevalentAspect] = aspectCounts[0] || [null, 0];
+  const [secondMostPrevalentAspect] = aspectCounts[1] || [null, 0];
 
-  // 🧠 If leaderColor matches deckColor, pick the second most repeated aspect instead
-  if (deckColor === leaderColor && aspectCounts.length > 1) {
-    const [secondMostAspect] = aspectCounts[1];
-    deckColor = deckAspectColorMap[secondMostAspect] || deckColor;
-  }
+  const firstColor = deckAspectColorMap[mostPrevalentAspect];
+  const secondColor = deckAspectColorMap[secondMostPrevalentAspect];
 
   //Styles
   const styles = {
@@ -143,8 +129,8 @@ export default function Deck({
       m: '1rem auto 0 auto',
       color: 'white',
       background:
-        leaderColor && deckColor
-          ? `linear-gradient(to bottom right, ${leaderColor}, ${deckColor})`
+        firstColor && secondColor
+          ? `linear-gradient(to bottom right, ${firstColor}, ${secondColor})`
           : 'rgba(29, 64, 77, 1)',
     },
     header: {
