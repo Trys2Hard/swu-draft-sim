@@ -15,8 +15,10 @@ export default function CopySealedPool({
     const leaderCountMap = new Map();
     for (const card of flatLeaderPacks) {
       const set = card?.cardData?.Set;
-      const num = card?.cardData?.Number;
+      let num = card?.cardData?.Number;
       if (!set || !num) continue;
+
+      num = num.toString().padStart(3, '0');
       const id = `${set}_${num}`;
       leaderCountMap.set(id, (leaderCountMap.get(id) || 0) + 1);
     }
@@ -26,21 +28,40 @@ export default function CopySealedPool({
       count,
     }));
 
-    const deckCountMap = [];
+    // Process deck - Use Map instead of array
+    const deckCountMap = new Map();
     for (const card of sortedDeckCards || sortedCardPacks) {
       const set = card?.cardData?.Set;
-      const num = card?.cardData?.Number;
+      let num = card?.cardData?.Number;
       if (!set || !num) continue;
+
+      // Apply number transformation
+      if (num >= 537 && num <= 774) num = (num - 510).toString();
+      else if (num >= 767 && num <= 1004) num = (num - 740).toString();
+
+      num = num.toString().padStart(3, '0');
       const id = `${set}_${num}`;
-      deckCountMap.push({ id, count: 1 });
+      deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);
     }
 
+    const combinedDeck = Array.from(deckCountMap, ([id, count]) => ({
+      id,
+      count,
+    }));
+
+    // Process sideboard
     const sideboardCountMap = new Map();
     if (sideboardCards) {
       for (const card of sideboardCards) {
         const set = card?.cardData?.Set;
-        const num = card?.cardData?.Number;
+        let num = card?.cardData?.Number;
         if (!set || !num) continue;
+
+        // Apply number transformation
+        if (num >= 537 && num <= 774) num = (num - 510).toString();
+        else if (num >= 767 && num <= 1004) num = (num - 740).toString();
+
+        num = num.toString().padStart(3, '0');
         const id = `${set}_${num}`;
         sideboardCountMap.set(id, (sideboardCountMap.get(id) || 0) + 1);
       }
@@ -50,6 +71,7 @@ export default function CopySealedPool({
       count,
     }));
 
+    // For sealed pools, keep all leaders as an array (unlike constructed decks which use single leader)
     const jsonCardData = {
       metadata: {
         name: leaderPacks ? 'SWUDraftSim Sealed Pool' : 'SWUDraftSim Deck',
@@ -60,26 +82,23 @@ export default function CopySealedPool({
         id: base,
         count: 1,
       },
-      deck: deckCountMap,
+      deck: combinedDeck,
       sideboard: combinedSideboard,
     };
 
-    // 🔽🔽🔽 NEW: ENCODE + CREATE DECK LINK 🔽🔽🔽
+    // Encode and create deck link
     const jsonString = JSON.stringify(jsonCardData);
     const compressed = LZString.compressToEncodedURIComponent(jsonString);
 
     const deckLink = `${window.location.origin}?deck=${compressed}`;
 
     navigator.clipboard.writeText(deckLink);
-    // 🔼🔼🔼 END NEW SECTION 🔼🔼🔼
 
     if (onSnackbar) {
-      if (
-        !jsonCardData?.leader[0]?.id ||
-        jsonCardData?.leader?.id === 'undefined_undefined'
-      ) {
+      // For sealed pools, leaders are automatically included, so only warn if none exist
+      if (!jsonCardData?.leader?.length || jsonCardData.leader.length === 0) {
         onSnackbar(
-          'Copied Sealed Pool Link to Clipboard (No Leader Selected)',
+          'Copied Sealed Pool Link to Clipboard (No Leaders Found)',
           'warning',
         );
       } else if (!jsonCardData?.base?.id) {

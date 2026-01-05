@@ -70,44 +70,66 @@ export default function SealedPage() {
     try {
       let json;
 
-      // 🔽🔽🔽 NEW: Detect deck link vs raw JSON 🔽🔽🔽
+      // Detect deck link vs raw JSON
       if (text.startsWith('http')) {
         const url = new URL(text);
         const deckParam = url.searchParams.get('deck');
 
         if (!deckParam) {
-          throw new Error('No deck parameter found');
+          throw new Error('No deck parameter found in URL');
         }
 
         const decompressed =
           LZString.decompressFromEncodedURIComponent(deckParam);
+
+        if (!decompressed) {
+          throw new Error('Failed to decompress deck data');
+        }
+
         json = JSON.parse(decompressed);
       } else {
         json = JSON.parse(text);
       }
-      // 🔼🔼🔼 END NEW SECTION 🔼🔼🔼
 
-      // Cards
-      const ids = json.deck.map((card) => card.id);
-      const cards = await Promise.all(ids.map((id) => fetchCardById(id)));
+      // FIX: Import base
+      if (json.base?.id) {
+        setBase(json.base.id);
+      }
 
-      const idCards = cards.map((card) => ({
+      // Import deck cards
+      const deckIds = json.deck.map((card) => card.id);
+      const deckCardsData = await Promise.all(
+        deckIds.map((id) => fetchCardById(id)),
+      );
+
+      const idCards = deckCardsData.map((card) => ({
         id: uuid(),
         cardData: { ...card },
       }));
 
       setCardPacks(idCards);
 
-      // Leaders
-      if (!json.leader.id) {
-        const leaderIds = json.leader.flatMap((leader) => {
+      // Handle leaders correctly
+      let leaderIds = [];
+
+      // Check if leader is an array (sealed pools) or object (constructed decks)
+      if (Array.isArray(json.leader)) {
+        // Sealed pool format: array of leader objects
+        leaderIds = json.leader.flatMap((leader) => {
           const ids = [];
           for (let i = 0; i < leader.count; i++) {
             ids.push(leader.id);
           }
           return ids;
         });
+      } else if (json.leader?.id) {
+        // Constructed deck format: single leader object
+        for (let i = 0; i < (json.leader.count || 1); i++) {
+          leaderIds.push(json.leader.id);
+        }
+      }
 
+      if (leaderIds.length > 0) {
         const leaders = await Promise.all(
           leaderIds.map((id) => fetchCardById(id)),
         );
@@ -121,6 +143,8 @@ export default function SealedPage() {
       }
     } catch (err) {
       console.error('Import failed:', err);
+      alert(`Import failed: ${err.message}`);
+      setSealedImportStarted(false);
     }
   }
 

@@ -7,6 +7,7 @@ export function useCopyJson({
   base,
 }) {
   const handleCopyJson = () => {
+    // Process deck cards
     const deckCountMap = new Map();
     for (const card of sortedDeckCards || sortedCardPacks) {
       const set = card?.cardData?.Set;
@@ -16,7 +17,7 @@ export function useCopyJson({
       if (num >= 537 && num <= 774) num = (num - 510).toString();
       else if (num >= 767 && num <= 1004) num = (num - 740).toString();
 
-      num = num.padStart(3, '0');
+      num = num.toString().padStart(3, '0');
       const id = `${set}_${num}`;
       deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);
     }
@@ -26,6 +27,7 @@ export function useCopyJson({
       count,
     }));
 
+    // Process sideboard cards
     const sideboardCountMap = new Map();
     if (sideboardCards) {
       for (const card of sideboardCards) {
@@ -36,7 +38,7 @@ export function useCopyJson({
         if (num >= 537 && num <= 774) num = (num - 510).toString();
         else if (num >= 767 && num <= 1004) num = (num - 740).toString();
 
-        num = num.padStart(3, '0');
+        num = num.toString().padStart(3, '0');
         const id = `${set}_${num}`;
         sideboardCountMap.set(id, (sideboardCountMap.get(id) || 0) + 1);
       }
@@ -47,15 +49,31 @@ export function useCopyJson({
       count,
     }));
 
+    // Process leader (no number transformation needed - leaders are never over 020)
+    let leaderSet, leaderNum;
+
+    if (leaderPacks) {
+      const firstLeader = leaderPacks.flat()[0];
+      leaderSet = firstLeader?.cardData?.Set;
+      leaderNum = firstLeader?.cardData?.Number;
+    } else {
+      leaderSet = deckLeaders?.[0]?.cardData?.Set;
+      leaderNum = deckLeaders?.[0]?.cardData?.Number;
+    }
+
+    let leaderId = 'undefined_undefined';
+    if (leaderSet && leaderNum) {
+      leaderNum = leaderNum.toString().padStart(3, '0');
+      leaderId = `${leaderSet}_${leaderNum}`;
+    }
+
     const jsonCardData = {
       metadata: {
         name: leaderPacks ? 'SWUDraftSim Sealed Pool' : 'SWUDraftSim Deck',
         author: 'Unknown',
       },
       leader: {
-        id: leaderPacks
-          ? `${leaderPacks.flat()[0]?.cardData?.Set}_${leaderPacks.flat()[0]?.cardData?.Number}`
-          : `${deckLeaders?.[0]?.cardData?.Set}_${deckLeaders?.[0]?.cardData?.Number}`,
+        id: leaderId,
         count: 1,
       },
       base: { id: base, count: 1 },
