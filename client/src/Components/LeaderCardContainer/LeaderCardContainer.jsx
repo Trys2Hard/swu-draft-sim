@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import LeaderFlipButton from './LeaderFlipButton';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function LeaderCardContainer({
   deckLeaders,
@@ -57,7 +58,6 @@ export default function LeaderCardContainer({
       mt: '0.5rem',
       mb: '0.5rem',
       p: '0.5rem',
-      filter: isLoading ? 'blur(2px)' : 'blur(0)',
       borderBottom: currentPack ? 'none' : '2px solid white',
     },
     leaderCardContainer: {
@@ -70,6 +70,7 @@ export default function LeaderCardContainer({
       width: '100%',
       borderRadius: '5%',
       cursor: 'pointer',
+      filter: isLoading ? 'blur(2px)' : 'blur(0)',
       '&: hover': {
         outline: '2px solid rgba(61, 178, 255, 1)',
         boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
@@ -77,27 +78,27 @@ export default function LeaderCardContainer({
     },
     loading: {
       position: 'absolute',
-      top: '50%',
+      top: currentPack ? '48%' : '40%',
       left: '50%',
-      transform: 'translate(-50%, -80%)',
-      fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
-      textShadow: '2px 2px 3px black',
+      transform: currentPack
+        ? 'translate(-50%, -48%)'
+        : 'translate(-50%, -40%)',
       zIndex: 1,
     },
   };
 
   return (
     <>
-      {isLoading && (
-        <Typography component="p" sx={styles.loading}>
-          Loading...
-        </Typography>
-      )}
       <Grid
         container
         spacing={draftStarted && draftingLeaders ? 2 : 1}
         sx={styles.leaders}
       >
+        {isLoading && (
+          <Box sx={styles.loading}>
+            <CircularProgress size={70} color="white" />
+          </Box>
+        )}
         {(sealedStarted || draftStarted || sealedImportStarted) &&
           leaders.map((card) => {
             const cardId = `card-id-${card.id}`;

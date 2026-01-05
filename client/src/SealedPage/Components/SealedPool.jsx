@@ -89,6 +89,7 @@ export default function SealedPool({
       width: '100%',
       borderRadius: '5%',
       cursor: 'pointer',
+      filter: isLoading ? 'blur(2px)' : 'blur(0)',
       '&: hover': {
         outline: '2px solid rgba(61, 178, 255, 1)',
         boxShadow: '0 0 18px rgba(61, 178, 255, 1)',
