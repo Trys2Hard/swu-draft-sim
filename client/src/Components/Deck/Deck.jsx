@@ -1,11 +1,12 @@
 import { Box, Typography, Grid } from '@mui/material';
-import CardHover from './CardHover';
-import { useCardHoverPopover } from '../Hooks/useCardHoverPopover';
-import CopyJsonButton from './CopyJsonButton';
-import SelectBase from '../SealedPage/Components/SelectBase';
+import CardHover from '../CardHover';
+import { useCardHoverPopover } from '../../Hooks/useCardHoverPopover';
+import CopyJsonButton from '../CopyJsonButton';
+import SelectBase from '../../SealedPage/Components/SelectBase';
 import { useState } from 'react';
-import CustomSnackbar from './CustomSnackbar';
-import LeaderCardContainer from './LeaderCardContainer/LeaderCardContainer';
+import CustomSnackbar from '../CustomSnackbar';
+import LeaderCardContainer from '../LeaderCardContainer/LeaderCardContainer';
+import ClearDeck from './ClearDeck';
 
 export default function Deck({
   deckLeaders,
@@ -16,6 +17,7 @@ export default function Deck({
   setSideboardCards,
   sideboardCards,
   setLeaderPacks,
+  cardPacks,
   setCardPacks,
   draftStarted,
   sealedStarted,
@@ -252,6 +254,12 @@ export default function Deck({
         <Box
           sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}
         >
+          <ClearDeck
+            deckCards={deckCards}
+            setDeckCards={setDeckCards}
+            cardPacks={cardPacks}
+            setCardPacks={setCardPacks}
+          />
           <CopyJsonButton
             deckLeaders={deckLeaders}
             sortedDeckCards={sortedDeckCards}

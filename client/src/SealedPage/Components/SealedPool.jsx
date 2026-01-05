@@ -35,8 +35,19 @@ export default function SealedPool({
   const cards = filterSelected ? filteredCards : sortedCardPacks;
 
   useEffect(() => {
-    const initialCards = [...cardPacks]
+    const initialCards = cardPacks
       .flat()
+      .map((c) =>
+        c.cardData?.VariantType === 'Foil'
+          ? {
+              ...c,
+              cardData: {
+                ...c.cardData,
+                Number: c.cardData.Number - 510,
+              },
+            }
+          : c,
+      )
       .sort(
         (a, b) =>
           (a.cardData?.[sortBy] ?? 0) - (b.cardData?.[sortBy] ?? 0) ||
