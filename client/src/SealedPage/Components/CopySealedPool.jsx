@@ -11,17 +11,12 @@ export default function CopySealedPool({
   onSnackbar,
 }) {
   const handleCopyJson = () => {
-    // Process leaders
     const flatLeaderPacks = leaderPacks.flat();
     const leaderCountMap = new Map();
     for (const card of flatLeaderPacks) {
       const set = card?.cardData?.Set;
       let num = card?.cardData?.Number;
       if (!set || !num) continue;
-
-      // Apply number transformation
-      if (num >= 537 && num <= 774) num = (num - 510).toString();
-      else if (num >= 767 && num <= 1004) num = (num - 740).toString();
 
       num = num.toString().padStart(3, '0');
       const id = `${set}_${num}`;
@@ -33,7 +28,7 @@ export default function CopySealedPool({
       count,
     }));
 
-    // Process deck - FIX: Use Map instead of array
+    // Process deck - Use Map instead of array
     const deckCountMap = new Map();
     for (const card of sortedDeckCards || sortedCardPacks) {
       const set = card?.cardData?.Set;
@@ -100,12 +95,10 @@ export default function CopySealedPool({
     navigator.clipboard.writeText(deckLink);
 
     if (onSnackbar) {
-      if (
-        !jsonCardData?.leader?.id ||
-        jsonCardData?.leader?.id === 'undefined_undefined'
-      ) {
+      // For sealed pools, leaders are automatically included, so only warn if none exist
+      if (!jsonCardData?.leader?.length || jsonCardData.leader.length === 0) {
         onSnackbar(
-          'Copied Sealed Pool Link to Clipboard (No Leader Selected)',
+          'Copied Sealed Pool Link to Clipboard (No Leaders Found)',
           'warning',
         );
       } else if (!jsonCardData?.base?.id) {
