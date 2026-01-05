@@ -149,26 +149,28 @@ export default function SealedPage() {
   }
 
   function moveToDeck(id) {
-    handlePopoverClose();
+    if (!isLoading) {
+      handlePopoverClose();
 
-    let pickedCard =
-      leaderPacks.flat().find((card) => card.id === id) ||
-      cardPacks.flat().find((card) => card.id === id);
-    if (!pickedCard) return;
+      let pickedCard =
+        leaderPacks.flat().find((card) => card.id === id) ||
+        cardPacks.flat().find((card) => card.id === id);
+      if (!pickedCard) return;
 
-    const isLeader = pickedCard.cardData?.Type === 'Leader';
+      const isLeader = pickedCard.cardData?.Type === 'Leader';
 
-    const stateToUpdate = isLeader ? leaderPacks : cardPacks;
-    const setStateToUpdate = isLeader ? setLeaderPacks : setCardPacks;
+      const stateToUpdate = isLeader ? leaderPacks : cardPacks;
+      const setStateToUpdate = isLeader ? setLeaderPacks : setCardPacks;
 
-    const updatedSealedPool = stateToUpdate
-      .flat()
-      .filter((card) => card.id !== id);
-    setStateToUpdate(updatedSealedPool);
+      const updatedSealedPool = stateToUpdate
+        .flat()
+        .filter((card) => card.id !== id);
+      setStateToUpdate(updatedSealedPool);
 
-    const addCard = isLeader ? setDeckLeaders : setDeckCards;
+      const addCard = isLeader ? setDeckLeaders : setDeckCards;
 
-    addCard((prev) => [...prev, pickedCard]);
+      addCard((prev) => [...prev, pickedCard]);
+    }
   }
 
   function handleSetChange(newSet) {
