@@ -46,12 +46,12 @@ export default function SealedPool({
                 Number: c.cardData.Number - 510,
               },
             }
-          : c,
+          : c
       )
       .sort(
         (a, b) =>
           (a.cardData?.[sortBy] ?? 0) - (b.cardData?.[sortBy] ?? 0) ||
-          (a.cardData?.Number ?? 0) - (b.cardData?.Number ?? 0),
+          (a.cardData?.Number ?? 0) - (b.cardData?.Number ?? 0)
       );
 
     setSortedCardPacks(initialCards);
@@ -113,7 +113,7 @@ export default function SealedPool({
         <Box sx={styles.sealedPool}>
           <Box sx={styles.header}>
             <Typography
-              component="h2"
+              component='h2'
               sx={{
                 mb: { xs: '0.8rem', lg: '0' },
                 fontSize: { xs: '1.6rem', sm: '1.8rem' },
@@ -137,7 +137,7 @@ export default function SealedPool({
                 setFilterSelected={setFilterSelected}
               />
 
-              <Box sx={{ m: { xs: '0.5rem', sm: '0 1rem 0 0' } }}>
+              <Box sx={{ m: { xs: '0.5rem', sm: '0 0.5rem 0 0' } }}>
                 <CardSort handleSort={handleSort} />
               </Box>
 
@@ -188,14 +188,14 @@ export default function SealedPool({
                   <Grid
                     size={{ xs: 2, md: 1.2 }}
                     aria-owns={open ? 'mouse-over-popover' : undefined}
-                    aria-haspopup="true"
+                    aria-haspopup='true'
                     onMouseEnter={(e) => handlePopoverOpen(e, card)}
                     onMouseLeave={handlePopoverClose}
                     key={cardId}
                     onClick={() => moveToDeck(card.id)}
                   >
                     <Box
-                      component="img"
+                      component='img'
                       src={card?.cardData?.FrontArt}
                       id={cardId}
                       sx={styles.nonLeaderCard}

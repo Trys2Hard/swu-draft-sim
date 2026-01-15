@@ -85,56 +85,54 @@ export default function SelectBase({ base, setBase, currentSet }) {
   return (
     <Box>
       <FormControl
-        size="small"
-        variant="filled"
+        size='small'
         sx={{
-          width: '10rem',
+          height: '2.5rem',
+          width: '8.3rem',
 
-          // Label default + focused
+          // Labels
           '& .MuiInputLabel-root': {
             color: 'white',
-          },
-
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: 'white',
-          },
-
-          // Target the outlined input root, then the notched outline inside it:
-          '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'white',
-          },
-
-          // Hover state on the root that contains the outline:
-          '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'rgba(61, 178, 255, 1)',
-          },
-
-          // Focused state: the root gets .Mui-focused
-          '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-            {
-              borderColor: 'rgba(61, 178, 255, 1)',
-              borderWidth: '2px',
+            '&.Mui-focused': {
+              color: 'white',
             },
+          },
 
-          // Arrow color
+          // Outline borders
+          '& .MuiOutlinedInput-notchedOutline': {
+            border: '1px solid rgba(110, 110, 110, 1)',
+            // border: base ? '1px solid red' : '1px solid rgba(110, 110, 110, 1)',
+          },
+
+          '& .MuiOutlinedInput-root': {
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(61, 178, 255)',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(61, 178, 255)',
+              // borderColor: base ? 'red' : 'rgb(61, 178, 255)',
+            },
+          },
+
+          // Dropdown arrow
           '& .MuiSvgIcon-root': {
             color: 'white',
           },
         }}
       >
-        <InputLabel id="select-base-label">Select Base</InputLabel>
+        <InputLabel id='select-base-label'>Select Base</InputLabel>
         <Select
-          labelId="select-base-label"
-          id="select-base"
+          labelId='select-base-label'
+          id='select-base'
           value={base}
-          name="base"
-          label="Select Base"
+          name='base'
+          label='Select Base'
           onChange={handleChange}
           sx={{
+            height: '2.5rem',
             color: 'white',
-            backgroundColor: 'rgba(65, 65, 65, 1)',
-            borderRadius: '5px',
-            transition: 'all 0.3s ease-in-out',
+            backgroundColor: 'rgba(30, 30, 30, 0.4)',
+            borderRadius: '10px',
           }}
         >
           {baseOptions.map((b) => (

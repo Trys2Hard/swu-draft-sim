@@ -5,17 +5,29 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 export default function FilterButton({ filterSelected, setFilterSelected }) {
   return (
     <ToggleButton
-      value="check"
-      size="small"
+      value='check'
       selected={filterSelected}
       onChange={() => setFilterSelected((prevSelected) => !prevSelected)}
       sx={{
-        mr: '1rem',
-        border: '1px solid rgba(110, 110, 110, 0.7)',
+        mr: '0.5rem',
+        height: '2.5rem',
+        border: '1px solid rgba(110, 110, 110, 1)',
+        backgroundColor: 'rgba(30, 30, 30, 0.4)',
         borderRadius: '10px',
+        '&:hover': {
+          backgroundColor: 'rgba(30, 30, 30, 0.4)',
+          borderColor: 'rgb(61, 178, 255)',
+        },
+        '&.Mui-selected:hover': {
+          backgroundColor: 'rgba(30, 30, 30, 0.4)',
+          borderColor: 'rgb(61, 178, 255)',
+        },
+        '&.Mui-selected': {
+          backgroundColor: 'rgba(30, 30, 30, 0.4)',
+        },
       }}
     >
-      <Typography variant="p" component="p" sx={{ color: 'white' }}>
+      <Typography variant='p' component='p' sx={{ color: 'white' }}>
         Filter
       </Typography>
       {filterSelected ? (
