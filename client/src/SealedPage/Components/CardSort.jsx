@@ -7,7 +7,7 @@ export default function CardSort({ handleSort }) {
   return (
     <Box
       sx={{
-        height: '2.5rem',
+        height: '2.2rem',
         display: 'flex',
         alignItems: 'center',
         border: '1px solid rgba(110, 110, 110, 1)',

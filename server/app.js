@@ -31,7 +31,7 @@ app.use(
         callback(new Error('Not allowed by CORS'));
       }
     },
-  }),
+  })
 );
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
@@ -279,6 +279,26 @@ app.get('/api/card/:id', async (req, res) => {
   }
 });
 
+app.get('/api/bases/:set', async (req, res) => {
+  const set = req.params.set.toUpperCase();
+  try {
+    const bases = await Card.find({
+      Set: set,
+      Type: 'Base',
+      VariantType: 'Normal',
+    });
+
+    res.json(bases);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// React Router fallback
+app.get('/*splat', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
 // connect to db
 mongoose
   .connect(process.env.MONGO_URI)
@@ -291,8 +311,3 @@ mongoose
   .catch((error) => {
     console.error(error);
   });
-
-// React Router fallback
-app.get('/*splat', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});

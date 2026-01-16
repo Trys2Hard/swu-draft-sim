@@ -1,86 +1,40 @@
 import { Box, Select, InputLabel, FormControl, MenuItem } from '@mui/material';
+import { useState, useEffect } from 'react';
 
 export default function SelectBase({ base, setBase, currentSet }) {
+  const [bases, setBases] = useState([]);
+
   const handleChange = (event) => {
     setBase(event.target.value);
   };
 
-  const lofBases = [
-    {
-      number: 'LOF_020',
-      name: 'Nightsister Lair (Vigilance/Blue)',
-    },
-    {
-      number: 'LOF_021',
-      name: 'Shadowed Undercity (Vigilance/Blue)',
-    },
-    {
-      number: 'LOF_023',
-      name: 'Jedi Temple (Command/Green)',
-    },
-    {
-      number: 'LOF_024',
-      name: 'Starlight Temple (Command/Green)',
-    },
-    {
-      number: 'LOF_026',
-      name: 'Fortress Vader (Aggression/Red)',
-    },
-    {
-      number: 'LOF_027',
-      name: 'Strangled Cliffs (Aggression/Red)',
-    },
-    {
-      number: 'LOF_029',
-      name: 'Crystal Caves (Cunning/Yellow)',
-    },
-    {
-      number: 'LOF_030',
-      name: 'The Holy City (Cunning/Yellow)',
-    },
-  ];
+  useEffect(() => {
+    const fetchBases = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/bases/${currentSet}`
+        );
 
-  const secBases = [
-    {
-      number: 'SEC_019',
-      name: 'Rix Road (Vigilance/Blue)',
-    },
-    {
-      number: 'SEC_020',
-      name: 'Uscru Entertainment District (Vigilance/Blue)',
-    },
-    {
-      number: 'SEC_021',
-      name: 'Republic City (Command/Green)',
-    },
-    {
-      number: 'SEC_022',
-      name: 'Senate Rotunda (Command/Green)',
-    },
-    {
-      number: 'SEC_023',
-      name: 'Imperial Prison Complex (Aggression/Red)',
-    },
-    {
-      number: 'SEC_024',
-      name: 'Naval Intelligence HQ (Aggression/Red)',
-    },
-    {
-      number: 'SEC_025',
-      name: 'Amnesty Housing (Cunning/Yellow)',
-    },
-    {
-      number: 'SEC_026',
-      name: 'Mount Tantiss (Cunning/Yellow)',
-    },
-  ];
+        if (!res.ok) {
+          throw new Error('Failed to fetch bases');
+        }
 
-  const baseGroups = {
-    lof: lofBases,
-    sec: secBases,
-  };
+        const data = await res.json();
+        setBases(data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
 
-  const baseOptions = baseGroups[currentSet];
+    fetchBases();
+  }, [currentSet]);
+
+  const aspectColorMap = new Map();
+
+  aspectColorMap.set('Vigilance', 'rgb(99, 147, 238)');
+  aspectColorMap.set('Cunning', 'rgb(248, 245, 86)');
+  aspectColorMap.set('Aggression', 'rgb(238, 99, 99)');
+  aspectColorMap.set('Command', 'rgb(99, 238, 106)');
 
   return (
     <Box>
@@ -129,15 +83,34 @@ export default function SelectBase({ base, setBase, currentSet }) {
           label='Select Base'
           onChange={handleChange}
           sx={{
-            height: '2.5rem',
+            height: '100%',
             color: 'white',
             backgroundColor: 'rgba(30, 30, 30, 0.4)',
             borderRadius: '10px',
           }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                backgroundColor: 'rgba(10, 10, 10, 0.9)',
+              },
+            },
+          }}
         >
-          {baseOptions.map((b) => (
-            <MenuItem key={b.number} value={b.number}>
-              {b.name}
+          {bases.map((b) => (
+            <MenuItem
+              key={b.Number}
+              value={`${b.Set}_${b.Number}`}
+              sx={{
+                color: aspectColorMap.get(b.Aspects[0]),
+                '&:hover': { backgroundColor: 'rgba(10, 10, 10, 1)' },
+              }}
+            >
+              {b.Name}{' '}
+              {b.Rarity === 'Rare'
+                ? ' (R)'
+                : b.Rarity === 'Special'
+                ? ' (S)'
+                : null}
             </MenuItem>
           ))}
         </Select>
