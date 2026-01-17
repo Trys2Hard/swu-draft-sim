@@ -63,7 +63,7 @@ export default function SealedPage() {
     return data.cardData;
   };
 
-  async function handleImportSealedPool() {
+ async function handleImportSealedPool() {
     setSealedImportStarted(true);
     const text = await navigator.clipboard.readText();
 
@@ -91,13 +91,20 @@ export default function SealedPage() {
         json = JSON.parse(text);
       }
 
-      // FIX: Import base
+      // Import base
       if (json.base?.id) {
         setBase(json.base.id);
       }
 
       // Import deck cards
-      const deckIds = json.deck.map((card) => card.id);
+      const deckIds = json.deck.flatMap((card) => {
+        const ids = [];
+        for (let i = 0; i < card.count; i++) {
+          ids.push(card.id);
+        }
+        return ids;
+      });
+      
       const deckCardsData = await Promise.all(
         deckIds.map((id) => fetchCardById(id)),
       );
