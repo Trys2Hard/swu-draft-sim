@@ -13,6 +13,7 @@ export default function SealedPage() {
   const [sealedStarted, setSealedStarted] = useState(false);
   const [base, setBase] = useState('');
   const [sealedImportStarted, setSealedImportStarted] = useState(false);
+  const [baseColor, setBaseColor] = useState('rgba(110, 110, 110, 1)');
 
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover('');
@@ -30,6 +31,14 @@ export default function SealedPage() {
   } = useCreatePacks();
 
   let errorCount = 0;
+
+  // Aspect color mapping
+  const aspectColorMap = new Map([
+    ['Vigilance', 'rgba(45, 136, 255, 1)'],
+    ['Cunning', 'rgba(231, 228, 46, 1)'],
+    ['Aggression', 'rgba(233, 36, 36, 1)'],
+    ['Command', 'rgba(40, 224, 40, 1)'],
+  ]);
 
   useEffect(() => {
     if (cardPacks.length === 6) {
@@ -63,7 +72,24 @@ export default function SealedPage() {
     return data.cardData;
   };
 
- async function handleImportSealedPool() {
+  const fetchBaseData = async (baseId) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/card/${baseId}`,
+      );
+      const data = await res.json();
+
+      if (!res.ok)
+        throw new Error(data.error || `Failed to fetch base ${baseId}`);
+
+      return data.cardData;
+    } catch (err) {
+      console.error('Failed to fetch base data:', err);
+      return null;
+    }
+  };
+
+  async function handleImportSealedPool() {
     setSealedImportStarted(true);
     const text = await navigator.clipboard.readText();
 
@@ -91,9 +117,24 @@ export default function SealedPage() {
         json = JSON.parse(text);
       }
 
-      // Import base
-      if (json.base?.id) {
-        setBase(json.base.id);
+      // Import base and update color
+      if (json.base) {
+        // Ensure base is a string (handle both "SET_NUM" format and object format)
+        const baseId =
+          typeof json.base === 'string'
+            ? json.base
+            : json.base.id || `${json.base.Set}_${json.base.Number}`;
+
+        setBase(baseId);
+
+        // Fetch base data to get its aspect and set the color
+        const baseData = await fetchBaseData(baseId);
+        if (baseData && baseData.Aspects && baseData.Aspects.length > 0) {
+          const aspectColor = aspectColorMap.get(baseData.Aspects[0]);
+          if (aspectColor) {
+            setBaseColor(aspectColor);
+          }
+        }
       }
 
       // Import deck cards
@@ -104,7 +145,7 @@ export default function SealedPage() {
         }
         return ids;
       });
-      
+
       const deckCardsData = await Promise.all(
         deckIds.map((id) => fetchCardById(id)),
       );
@@ -204,6 +245,8 @@ export default function SealedPage() {
         setBase={setBase}
         handleImportSealedPool={handleImportSealedPool}
         sealedImportStarted={sealedImportStarted}
+        baseColor={baseColor}
+        setBaseColor={setBaseColor}
       />
       <Deck
         sealedStarted={sealedStarted}
@@ -218,6 +261,8 @@ export default function SealedPage() {
         setBase={setBase}
         currentSet={currentSet}
         sealedImportStarted={sealedImportStarted}
+        baseColor={baseColor}
+        setBaseColor={setBaseColor}
       />
     </>
   );
