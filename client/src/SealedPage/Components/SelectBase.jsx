@@ -1,7 +1,13 @@
 import { Box, Select, InputLabel, FormControl, MenuItem } from '@mui/material';
 import { useState, useEffect } from 'react';
 
-export default function SelectBase({ base, setBase, currentSet }) {
+export default function SelectBase({
+  base,
+  setBase,
+  currentSet,
+  baseColor,
+  setBaseColor,
+}) {
   const [bases, setBases] = useState([]);
 
   const handleChange = (event) => {
@@ -12,7 +18,7 @@ export default function SelectBase({ base, setBase, currentSet }) {
     const fetchBases = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/bases/${currentSet}`
+          `${import.meta.env.VITE_API_URL}/api/bases/${currentSet}`,
         );
 
         if (!res.ok) {
@@ -20,7 +26,7 @@ export default function SelectBase({ base, setBase, currentSet }) {
         }
 
         const data = await res.json();
-        setBases(data);
+        setBases(data.sort((a, b) => a.Number - b.Number));
       } catch (err) {
         console.log(err.message);
       }
@@ -31,10 +37,14 @@ export default function SelectBase({ base, setBase, currentSet }) {
 
   const aspectColorMap = new Map();
 
-  aspectColorMap.set('Vigilance', 'rgb(99, 147, 238)');
-  aspectColorMap.set('Cunning', 'rgb(248, 245, 86)');
-  aspectColorMap.set('Aggression', 'rgb(238, 99, 99)');
-  aspectColorMap.set('Command', 'rgb(99, 238, 106)');
+  aspectColorMap.set('Vigilance', 'rgba(45, 136, 255, 1)');
+  aspectColorMap.set('Cunning', 'rgba(231, 228, 46, 1)');
+  aspectColorMap.set('Aggression', 'rgba(233, 36, 36, 1)');
+  aspectColorMap.set('Command', 'rgba(40, 224, 40, 1)');
+
+  // Check if the current base value exists in the loaded bases
+  const isValidBase = bases.some((b) => `${b.Set}_${b.Number}` === base);
+  const displayValue = isValidBase ? base : '';
 
   return (
     <Box>
@@ -54,17 +64,15 @@ export default function SelectBase({ base, setBase, currentSet }) {
 
           // Outline borders
           '& .MuiOutlinedInput-notchedOutline': {
-            border: '1px solid rgba(110, 110, 110, 1)',
-            // border: base ? '1px solid red' : '1px solid rgba(110, 110, 110, 1)',
+            border: `1px solid ${baseColor}`,
           },
 
           '& .MuiOutlinedInput-root': {
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'rgb(61, 178, 255)',
+              border: `2px solid ${baseColor}`,
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'rgb(61, 178, 255)',
-              // borderColor: base ? 'red' : 'rgb(61, 178, 255)',
+              borderColor: `${baseColor}`,
             },
           },
 
@@ -78,7 +86,7 @@ export default function SelectBase({ base, setBase, currentSet }) {
         <Select
           labelId='select-base-label'
           id='select-base'
-          value={base}
+          value={displayValue}
           name='base'
           label='Select Base'
           onChange={handleChange}
@@ -100,6 +108,7 @@ export default function SelectBase({ base, setBase, currentSet }) {
             <MenuItem
               key={b.Number}
               value={`${b.Set}_${b.Number}`}
+              onClick={() => setBaseColor(aspectColorMap.get(b.Aspects[0]))}
               sx={{
                 color: aspectColorMap.get(b.Aspects[0]),
                 '&:hover': { backgroundColor: 'rgba(10, 10, 10, 1)' },
@@ -107,10 +116,10 @@ export default function SelectBase({ base, setBase, currentSet }) {
             >
               {b.Name}{' '}
               {b.Rarity === 'Rare'
-                ? ' (R)'
+                ? '(R)'
                 : b.Rarity === 'Special'
-                ? ' (S)'
-                : null}
+                  ? '(S)'
+                  : null}
             </MenuItem>
           ))}
         </Select>

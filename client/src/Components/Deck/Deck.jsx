@@ -25,6 +25,8 @@ export default function Deck({
   setBase,
   currentSet,
   sealedImportStarted,
+  baseColor,
+  setBaseColor,
 }) {
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover();
@@ -174,15 +176,21 @@ export default function Deck({
     <Box sx={styles.deck}>
       <Box sx={styles.header}>
         <Typography
-          variant="h4"
-          component="h2"
+          variant='h4'
+          component='h2'
           sx={{ mb: { xs: '0.8rem', sm: '0' } }}
         >
           Deck
         </Typography>
         <Box sx={styles.headerRight}>
-          <SelectBase base={base} setBase={setBase} currentSet={currentSet} />
-          <Typography variant="h5" component="p" sx={styles.cardCount}>
+          <SelectBase
+            base={base}
+            setBase={setBase}
+            currentSet={currentSet}
+            baseColor={baseColor}
+            setBaseColor={setBaseColor}
+          />
+          <Typography variant='h5' component='p' sx={styles.cardCount}>
             {deckNum}/30
           </Typography>
         </Box>
@@ -213,7 +221,7 @@ export default function Deck({
               <Grid
                 size={{ xs: 2, md: 1.2 }}
                 aria-owns={open ? 'mouse-over-popover' : undefined}
-                aria-haspopup="true"
+                aria-haspopup='true'
                 onMouseEnter={(e) => handlePopoverOpen(e, card)}
                 onMouseLeave={handlePopoverClose}
                 key={labelId}
@@ -223,7 +231,7 @@ export default function Deck({
                 }}
               >
                 <Box
-                  component="img"
+                  component='img'
                   src={card.cardData?.FrontArt}
                   id={labelId}
                   sx={styles.nonLeaderCard}

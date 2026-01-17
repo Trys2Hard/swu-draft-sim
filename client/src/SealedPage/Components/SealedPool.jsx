@@ -26,6 +26,8 @@ export default function SealedPool({
   handleImportSealedPool,
   sealedImportStarted,
   deckLeaders,
+  baseColor,
+  setBaseColor,
 }) {
   const [sortBy, setSortBy] = useState('Number');
   const [sortedCardPacks, setSortedCardPacks] = useState([]);
@@ -46,12 +48,12 @@ export default function SealedPool({
                 Number: c.cardData.Number - 510,
               },
             }
-          : c
+          : c,
       )
       .sort(
         (a, b) =>
           (a.cardData?.[sortBy] ?? 0) - (b.cardData?.[sortBy] ?? 0) ||
-          (a.cardData?.Number ?? 0) - (b.cardData?.Number ?? 0)
+          (a.cardData?.Number ?? 0) - (b.cardData?.Number ?? 0),
       );
 
     setSortedCardPacks(initialCards);
@@ -145,6 +147,8 @@ export default function SealedPool({
                 base={base}
                 setBase={setBase}
                 currentSet={currentSet}
+                baseColor={baseColor}
+                setBaseColor={setBaseColor}
               />
             </Box>
           </Box>

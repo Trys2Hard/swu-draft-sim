@@ -10,18 +10,18 @@ export default function FilterButton({ filterSelected, setFilterSelected }) {
       onChange={() => setFilterSelected((prevSelected) => !prevSelected)}
       sx={{
         mr: '0.5rem',
-        height: '2.2rem',
+        height: '2.5rem',
         width: '5.5rem',
         border: '1px solid rgba(110, 110, 110, 1)',
         backgroundColor: 'rgba(30, 30, 30, 0.4)',
         borderRadius: '10px',
         '&:hover': {
           backgroundColor: 'rgba(30, 30, 30, 0.4)',
-          borderColor: 'rgb(61, 178, 255)',
+          border: '2px solid rgba(110, 110, 110, 1)',
         },
         '&.Mui-selected:hover': {
           backgroundColor: 'rgba(30, 30, 30, 0.4)',
-          borderColor: 'rgb(61, 178, 255)',
+          border: '2px solid rgba(110, 110, 110, 1)',
         },
         '&.Mui-selected': {
           backgroundColor: 'rgba(30, 30, 30, 0.4)',
