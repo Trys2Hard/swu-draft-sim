@@ -9,9 +9,9 @@ export default function FilterButton({ filterSelected, setFilterSelected }) {
       selected={filterSelected}
       onChange={() => setFilterSelected((prevSelected) => !prevSelected)}
       sx={{
-        mr: '0.5rem',
-        height: '2.5rem',
-        width: '5.5rem',
+        height: { xs: '2rem', sm: '2.5rem' },
+        width: { xs: '5rem', sm: '5.5rem' },
+        fontSize: { xs: '0.7rem', sm: '0.9rem' },
         border: '1px solid rgba(110, 110, 110, 1)',
         backgroundColor: 'rgba(30, 30, 30, 0.4)',
         borderRadius: '10px',

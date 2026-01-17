@@ -73,7 +73,7 @@ export default function SealedPool({
     },
     header: {
       width: '100%',
-      height: { xs: '13rem', sm: '7rem', lg: '4rem' },
+      height: { xs: '6rem', lg: '4rem' },
       display: 'flex',
       flexDirection: { xs: 'column', lg: 'row' },
       alignItems: 'center',
@@ -117,7 +117,7 @@ export default function SealedPool({
             <Typography
               component='h2'
               sx={{
-                mb: { xs: '0.8rem', lg: '0' },
+                mt: '1rem',
                 fontSize: { xs: '1.6rem', sm: '1.8rem' },
               }}
             >
@@ -127,7 +127,6 @@ export default function SealedPool({
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
                 alignItems: 'center',
                 position: { xs: 'static', lg: 'absolute' },
                 top: '0.7rem',
@@ -139,7 +138,9 @@ export default function SealedPool({
                 setFilterSelected={setFilterSelected}
               />
 
-              <Box sx={{ m: { xs: '0.5rem', sm: '0 0.5rem 0 0' } }}>
+              <Box
+                sx={{ m: { xs: '0.5rem 0.2rem 0.5rem 0.2rem', sm: '0.5rem' } }}
+              >
                 <CardSort handleSort={handleSort} />
               </Box>
 

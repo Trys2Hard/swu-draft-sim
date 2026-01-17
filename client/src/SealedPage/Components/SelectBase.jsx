@@ -50,8 +50,8 @@ export default function SelectBase({
       <FormControl
         size='small'
         sx={{
-          height: '2.5rem',
-          width: '8.3rem',
+          height: { xs: '2rem', sm: '2.5rem' },
+          width: { xs: '6.5rem', sm: '8.3rem' },
 
           // Labels
           '& .MuiInputLabel-root': {
