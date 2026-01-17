@@ -43,8 +43,7 @@ export default function SelectBase({
   aspectColorMap.set('Command', 'rgba(40, 224, 40, 1)');
 
   // Check if the current base value exists in the loaded bases
-  const isValidBase = bases.some((b) => `${b.Set}_${b.Number}` === base);
-  const displayValue = isValidBase ? base : '';
+  const displayValue = bases.length > 0 ? base : '';
 
   return (
     <Box>

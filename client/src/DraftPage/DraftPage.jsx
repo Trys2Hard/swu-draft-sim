@@ -20,6 +20,7 @@ export default function DraftPage() {
   const [sideboardCards, setSideboardCards] = useState([]);
   const [flippedLeaders, setFlippedLeaders] = useState({});
   const [base, setBase] = useState('');
+  const [baseColor, setBaseColor] = useState('rgba(110, 110, 110, 1)');
 
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover('');
@@ -157,15 +158,15 @@ export default function DraftPage() {
     <>
       <Box>
         <Typography
-          variant="h4"
-          component="h1"
+          variant='h4'
+          component='h1'
           sx={{ textAlign: 'center', color: 'white' }}
         >
           Welcome to SWUDraftSim.com
         </Typography>
         <Typography
-          variant="subtitle1"
-          component="p"
+          variant='subtitle1'
+          component='p'
           sx={{ textAlign: 'center', mt: '0rem', color: 'white' }}
         >
           Star Wars Unlimited draft simulator and sealed deckbuilder
@@ -203,6 +204,8 @@ export default function DraftPage() {
         sideboardCards={sideboardCards}
         base={base}
         setBase={setBase}
+        baseColor={baseColor}
+        setBaseColor={setBaseColor}
         currentSet={currentSet}
       />
       <Sideboard
