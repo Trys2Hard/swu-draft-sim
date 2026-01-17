@@ -73,11 +73,12 @@ export default function SealedPool({
     },
     header: {
       width: '100%',
-      height: { xs: '6rem', lg: '4rem' },
+      height: { xs: '7rem', lg: '4rem' },
       display: 'flex',
       flexDirection: { xs: 'column', lg: 'row' },
       alignItems: 'center',
       justifyContent: 'center',
+      backgroundColor: 'rgba(25, 55, 66, 1)',
     },
     sealedContent: {
       position: 'relative',
@@ -117,7 +118,6 @@ export default function SealedPool({
             <Typography
               component='h2'
               sx={{
-                mt: '1rem',
                 fontSize: { xs: '1.6rem', sm: '1.8rem' },
               }}
             >
@@ -129,7 +129,6 @@ export default function SealedPool({
                 display: 'flex',
                 alignItems: 'center',
                 position: { xs: 'static', lg: 'absolute' },
-                top: '0.7rem',
                 right: '1rem',
               }}
             >

@@ -141,40 +141,47 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
     container: {
       display: 'flex',
       flexDirection: 'column',
-      ml: 'auto',
-      mr: 'auto',
+      gap: 3,
+      m: '1rem auto 0 auto',
+      p: '1rem',
+      border: '1px solid rgba(110, 110, 110, 1)',
+      borderRadius: '10px',
     },
     checkboxContainer: {
       display: 'flex',
       flexDirection: 'row',
-      backgroundColor: 'rgba(110, 110, 110, 0.5)',
+      m: '0.25rem 0.25rem 0rem 0.25rem',
+      p: '0.4rem 0 0.4rem 0.8rem',
+      backgroundColor: 'rgba(30, 30, 30, 0.2)',
       borderRadius: '5px',
-      m: '0.5rem',
-      p: '0.2rem',
     },
     filterLabel: {
       color: 'white',
-      fontSize: '1.2rem',
       fontWeight: 'bold',
-      ml: '0.5rem',
+      ml: '0.25rem',
       '&.Mui-focused': {
         color: 'white',
       },
     },
     checkbox: {
-      color: 'rgba(37, 37, 37, 1)',
-      pr: '0.3rem',
+      color: 'white',
+      p: '0.4rem',
+      transition: 'background-color 0.3s',
+      '&.Mui-checked': { color: 'rgba(61, 178, 255, 1)' },
+      '&:hover': {
+        backgroundColor: 'rgba(61, 178, 255, 0.1)',
+      },
     },
   };
 
   return (
     <>
       <FilterSwitch handleFilter={handleFilter} />
-      <Box component="form" sx={styles.container}>
+      <Box component='form' sx={styles.container}>
         <Box>
           {/* Aspect FILTER */}
-          <FormControl component="fieldset">
-            <FormLabel component="legend" sx={styles.filterLabel}>
+          <FormControl component='fieldset'>
+            <FormLabel component='legend' sx={styles.filterLabel}>
               Aspect
             </FormLabel>
             <FormGroup sx={styles.checkboxContainer}>
@@ -197,8 +204,8 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
           </FormControl>
 
           {/* Type FILTER */}
-          <FormControl component="fieldset">
-            <FormLabel component="legend" sx={styles.filterLabel}>
+          <FormControl component='fieldset'>
+            <FormLabel component='legend' sx={styles.filterLabel}>
               Type
             </FormLabel>
             <FormGroup sx={styles.checkboxContainer}>
@@ -221,8 +228,8 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
 
         <Box>
           {/* COST FILTER */}
-          <FormControl component="fieldset" sx={styles.filterOption}>
-            <FormLabel component="legend" sx={styles.filterLabel}>
+          <FormControl component='fieldset' sx={styles.filterOption}>
+            <FormLabel component='legend' sx={styles.filterLabel}>
               Cost
             </FormLabel>
             <FormGroup sx={styles.checkboxContainer}>
@@ -243,8 +250,8 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
           </FormControl>
 
           {/* RARITY FILTER */}
-          <FormControl component="fieldset">
-            <FormLabel component="legend" sx={styles.filterLabel}>
+          <FormControl component='fieldset'>
+            <FormLabel component='legend' sx={styles.filterLabel}>
               Rarity
             </FormLabel>
             <FormGroup sx={styles.checkboxContainer}>

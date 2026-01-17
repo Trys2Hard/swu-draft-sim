@@ -142,7 +142,7 @@ export default function Deck({
       flexDirection: { xs: 'column', sm: 'row' },
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(29, 64, 77, 1)',
+      backgroundColor: 'rgba(25, 55, 66, 1)',
     },
     headerRight: {
       position: { xs: 'static', sm: 'absolute' },
