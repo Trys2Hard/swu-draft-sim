@@ -5,6 +5,7 @@ import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import CardHover from '../Components/CardHover';
 import StartCard from '../Components/StartCard/StartCard';
 import LeaderCardContainer from '../Components/LeaderCardContainer/LeaderCardContainer';
+import TableLeaders from './TableLeaders';
 
 export default function DraftPack({
   packNum,
@@ -38,6 +39,7 @@ export default function DraftPack({
   //Styles
   const styles = {
     packBox: {
+      p: '0.5rem',
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
@@ -70,8 +72,7 @@ export default function DraftPack({
       height: draftingLeaders || draftEnded ? '100vh' : '100%',
     },
     packInfo: {
-      mt: '1rem',
-      boxShadow: '-3px 3px 5px black',
+      boxShadow: '3px 3px 5px black',
       backgroundColor: 'rgba(58, 58, 58, 1)',
       p: {
         xs: '0.4rem 1.7rem 0.4rem 1.7rem',
@@ -84,7 +85,7 @@ export default function DraftPack({
     layoutButton: {
       position: 'absolute',
       display: !draftingLeaders ? 'block' : 'none',
-      top: { xs: '1.6rem', sm: '2.2rem' },
+      top: { xs: '0.5rem', sm: '1.5rem' },
       right: '0.7rem',
       background: 'rgba(0, 0, 0, 1)',
       borderRadius: '3px',
@@ -121,19 +122,25 @@ export default function DraftPack({
       {draftStarted && (
         <Box sx={styles.packBox}>
           <Box sx={styles.draftContent}>
-            <Box sx={{ display: draftEnded && 'none' }}>
-              <Typography variant="h5" component="h3" sx={styles.packInfo}>
+            <Box
+              sx={{
+                display: draftEnded ? 'none' : 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Typography variant='h5' component='h3' sx={styles.packInfo}>
                 Pack {packNum} / Pick {pickNum}
               </Typography>
+              {draftingLeaders && <TableLeaders currentPack={currentPack} />}
               {layout === layout1 ? (
                 <GridViewIcon
-                  fontSize="medium"
+                  fontSize='medium'
                   sx={styles.layoutButton}
                   onClick={handleLayout}
                 />
               ) : (
                 <ViewAgendaIcon
-                  fontSize="medium"
+                  fontSize='medium'
                   sx={styles.layoutButton}
                   onClick={handleLayout}
                 />
@@ -158,7 +165,7 @@ export default function DraftPack({
             />
 
             {draftEnded && (
-              <Typography component="h2" sx={styles.draftEnd}>
+              <Typography component='h2' sx={styles.draftEnd}>
                 Draft Complete!
               </Typography>
             )}
