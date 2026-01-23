@@ -21,7 +21,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
   '& .MuiDialog-paper': {
-    backgroundColor: 'rgba(19, 19, 19, 0.8)',
+    backgroundColor: 'var(--transparent-black)',
     borderRadius: '12px',
     color: 'white',
   },
@@ -52,16 +52,15 @@ export default function TableLeaders({ currentPack }) {
         <TableRestaurantIcon
           sx={{
             color: 'white',
-            height: { xs: '1.5rem', sm: '2.2rem' },
-            width: { xs: '1.5rem', sm: '2.2rem' },
-            p: '0.1rem',
+            height: { xs: '1.5rem', sm: '2rem' },
+            width: { xs: '1.5rem', sm: '2rem' },
             boxShadow: '3px 3px 5px black',
-            backgroundColor: 'rgba(58, 58, 58, 1)',
+            backgroundColor: 'var(--transparent-black)',
             borderRadius: '5px',
-            border: '1px solid rgba(61, 178, 255, 0.5)',
-            transition: 'color 0.3s ease-in-out',
+            border: '1px solid rgb(50, 112, 153)',
+            transition: 'color 0.2s ease-in-out',
             '&:hover': {
-              color: 'rgba(61, 178, 255, 1)',
+              color: 'var(--off-white)',
             },
           }}
         />
@@ -91,7 +90,7 @@ export default function TableLeaders({ currentPack }) {
             color: theme.palette.grey[500],
           })}
         >
-          <CloseIcon />
+          <CloseIcon sx={{ '&:hover': { color: 'rgb(163, 18, 18)' } }} />
         </IconButton>
         <DialogContent>
           <Typography variant='h5' component='h2' sx={{ textAlign: 'center' }}>

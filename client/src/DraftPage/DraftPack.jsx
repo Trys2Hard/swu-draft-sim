@@ -72,15 +72,16 @@ export default function DraftPack({
       height: draftingLeaders || draftEnded ? '100vh' : '100%',
     },
     packInfo: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       boxShadow: '3px 3px 5px black',
-      backgroundColor: 'rgba(58, 58, 58, 1)',
-      p: {
-        xs: '0.4rem 1.7rem 0.4rem 1.7rem',
-        sm: '0.7rem 2.7rem 0.7rem 2.7rem',
-      },
+      backgroundColor: 'var(--transparent-black)',
+      height: { xs: '1.8rem', sm: '2.5rem' },
+      width: { xs: '7.5rem', sm: '11rem' },
       borderRadius: '10px',
       fontSize: { xs: '0.7rem', sm: '1rem' },
-      border: '1px solid rgba(61, 178, 255, 0.5)',
+      border: '1px solid rgb(50, 112, 153)',
     },
     layoutButton: {
       position: 'absolute',
@@ -128,10 +129,28 @@ export default function DraftPack({
                 alignItems: 'center',
               }}
             >
-              <Typography variant='h5' component='h3' sx={styles.packInfo}>
-                Pack {packNum} / Pick {pickNum}
-              </Typography>
-              {draftingLeaders && <TableLeaders currentPack={currentPack} />}
+              <Box
+                sx={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography variant='h5' component='h3' sx={styles.packInfo}>
+                  Pack {packNum} / Pick {pickNum}
+                </Typography>
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    right: { xs: '-2.3rem', sm: '-3rem' },
+                  }}
+                >
+                  {draftingLeaders && (
+                    <TableLeaders currentPack={currentPack} />
+                  )}
+                </Box>
+              </Box>
+
               {layout === layout1 ? (
                 <GridViewIcon
                   fontSize='medium'

@@ -56,6 +56,7 @@ export default function SelectBase({
           // Labels
           '& .MuiInputLabel-root': {
             color: 'white',
+            fontSize: { xs: '0.75rem', sm: '1rem' },
             '&.Mui-focused': {
               color: 'white',
             },
@@ -98,7 +99,7 @@ export default function SelectBase({
           MenuProps={{
             PaperProps: {
               sx: {
-                backgroundColor: 'rgba(10, 10, 10, 0.9)',
+                backgroundColor: 'var(--transparent-black)',
               },
             },
           }}
@@ -110,7 +111,7 @@ export default function SelectBase({
               onClick={() => setBaseColor(aspectColorMap.get(b.Aspects[0]))}
               sx={{
                 color: aspectColorMap.get(b.Aspects[0]),
-                '&:hover': { backgroundColor: 'rgba(10, 10, 10, 1)' },
+                '&:hover': { backgroundColor: 'rgba(40, 40, 40, 0.8)' },
               }}
             >
               {b.Name}{' '}

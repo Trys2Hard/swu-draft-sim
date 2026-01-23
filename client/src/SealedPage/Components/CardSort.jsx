@@ -11,7 +11,7 @@ export default function CardSort({ handleSort }) {
         width: { xs: '7.8rem', sm: '9rem' },
         display: 'flex',
         alignItems: 'center',
-        border: '1px solid rgba(110, 110, 110, 1)',
+        border: '1px solid var(--off-white)',
         backgroundColor: 'rgba(30, 30, 30, 0.4)',
         borderRadius: '10px',
         p: '0 0.4rem',

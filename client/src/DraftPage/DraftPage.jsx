@@ -20,7 +20,7 @@ export default function DraftPage() {
   const [sideboardCards, setSideboardCards] = useState([]);
   const [flippedLeaders, setFlippedLeaders] = useState({});
   const [base, setBase] = useState('');
-  const [baseColor, setBaseColor] = useState('rgba(110, 110, 110, 1)');
+  const [baseColor, setBaseColor] = useState('var(--off-white)');
 
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover('');
