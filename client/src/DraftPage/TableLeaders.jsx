@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
-import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
+import TableBarIcon from '@mui/icons-material/TableBar';
 import {
   Box,
   IconButton,
@@ -50,7 +50,7 @@ export default function TableLeaders({ currentPack }) {
   return (
     <>
       <IconButton aria-label='table leaders' onClick={handleClickOpen}>
-        <TableRestaurantIcon
+        <TableBarIcon
           sx={{
             color: 'white',
             height: { xs: '1.5rem', sm: '2rem' },
@@ -58,10 +58,9 @@ export default function TableLeaders({ currentPack }) {
             boxShadow: '3px 3px 5px black',
             backgroundColor: 'var(--transparent-black)',
             borderRadius: '5px',
-            border: '1px solid rgb(50, 112, 153)',
-            transition: 'color 0.2s ease-in-out',
+            transition: 'background-color 0.2s ease-in-out',
             '&:hover': {
-              color: 'var(--off-white)',
+              backgroundColor: 'rgb(26, 49, 56)',
             },
           }}
         />
