@@ -13,7 +13,7 @@ export default function SealedPage() {
   const [sealedStarted, setSealedStarted] = useState(false);
   const [base, setBase] = useState('');
   const [sealedImportStarted, setSealedImportStarted] = useState(false);
-  const [baseColor, setBaseColor] = useState('rgba(110, 110, 110, 1)');
+  const [baseColor, setBaseColor] = useState('var(--off-white)');
 
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover('');

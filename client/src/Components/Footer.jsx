@@ -5,7 +5,7 @@ export default function Footer() {
     footer: {
       display: 'flex',
       justifyContent: 'center',
-      backgroundColor: 'rgba(90, 90, 90, 1)',
+      backgroundColor: 'var(--footer-gray)',
       p: '0.5rem',
       mt: '2rem',
       color: 'white',
