@@ -19,7 +19,7 @@ export default function CardSets({ handleSetChange, currentSet }) {
       justifyContent: 'center',
       alignItems: 'center',
       color: 'white',
-      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      backgroundColor: 'rgb(10, 10, 10)',
       m: '1rem 0 1rem 0',
     },
     cardSetButton: {
@@ -30,7 +30,7 @@ export default function CardSets({ handleSetChange, currentSet }) {
       cursor: 'pointer',
       transition: 'all 0.3s ease-in-out',
       '&:hover': {
-        backgroundColor: 'rgba(31, 202, 255, 0.2)',
+        backgroundColor: 'rgb(26, 49, 56)',
         filter: 'brightness(1.1)',
       },
     },
@@ -45,9 +45,7 @@ export default function CardSets({ handleSetChange, currentSet }) {
             sx={{
               ...styles.cardSetButton,
               backgroundColor:
-                cardSet.name === currentSet
-                  ? 'rgba(31, 202, 255, 0.2)'
-                  : 'none',
+                cardSet.name === currentSet ? 'rgb(26, 49, 56)' : 'none',
             }}
           >
             <Box

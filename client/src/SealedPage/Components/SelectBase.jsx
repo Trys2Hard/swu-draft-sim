@@ -111,7 +111,7 @@ export default function SelectBase({
               onClick={() => setBaseColor(aspectColorMap.get(b.Aspects[0]))}
               sx={{
                 color: aspectColorMap.get(b.Aspects[0]),
-                '&:hover': { backgroundColor: 'rgba(40, 40, 40, 0.8)' },
+                '&:hover': { backgroundColor: 'rgba(70, 70, 70, 0.4)' },
               }}
             >
               {b.Name}{' '}

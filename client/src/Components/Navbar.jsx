@@ -34,7 +34,7 @@ export default function Navbar() {
     appBar: {
       position: 'relative',
       background:
-        'linear-gradient(to right, rgba(31, 202, 255, 0.1), rgba(31, 202, 255, 0.4), rgba(31, 202, 255, 0.1))',
+        'linear-gradient(to right, rgb(12, 39, 48), rgb(27, 96, 117), rgb(12, 39, 48))',
       mb: '1rem',
     },
     toolbar: {
@@ -49,10 +49,10 @@ export default function Navbar() {
       borderRadius: '15px',
       transition: 'background-color 0.3s ease-in-out',
       '&:hover': {
-        backgroundColor: 'rgba(31, 202, 255, 0.1)',
+        backgroundColor: 'rgb(33, 76, 88)',
       },
       '&.active': {
-        borderBottom: '2px solid rgba(31, 202, 255, 0.3)',
+        borderBottom: '1px solid var(--off-white)',
       },
     },
     discordIcon: {
@@ -73,17 +73,17 @@ export default function Navbar() {
 
   return (
     <Box>
-      <AppBar position="static" sx={styles.appBar}>
+      <AppBar position='static' sx={styles.appBar}>
         <Toolbar sx={styles.toolbar}>
           <Box
-            component="img"
-            src="swudraftsim-logo.png"
+            component='img'
+            src='swudraftsim-logo.png'
             sx={{ width: '3.5rem', mr: '0.2rem' }}
           />
 
           <Typography
-            variant="h5"
-            component="p"
+            variant='h5'
+            component='p'
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
             SWUDraftSim
@@ -92,16 +92,16 @@ export default function Navbar() {
           <Box sx={{ ml: '1.5rem', display: { xs: 'none', md: 'flex' } }}>
             <Typography
               component={NavLink}
-              variant="h6"
-              to="/"
+              variant='h6'
+              to='/'
               sx={styles.link}
             >
               Draft
             </Typography>
             <Typography
               component={NavLink}
-              variant="h6"
-              to="/sealed"
+              variant='h6'
+              to='/sealed'
               sx={styles.link}
             >
               Sealed
@@ -109,25 +109,25 @@ export default function Navbar() {
           </Box>
 
           <IconButton
-            href="https://discord.gg/yERW2Z73wc"
-            target="_blank"
+            href='https://discord.gg/yERW2Z73wc'
+            target='_blank'
             sx={styles.discordIcon}
           >
             <FaDiscord size={28} />
           </IconButton>
 
           <IconButton
-            href="https://github.com/Trys2Hard/swu-draft-sim"
-            target="_blank"
+            href='https://github.com/Trys2Hard/swu-draft-sim'
+            target='_blank'
             sx={styles.gitHubIcon}
           >
             <GitHubIcon />
           </IconButton>
 
           <IconButton
-            size="large"
-            color="inherit"
-            aria-label="menu"
+            size='large'
+            color='inherit'
+            aria-label='menu'
             onClick={toggleDrawer(true)}
             sx={{
               position: 'absolute',
@@ -140,27 +140,28 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
 
-      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+      <Drawer anchor='right' open={drawerOpen} onClose={toggleDrawer(false)}>
         <Box
           sx={{
             width: '12rem',
             height: '100%',
-            backgroundColor: 'rgba(6, 72, 93, 1)',
+            background:
+              'linear-gradient(to bottom, rgb(12, 39, 48), rgb(27, 96, 117), rgb(12, 39, 48))',
           }}
-          role="presentation"
+          role='presentation'
           onClick={toggleDrawer(false)}
           onKeyDown={toggleDrawer(false)}
         >
           <List sx={{ '& .MuiListItem-root': { color: 'white' } }}>
             <ListItem disablePadding>
-              <ListItemButton component={NavLink} to="/">
-                <ListItemText primary="Draft" />
+              <ListItemButton component={NavLink} to='/'>
+                <ListItemText primary='Draft' />
               </ListItemButton>
             </ListItem>
 
             <ListItem disablePadding>
-              <ListItemButton component={NavLink} to="/sealed">
-                <ListItemText primary="Sealed" />
+              <ListItemButton component={NavLink} to='/sealed'>
+                <ListItemText primary='Sealed' />
               </ListItemButton>
             </ListItem>
           </List>
