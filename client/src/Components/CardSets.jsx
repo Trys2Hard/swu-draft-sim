@@ -19,7 +19,7 @@ export default function CardSets({ handleSetChange, currentSet }) {
       justifyContent: 'center',
       alignItems: 'center',
       color: 'white',
-      backgroundColor: 'rgba(14, 14, 14, 1)',
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
       m: '1rem 0 1rem 0',
     },
     cardSetButton: {
@@ -51,7 +51,7 @@ export default function CardSets({ handleSetChange, currentSet }) {
             }}
           >
             <Box
-              component="img"
+              component='img'
               src={cardSet.logo}
               value={cardSet.name}
               onClick={() => handleSetChange(cardSet.name)}

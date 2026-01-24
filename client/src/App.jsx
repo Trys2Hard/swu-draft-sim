@@ -14,19 +14,17 @@ function App() {
   return (
     <Router>
       <CssBaseline />
-      <GlobalStyles
-        styles={{ body: { backgroundColor: 'rgba(26, 26, 26, 1)' } }}
-      />
+      <GlobalStyles styles={{ body: { backgroundColor: 'rgb(17, 17, 20)' } }} />
       <Box
         sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
       >
         <Navbar />
         <Box sx={{ flex: '1' }}>
           <Routes>
-            <Route path="/" element={<DraftPage />} />
-            <Route path="/sealed" element={<SealedPage />} />
+            <Route path='/' element={<DraftPage />} />
+            <Route path='/sealed' element={<SealedPage />} />
 
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path='*' element={<Navigate to='/' />} />
           </Routes>
         </Box>
         <Footer />

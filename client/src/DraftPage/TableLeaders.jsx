@@ -35,6 +35,7 @@ export default function TableLeaders({ currentPack }) {
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -44,7 +45,7 @@ export default function TableLeaders({ currentPack }) {
       setFirstLeaderArts(currentPack[1].map((card) => card.cardData.FrontArt));
       setSecondLeaderArts(currentPack[2].map((card) => card.cardData.FrontArt));
     }
-  }, [currentPack, currentPack[1]?.length, currentPack[2]?.length]);
+  }, [currentPack]);
 
   return (
     <>
