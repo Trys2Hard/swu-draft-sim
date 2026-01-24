@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { flushSync } from 'react-dom';
+import { useState, useEffect, useRef } from 'react';
 import { Typography, Box } from '@mui/material';
-import Deck from '../Components/Deck/Deck';
+import { v4 as uuid } from 'uuid';
 import { useCardHoverPopover } from '../Hooks/useCardHoverPopover';
 import { useCreatePacks } from '../Hooks/useCreatePacks';
 import CardSets from '../Components/CardSets';
-import { v4 as uuid } from 'uuid';
 import DraftPack from '../DraftPage/DraftPack';
+import Deck from '../Components/Deck/Deck';
 import Sideboard from '../DraftPage/Sideboard';
 
 export default function DraftPage() {
@@ -22,7 +21,10 @@ export default function DraftPage() {
   const [flippedLeaders, setFlippedLeaders] = useState({});
   const [base, setBase] = useState('');
   const [baseColor, setBaseColor] = useState('var(--off-white)');
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [draftPhase, setDraftPhase] = useState('leaders');
+
+  // Use ref to immediately hide packs during transition (prevents flash unless leaders are picked quickly)
+  const isTransitioningRef = useRef(false);
 
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover('');
@@ -41,25 +43,28 @@ export default function DraftPage() {
     setIsLoading,
   } = useCreatePacks('');
 
-  const leadersDrafted =
-    draftStarted && leaderPacks.every((arr) => arr.length === 0);
-  // During transition, show empty array to prevent flash of old data
-  const currentPack = isTransitioning
+  const currentPack = isTransitioningRef.current
     ? []
-    : leadersDrafted
-      ? cardPacks
-      : leaderPacks;
-  const draftingLeaders =
-    draftStarted && leaderPacks.every((arr) => arr.length > 0);
+    : draftPhase === 'loading-cards'
+      ? []
+      : draftPhase === 'cards'
+        ? cardPacks
+        : leaderPacks;
+
+  const draftingLeaders = draftPhase === 'leaders' && leaderPacks.length > 0;
 
   let errorCount = 0;
 
   useEffect(() => {
-    if (cardPacks.length === 8) {
+    // Transition from loading to cards when packs are ready
+    if (cardPacks.length === 8 && draftPhase === 'loading-cards') {
+      isTransitioningRef.current = false;
+      setDraftPhase('cards');
       setIsLoading(false);
-      setIsTransitioning(false);
+    } else if (cardPacks.length === 8 && draftPhase === 'cards') {
+      setIsLoading(false);
     }
-  }, [cardPacks, setIsLoading]);
+  }, [cardPacks, draftPhase, setIsLoading]);
 
   useEffect(() => {
     if (leaderPacks.length === 8) {
@@ -67,12 +72,16 @@ export default function DraftPage() {
     }
   }, [leaderPacks, setIsLoading]);
 
-  function handleStartDraft() {
+  async function handleStartDraft() {
     setDraftStarted(true);
+    setIsLoading(true);
 
+    const packPromises = [];
     for (let i = 0; i < 8; i++) {
-      generateLeaderPack(3);
+      packPromises.push(generateLeaderPack(3));
     }
+
+    await Promise.all(packPromises);
 
     if (errorCount > 0) {
       alert(`${errorCount} leader${errorCount > 1 ? 's' : ''} failed to load.`);
@@ -93,12 +102,14 @@ export default function DraftPage() {
   function pickCard(id) {
     handlePopoverClose();
 
-    let pickedCard = currentPack[packIndex]?.find((card) => card.id === id);
-    if (!pickedCard) return;
+    const isInLeaderPhase = draftPhase === 'leaders';
+    const isInCardPhase = draftPhase === 'cards';
+    const packs = isInLeaderPhase ? leaderPacks : cardPacks;
+    const setPacks = isInLeaderPhase ? setLeaderPacks : setCardPacks;
+    const addCard = isInLeaderPhase ? setDeckLeaders : setDeckCards;
 
-    let addCard = leadersDrafted ? setDeckCards : setDeckLeaders;
-    let packs = leadersDrafted ? cardPacks : leaderPacks;
-    let setPacks = leadersDrafted ? setCardPacks : setLeaderPacks;
+    let pickedCard = packs[packIndex]?.find((card) => card.id === id);
+    if (!pickedCard) return;
 
     if (packs.length === 8) {
       // Handle duplicate IDs
@@ -107,12 +118,9 @@ export default function DraftPage() {
         pickedCard = { ...pickedCard, id: uuid() };
       }
 
-      addCard((prev) => [...prev, pickedCard]);
-
-      // Create new packs array with card removed - IMMUTABLE UPDATE
+      // Create new packs array with card removed
       const newPacks = packs.map((pack, index) => {
         if (index === packIndex) {
-          // Remove the picked card from current pack
           return pack.filter((card) => card.id !== id);
         } else {
           // Bot picks from other packs
@@ -125,91 +133,83 @@ export default function DraftPage() {
             }
             return highest;
           }, null);
-
-          // Remove bot's picked card
           return pack.filter((card) => card.id !== cardPick?.id);
         }
       });
 
-      // Check if leaders are done and need to transition to cards
-      // Check BEFORE updating state to prevent UI flicker
-      const isLeadersFinished =
+      // Check if this is the last leader pick BEFORE any state updates
+      const isLastLeaderPick =
         draftStarted &&
-        !leadersDrafted &&
-        newPacks.every((arr) => arr.length === 0) &&
-        pickNum < 15 &&
-        cardPacks.length === 0;
+        isInLeaderPhase &&
+        newPacks.every((arr) => arr.length === 0);
 
-      if (isLeadersFinished) {
-        // CRITICAL: Set transition flag FIRST to prevent currentPack from showing old data
-        setIsTransitioning(true);
+      if (isLastLeaderPick) {
+        // Set ref FIRST - this immediately hides packs on next render
+        isTransitioningRef.current = true;
 
-        // Use flushSync to ensure loading is set synchronously
-        // This prevents React from batching updates and causing a flash
+        // Now update state - even if batched, currentPack will be empty due to ref
+        addCard((prev) => [...prev, pickedCard]);
+        setDraftPhase('loading-cards');
         setIsLoading(true);
-        resetCardPacks();
-
-        resetSeenIds();
         setTitle('Cards');
-
-        // Set packNum to 1 for first card pack and reset pickNum to 1
         setPackNum(1);
         setPickNum(1);
         setPackIndex(0);
+        resetCardPacks();
+        resetSeenIds();
 
-        // Now update leader packs (this will cause currentPack to switch to empty cardPacks)
-        // Use flushSync to ensure this happens after loading is set
-        flushSync(() => {
-          setPacks(newPacks);
-        });
-
-        // Transition flag will be cleared when cardPacks.length === 8
-
-        // Generate all packs and wait for completion
+        // Generate all card packs in parallel
         const packPromises = [];
         for (let i = 0; i < 8; i++) {
           packPromises.push(generateCardPack());
         }
 
-        // Wait for all packs to finish, then turn off loading
+        // When done, ref will be cleared in useEffect
         Promise.all(packPromises).catch((error) => {
           console.error('Error generating card packs:', error);
+          isTransitioningRef.current = false;
+          setIsLoading(false);
+          setDraftPhase('cards');
         });
 
         return;
       }
 
-      // Update state with new packs (for normal picks)
+      // Normal pick flow
+      addCard((prev) => [...prev, pickedCard]);
       setPacks(newPacks);
       setPackIndex((prev) => (prev === 7 ? 0 : prev + 1));
-
       setPickNum((prev) => prev + 1);
 
-      // Check if pack is complete (for card packs)
+      // Check if card pack is complete
       if (
         draftStarted &&
-        leadersDrafted &&
+        isInCardPhase &&
         newPacks.every((arr) => arr.length === 0) &&
         packNum < 3
       ) {
+        // Use ref to prevent flash between card packs too
+        isTransitioningRef.current = true;
+
         setPackNum((prev) => prev + 1);
         setPickNum(1);
         setPackIndex(0);
         resetCardPacks();
         resetSeenIds();
-
-        // Set loading before generating all packs
         setIsLoading(true);
+        setDraftPhase('loading-cards');
 
-        // Generate all packs and wait for completion
+        // Generate all packs in parallel
         const packPromises = [];
         for (let i = 0; i < 8; i++) {
           packPromises.push(generateCardPack());
         }
 
-        // Wait for all packs to finish, then turn off loading
-        Promise.all(packPromises).finally(() => {
+        Promise.all(packPromises).catch((error) => {
+          console.error('Error generating card packs:', error);
+          isTransitioningRef.current = false;
           setIsLoading(false);
+          setDraftPhase('cards');
         });
       }
     }
@@ -234,7 +234,6 @@ export default function DraftPage() {
         </Typography>
       </Box>
       <CardSets handleSetChange={handleSetChange} currentSet={currentSet} />
-      {/* <Typography variant='h4' component='h2' sx={{ textAlign: 'center', mt: '2rem', color: 'white' }}>Draft</Typography> */}
       <DraftPack
         title={title}
         packNum={packNum}
