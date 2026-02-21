@@ -31,7 +31,9 @@ export default function StartCard({
           ? 'url(/SEC_box_art_card.jpg)'
           : cardSet === 'lof'
             ? 'url(/LOF_box_art_card.jpg)'
-            : 'none',
+            : cardSet === 'law'
+              ? 'url(/law_box_art_card.jpg)'
+              : 'none',
       backgroundSize: 'contain',
       backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',

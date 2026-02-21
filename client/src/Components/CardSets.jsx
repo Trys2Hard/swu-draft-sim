@@ -10,6 +10,10 @@ export default function CardSets({ handleSetChange, currentSet }) {
       name: 'sec',
       logo: '/sec_logo.png',
     },
+    {
+      name: 'law',
+      logo: '/law_logo.png',
+    },
   ];
 
   //Styles
