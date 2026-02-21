@@ -31,7 +31,7 @@ app.use(
         callback(new Error('Not allowed by CORS'));
       }
     },
-  })
+  }),
 );
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
@@ -194,7 +194,8 @@ app.get('/api/common', async (req, res) => {
 
 app.get('/api/foil', async (req, res) => {
   const set = req.query.set?.toUpperCase();
-  const variant = set !== 'LOF' ? 'Foil' : 'Hyperspace Foil';
+  const variant =
+    set === 'LOF' ? 'HyperSpace Foil' : set === 'SEC' ? 'Foil' : 'Hyperspace';
 
   try {
     // Determine rarity based on odds (similar to leader endpoint)

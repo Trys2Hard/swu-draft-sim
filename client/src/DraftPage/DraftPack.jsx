@@ -50,9 +50,11 @@ export default function DraftPack({
       m: '0 auto 1rem auto',
       // backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/LOF_box_art_full.jpg)',
       backgroundImage:
-        currentSet === 'sec'
-          ? 'url(/SEC_box_art_full.jpg)'
-          : 'url(lof_box_wide.png)',
+        currentSet === 'lof'
+          ? 'url(lof_box_wide.png)'
+          : currentSet === 'sec'
+            ? 'url(/SEC_box_art_full.jpg)'
+            : 'url(law_box_art_full.jpg)',
       backgroundSize: 'cover',
       backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',
