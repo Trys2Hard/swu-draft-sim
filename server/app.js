@@ -226,6 +226,7 @@ app.get('/api/foil', async (req, res) => {
           Type: { $ne: 'Leader' },
           VariantType: variant,
           Rarity: foilRarity,
+          $nor: [{ Rarity: 'common', Type: 'base' }],
         },
       },
       { $sample: { size: 1 } },
