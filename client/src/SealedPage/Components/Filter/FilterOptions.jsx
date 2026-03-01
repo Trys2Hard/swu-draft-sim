@@ -86,7 +86,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
                 (selectedTypes.length === 0 ||
                   selectedTypes.includes(card?.cardData?.Type))) ||
               (selectedAspects.includes('Neutral') &&
-                card?.cardData?.Aspects.length === 0),
+                card?.cardData?.Aspects?.length === 0),
           ),
         );
       }
@@ -119,7 +119,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
                 selectedAspects.includes(aspect),
               ) ||
               (selectedAspects.includes('Neutral') &&
-                card?.cardData?.Aspects.length === 0) ||
+                card?.cardData?.Aspects?.length === 0) ||
               selectedCosts.includes(card?.cardData?.Cost) ||
               selectedRarities.includes(card?.cardData?.Rarity) ||
               selectedTypes.includes(card?.cardData?.Type),

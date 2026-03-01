@@ -14,7 +14,8 @@ export function useCopyJson({
       let num = card?.cardData?.Number;
       if (!set || !num) continue;
 
-      if (num >= 537 && num <= 774) num = (num - 510).toString();
+      if (num >= 265 && num <= 528) num = (num - 264).toString();
+      else if (num >= 537 && num <= 774) num = (num - 510).toString();
       else if (num >= 767 && num <= 1004) num = (num - 740).toString();
 
       num = num.toString().padStart(3, '0');
