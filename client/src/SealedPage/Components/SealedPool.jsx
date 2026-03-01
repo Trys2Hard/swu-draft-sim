@@ -48,7 +48,15 @@ export default function SealedPool({
                 Number: c.cardData.Number - 510,
               },
             }
-          : c,
+          : c.cardData?.VariantType === 'Hyperspace'
+            ? {
+                ...c,
+                cardData: {
+                  ...c.cardData,
+                  Number: c.cardData.Number - 264,
+                },
+              }
+            : c,
       )
       .sort(
         (a, b) =>
