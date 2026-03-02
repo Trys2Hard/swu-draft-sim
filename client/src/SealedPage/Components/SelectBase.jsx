@@ -82,7 +82,12 @@ export default function SelectBase({
           },
         }}
       >
-        <InputLabel id='select-base-label'>Select Base</InputLabel>
+        <InputLabel
+          id='select-base-label'
+          sx={{ textShadow: '2px 2px 4px black' }}
+        >
+          Select Base
+        </InputLabel>
         <Select
           labelId='select-base-label'
           id='select-base'
@@ -93,7 +98,7 @@ export default function SelectBase({
           sx={{
             height: '100%',
             color: 'white',
-            backgroundColor: 'rgba(30, 30, 30, 0.4)',
+            backgroundColor: 'var(--button-gray)',
             borderRadius: '10px',
           }}
           MenuProps={{

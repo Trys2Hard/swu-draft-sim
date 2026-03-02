@@ -276,6 +276,7 @@ export default function DraftPage() {
         setDeckLeaders={setDeckLeaders}
         setDeckCards={setDeckCards}
         draftStarted={draftStarted}
+        currentSet={currentSet}
       />
     </>
   );

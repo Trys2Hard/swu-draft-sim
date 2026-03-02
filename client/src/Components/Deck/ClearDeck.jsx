@@ -16,7 +16,7 @@ export default function ClearDeck({
   const styles = {
     clearDeckButton: {
       fontSize: '0.8rem',
-      backgroundColor: 'rgba(65, 65, 65, 1)',
+      backgroundColor: 'var(--button-gray)',
       borderRadius: '5px',
       mt: '0.5rem',
       mr: '0.5rem',
@@ -31,7 +31,7 @@ export default function ClearDeck({
     <Box>
       {cardPacks && (
         <Button
-          variant="contained"
+          variant='contained'
           sx={styles.clearDeckButton}
           onClick={handleClick}
           startIcon={<RestoreIcon />}

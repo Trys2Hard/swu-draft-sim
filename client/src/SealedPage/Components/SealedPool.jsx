@@ -77,7 +77,7 @@ export default function SealedPool({
       position: 'relative',
       minHeight: '100vh',
       color: 'white',
-      backgroundColor: 'rgba(29, 64, 77, 1)',
+      background: `url(${currentSet}_starfield.jpg)`,
     },
     header: {
       width: '100%',
@@ -86,7 +86,6 @@ export default function SealedPool({
       flexDirection: { xs: 'column', lg: 'row' },
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(25, 55, 66, 1)',
     },
     sealedContent: {
       position: 'relative',

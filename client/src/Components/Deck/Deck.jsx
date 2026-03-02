@@ -133,7 +133,7 @@ export default function Deck({
       background:
         firstColor && secondColor
           ? `linear-gradient(to bottom right, ${firstColor}, ${secondColor})`
-          : 'rgba(29, 64, 77, 1)',
+          : `url(${currentSet}_starfield.jpg)`,
     },
     header: {
       width: '100%',
@@ -142,7 +142,6 @@ export default function Deck({
       flexDirection: { xs: 'column', sm: 'row' },
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(25, 55, 66, 1)',
     },
     headerRight: {
       position: { xs: 'static', sm: 'absolute' },
@@ -153,6 +152,15 @@ export default function Deck({
       right: '1rem',
     },
     cardCount: {
+      backgroundColor: 'var(--button-gray)',
+      height: { xs: '2rem', sm: '2.5rem' },
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      p: '0 0.5rem 0 0.5rem',
+      border: '1px solid var(--off-white)',
+      borderRadius: '10px',
+      textShadow: '2px 2px 4px black',
       ml: '1rem',
       color:
         deckNum === 30

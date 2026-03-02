@@ -45,7 +45,7 @@ export default function CopyJsonButton({
 
       ...(sortedDeckCards && {
         fontSize: '0.8rem',
-        backgroundColor: 'rgba(65, 65, 65, 1)',
+        backgroundColor: 'var(--button-gray)',
         borderRadius: '5px',
         mt: '0.5rem',
         p: '0.4rem 0.6rem',
@@ -59,7 +59,7 @@ export default function CopyJsonButton({
   return (
     <Box>
       <Button
-        variant="contained"
+        variant='contained'
         sx={styles.copyJsonButton}
         onClick={handleClick}
         startIcon={<ContentCopyIcon />}

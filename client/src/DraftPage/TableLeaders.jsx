@@ -55,12 +55,12 @@ export default function TableLeaders({ currentPack }) {
             color: 'white',
             height: { xs: '1.5rem', sm: '2rem' },
             width: { xs: '1.5rem', sm: '2rem' },
-            boxShadow: '3px 3px 5px black',
-            backgroundColor: 'var(--transparent-black)',
+            p: '0.1rem',
+            backgroundColor: 'var(--button-gray)',
             borderRadius: '5px',
-            transition: 'background-color 0.2s ease-in-out',
+            transition: 'all 0.3s ease',
             '&:hover': {
-              backgroundColor: 'rgb(26, 49, 56)',
+              color: 'var(--off-white)',
             },
           }}
         />

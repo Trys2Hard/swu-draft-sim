@@ -11,6 +11,7 @@ export default function Sideboard({
   setSideboardLeaders,
   setSideboardCards,
   draftStarted,
+  currentSet,
 }) {
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover('');
@@ -44,7 +45,7 @@ export default function Sideboard({
   const styles = {
     deck: {
       color: 'white',
-      backgroundColor: 'rgba(90, 90, 90, 1)',
+      background: `url(${currentSet}_starfield.jpg)`,
       m: '1rem auto 0 auto',
       display: !draftStarted ? 'none' : 'flex',
       flexDirection: 'column',
@@ -66,12 +67,11 @@ export default function Sideboard({
     <>
       <Box sx={styles.deck}>
         <Typography
-          variant="h4"
-          component="h2"
+          variant='h4'
+          component='h2'
           sx={{
             mb: '1rem',
             width: '100%',
-            borderBottom: '2px solid white',
             textAlign: 'center',
           }}
         >
@@ -97,7 +97,7 @@ export default function Sideboard({
               <Grid
                 size={{ xs: 2, md: 1.2 }}
                 aria-owns={open ? 'mouse-over-popover' : undefined}
-                aria-haspopup="true"
+                aria-haspopup='true'
                 onMouseEnter={(e) => handlePopoverOpen(e, card)}
                 onMouseLeave={handlePopoverClose}
                 key={labelId}
@@ -106,7 +106,7 @@ export default function Sideboard({
                 }}
               >
                 <Box
-                  component="img"
+                  component='img'
                   src={card.cardData?.FrontArt}
                   id={labelId}
                   sx={styles.nonLeaderCard}

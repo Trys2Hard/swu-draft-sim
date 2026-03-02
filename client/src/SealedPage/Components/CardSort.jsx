@@ -12,7 +12,7 @@ export default function CardSort({ handleSort }) {
         display: 'flex',
         alignItems: 'center',
         border: '1px solid var(--off-white)',
-        backgroundColor: 'rgba(30, 30, 30, 0.4)',
+        backgroundColor: 'var(--button-gray)',
         borderRadius: '10px',
         p: '0 0.4rem',
       }}

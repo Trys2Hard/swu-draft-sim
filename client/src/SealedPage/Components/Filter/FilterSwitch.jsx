@@ -9,8 +9,8 @@ export default function FilterSwitch({ handleFilter }) {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        border: '1px solid rgba(110, 110, 110, 1)',
-        backgroundColor: 'rgba(30, 30, 30, 0.4)',
+        border: '1px solid var(--off-white)',
+        backgroundColor: 'var(--button-gray)',
         borderRadius: '10px',
         p: '0 0.4rem',
         width: '8rem',

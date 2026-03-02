@@ -25,7 +25,7 @@ const StyledMenu = styled((props) => (
     borderRadius: 6,
     marginTop: theme.spacing(1),
     minWidth: 180,
-    backgroundColor: 'rgba(65, 65, 65, 1)',
+    backgroundColor: 'var(--button-gray)',
     color: 'rgb(55, 65, 81)',
     boxShadow:
       'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
@@ -79,17 +79,17 @@ export default function ExportDropdown({
     <>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
         <Button
-          id="export-button"
+          id='export-button'
           aria-controls={open ? 'export-menu' : undefined}
-          aria-haspopup="true"
+          aria-haspopup='true'
           aria-expanded={open ? 'true' : undefined}
-          variant="contained"
+          variant='contained'
           disableElevation
           onClick={handleClick}
           startIcon={<ContentCopyIcon />}
           endIcon={<KeyboardArrowDownIcon />}
           sx={{
-            backgroundColor: 'rgba(65, 65, 65, 1)',
+            backgroundColor: 'var(--button-gray)',
             '&:hover': { filter: 'brightness(1.2)' },
           }}
         >
@@ -98,7 +98,7 @@ export default function ExportDropdown({
       </Box>
 
       <StyledMenu
-        id="export-menu"
+        id='export-menu'
         slotProps={{
           list: {
             'aria-labelledby': 'export-button',

@@ -13,18 +13,18 @@ export default function FilterButton({ filterSelected, setFilterSelected }) {
         width: { xs: '5rem', sm: '5.5rem' },
         fontSize: { xs: '0.7rem', sm: '0.9rem' },
         border: '1px solid var(--off-white)',
-        backgroundColor: 'rgba(30, 30, 30, 0.4)',
+        backgroundColor: 'var(--button-gray)',
         borderRadius: '10px',
         '&:hover': {
-          backgroundColor: 'rgba(30, 30, 30, 0.4)',
+          backgroundColor: 'var(--button-gray)',
           border: '2px solid var(--off-white)',
         },
         '&.Mui-selected:hover': {
-          backgroundColor: 'rgba(30, 30, 30, 0.4)',
+          backgroundColor: 'var(--button-gray)',
           border: '2px solid var(--off-white)',
         },
         '&.Mui-selected': {
-          backgroundColor: 'rgba(30, 30, 30, 0.4)',
+          backgroundColor: 'var(--button-gray)',
         },
       }}
     >

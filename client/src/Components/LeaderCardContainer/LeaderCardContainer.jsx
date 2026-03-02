@@ -58,7 +58,6 @@ export default function LeaderCardContainer({
       mt: '0.5rem',
       mb: '0.5rem',
       p: '0.5rem',
-      borderBottom: currentPack ? 'none' : '2px solid white',
     },
     leaderCardContainer: {
       display: 'flex',
@@ -96,7 +95,7 @@ export default function LeaderCardContainer({
       >
         {isLoading && (
           <Box sx={styles.loading}>
-            <CircularProgress size={70} color="white" />
+            <CircularProgress size={70} color='white' />
           </Box>
         )}
         {(sealedStarted || draftStarted || sealedImportStarted) &&
@@ -115,11 +114,11 @@ export default function LeaderCardContainer({
                 key={cardId}
                 id={cardId}
                 aria-owns={open ? 'mouse-over-popover' : undefined}
-                aria-haspopup="true"
+                aria-haspopup='true'
                 sx={styles.leaderCardContainer}
               >
                 <Box
-                  component="img"
+                  component='img'
                   src={
                     isFlipped ? card.cardData?.BackArt : card.cardData?.FrontArt
                   }
