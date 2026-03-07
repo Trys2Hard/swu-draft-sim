@@ -195,7 +195,7 @@ app.get('/api/common', async (req, res) => {
 app.get('/api/foil', async (req, res) => {
   const set = req.query.set?.toUpperCase();
   const variant =
-    set === 'LOF' ? 'HyperSpace Foil' : set === 'SEC' ? 'Foil' : 'Hyperspace';
+    set === 'LOF' ? 'Hyperspace Foil' : set === 'SEC' ? 'Foil' : 'Hyperspace';
 
   try {
     // Determine rarity based on odds (similar to leader endpoint)
