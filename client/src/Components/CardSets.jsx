@@ -34,7 +34,7 @@ export default function CardSets({ handleSetChange, currentSet }) {
       cursor: 'pointer',
       transition: 'all 0.3s ease-in-out',
       '&:hover': {
-        backgroundColor: 'rgb(26, 49, 56)',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         filter: 'brightness(1.1)',
       },
     },
@@ -49,7 +49,9 @@ export default function CardSets({ handleSetChange, currentSet }) {
             sx={{
               ...styles.cardSetButton,
               backgroundColor:
-                cardSet.name === currentSet ? 'rgb(26, 49, 56)' : 'none',
+                cardSet.name === currentSet
+                  ? 'rgba(255, 255, 255, 0.1)'
+                  : 'none',
             }}
           >
             <Box
