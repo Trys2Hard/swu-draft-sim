@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import LeaderFlipButton from './LeaderFlipButton';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -23,17 +23,17 @@ export default function LeaderCardContainer({
   sealedImportStarted,
 }) {
   const [flippedLeaders, setFlippedLeaders] = useState({});
-  const [leaders, setLeaders] = useState([]);
 
-  useEffect(() => {
+  // Derive display cards from props to avoid stale-state flicker when transitioning
+  // (e.g. last leader pick → loading card packs)
+  const leaders =
     leaderPacks?.length
-      ? setLeaders(leaderPacks.flat())
+      ? leaderPacks.flat()
       : deckLeaders?.length
-        ? setLeaders(deckLeaders)
+        ? deckLeaders
         : sideboardLeaders?.length
-          ? setLeaders(sideboardLeaders)
-          : setLeaders(currentPack?.[packIndex] || []);
-  }, [leaderPacks, deckLeaders, currentPack, packIndex, sideboardLeaders]);
+          ? sideboardLeaders
+          : (currentPack?.[packIndex] || []);
 
   const handleFlipLeader = (id) => {
     setFlippedLeaders((prev) => ({

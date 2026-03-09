@@ -151,7 +151,7 @@ export default function FilterOptions({ setFilteredCards, sortedCardPacks }) {
       display: 'flex',
       flexDirection: 'row',
       p: '0.4rem 0 0.4rem 0.8rem',
-      backgroundColor: 'rgb(34, 34, 34)',
+      backgroundColor: 'rgba(211, 211, 211, 0.1)',
       borderRadius: '5px',
       mb: '1rem',
       ml: { md: '1rem' },
