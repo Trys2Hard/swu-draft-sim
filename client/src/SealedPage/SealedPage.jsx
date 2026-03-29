@@ -49,21 +49,21 @@ export default function SealedPage() {
   async function handleStartSealedBuild() {
     setSealedStarted(true);
 
-    await generateLeaderPack(6);
+    await generateLeaderPack(6, { sealedPool: true });
     for (let i = 0; i < 6; i++) {
       await generateCardPack();
     }
 
     if (errorCount > 0) {
       alert(
-        `${errorCount} leader${errorCount > 1 ? 's' : ''}/card${errorCount > 1 ? 's' : ''} failed to load.`,
+        `${errorCount} leader${errorCount > 1 ? 's' : ''}/card${errorCount > 1 ? 's' : ''} failed to load.`
       );
     }
   }
 
   const fetchCardById = async (cardId) => {
     const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/card/${cardId}`,
+      `${import.meta.env.VITE_API_URL}/api/card/${cardId}`
     );
     const data = await res.json();
 
@@ -75,7 +75,7 @@ export default function SealedPage() {
   const fetchBaseData = async (baseId) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/card/${baseId}`,
+        `${import.meta.env.VITE_API_URL}/api/card/${baseId}`
       );
       const data = await res.json();
 
@@ -147,7 +147,7 @@ export default function SealedPage() {
       });
 
       const deckCardsData = await Promise.all(
-        deckIds.map((id) => fetchCardById(id)),
+        deckIds.map((id) => fetchCardById(id))
       );
 
       const idCards = deckCardsData.map((card) => ({
@@ -179,7 +179,7 @@ export default function SealedPage() {
 
       if (leaderIds.length > 0) {
         const leaders = await Promise.all(
-          leaderIds.map((id) => fetchCardById(id)),
+          leaderIds.map((id) => fetchCardById(id))
         );
 
         const idLeaders = leaders.map((leader) => ({
