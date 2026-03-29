@@ -2,11 +2,21 @@ import { Box, Button } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LZString from 'lz-string';
 
+/** Raw Set_Number as stored on the card (no variant → base number folding). */
+function cardToRawId(card) {
+  const set = card?.cardData?.Set;
+  const num = card?.cardData?.Number;
+  if (!set || num == null) return null;
+  return `${set}_${num.toString().padStart(3, '0')}`;
+}
+
 export default function CopySealedPool({
+  deckLeaders,
   sortedDeckCards,
   sideboardCards,
   leaderPacks,
-  sortedCardPacks,
+  /** Raw pool cards from state (not display-sorted; keeps true Set/Number). */
+  cardPacks,
   base,
   onSnackbar,
 }) {
@@ -14,12 +24,8 @@ export default function CopySealedPool({
     const flatLeaderPacks = leaderPacks.flat();
     const leaderCountMap = new Map();
     for (const card of flatLeaderPacks) {
-      const set = card?.cardData?.Set;
-      let num = card?.cardData?.Number;
-      if (!set || !num) continue;
-
-      num = num.toString().padStart(3, '0');
-      const id = `${set}_${num}`;
+      const id = cardToRawId(card);
+      if (!id) continue;
       leaderCountMap.set(id, (leaderCountMap.get(id) || 0) + 1);
     }
 
@@ -28,23 +34,38 @@ export default function CopySealedPool({
       count,
     }));
 
-    // Process deck - Use Map instead of array
-    const deckCountMap = new Map();
-    for (const card of sortedDeckCards || sortedCardPacks) {
-      const set = card?.cardData?.Set;
-      let num = card?.cardData?.Number;
-      if (!set || !num) continue;
-
-      // Apply number transformation
-      if (num >= 537 && num <= 774) num = (num - 510).toString();
-      else if (num >= 767 && num <= 1004) num = (num - 740).toString();
-
-      num = num.toString().padStart(3, '0');
-      const id = `${set}_${num}`;
-      deckCountMap.set(id, (deckCountMap.get(id) || 0) + 1);
+    // Pool: use `cardPacks` from state, not sorted display list (which adjusts foil/hyperspace numbers).
+    const poolCountMap = new Map();
+    for (const card of cardPacks?.flat() || []) {
+      const id = cardToRawId(card);
+      if (!id) continue;
+      poolCountMap.set(id, (poolCountMap.get(id) || 0) + 1);
     }
 
-    const combinedDeck = Array.from(deckCountMap, ([id, count]) => ({
+    const combinedPoolCards = Array.from(poolCountMap, ([id, count]) => ({
+      id,
+      count,
+    }));
+
+    // Built deck (leaders + cards on the deck) — optional; restored on import
+    const builtLeaderCountMap = new Map();
+    for (const card of deckLeaders || []) {
+      const id = cardToRawId(card);
+      if (!id) continue;
+      builtLeaderCountMap.set(id, (builtLeaderCountMap.get(id) || 0) + 1);
+    }
+    const combinedBuiltLeaders = Array.from(builtLeaderCountMap, ([id, count]) => ({
+      id,
+      count,
+    }));
+
+    const builtDeckCountMap = new Map();
+    for (const card of sortedDeckCards || []) {
+      const id = cardToRawId(card);
+      if (!id) continue;
+      builtDeckCountMap.set(id, (builtDeckCountMap.get(id) || 0) + 1);
+    }
+    const combinedBuiltDeckCards = Array.from(builtDeckCountMap, ([id, count]) => ({
       id,
       count,
     }));
@@ -53,16 +74,8 @@ export default function CopySealedPool({
     const sideboardCountMap = new Map();
     if (sideboardCards) {
       for (const card of sideboardCards) {
-        const set = card?.cardData?.Set;
-        let num = card?.cardData?.Number;
-        if (!set || !num) continue;
-
-        // Apply number transformation
-        if (num >= 537 && num <= 774) num = (num - 510).toString();
-        else if (num >= 767 && num <= 1004) num = (num - 740).toString();
-
-        num = num.toString().padStart(3, '0');
-        const id = `${set}_${num}`;
+        const id = cardToRawId(card);
+        if (!id) continue;
         sideboardCountMap.set(id, (sideboardCountMap.get(id) || 0) + 1);
       }
     }
@@ -82,9 +95,14 @@ export default function CopySealedPool({
         id: base,
         count: 1,
       },
-      deck: combinedDeck,
+      deck: combinedPoolCards,
       sideboard: combinedSideboard,
     };
+
+    if (combinedBuiltLeaders.length > 0 || combinedBuiltDeckCards.length > 0) {
+      jsonCardData.builtDeckLeaders = combinedBuiltLeaders;
+      jsonCardData.builtDeckCards = combinedBuiltDeckCards;
+    }
 
     // Encode and create deck link
     const jsonString = JSON.stringify(jsonCardData);

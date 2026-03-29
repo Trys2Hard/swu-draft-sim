@@ -137,8 +137,12 @@ export default function SealedPage() {
         }
       }
 
-      // Import deck cards
-      const deckIds = json.deck.flatMap((card) => {
+      setDeckLeaders([]);
+      setDeckCards([]);
+
+      // Pool non-leader cards (`deck` in link JSON)
+      const poolCardEntries = json.deck || [];
+      const poolIds = poolCardEntries.flatMap((card) => {
         const ids = [];
         for (let i = 0; i < card.count; i++) {
           ids.push(card.id);
@@ -146,11 +150,9 @@ export default function SealedPage() {
         return ids;
       });
 
-      const deckCardsData = await Promise.all(
-        deckIds.map((id) => fetchCardById(id))
-      );
+      const poolCardsData = await Promise.all(poolIds.map((id) => fetchCardById(id)));
 
-      const idCards = deckCardsData.map((card) => ({
+      const idCards = poolCardsData.map((card) => ({
         id: uuid(),
         cardData: { ...card },
       }));
@@ -188,6 +190,43 @@ export default function SealedPage() {
         }));
 
         setLeaderPacks(idLeaders);
+      }
+
+      const builtLeaderEntries = json.builtDeckLeaders || [];
+      const builtDeckEntries = json.builtDeckCards || [];
+      if (builtLeaderEntries.length > 0 || builtDeckEntries.length > 0) {
+        const builtLeaderIds = builtLeaderEntries.flatMap((entry) => {
+          const ids = [];
+          for (let i = 0; i < entry.count; i++) {
+            ids.push(entry.id);
+          }
+          return ids;
+        });
+        const builtCardIds = builtDeckEntries.flatMap((entry) => {
+          const ids = [];
+          for (let i = 0; i < entry.count; i++) {
+            ids.push(entry.id);
+          }
+          return ids;
+        });
+
+        const [builtLeadersData, builtCardsData] = await Promise.all([
+          Promise.all(builtLeaderIds.map((id) => fetchCardById(id))),
+          Promise.all(builtCardIds.map((id) => fetchCardById(id))),
+        ]);
+
+        setDeckLeaders(
+          builtLeadersData.map((card) => ({
+            id: uuid(),
+            cardData: { ...card },
+          })),
+        );
+        setDeckCards(
+          builtCardsData.map((card) => ({
+            id: uuid(),
+            cardData: { ...card },
+          })),
+        );
       }
     } catch (err) {
       console.error('Import failed:', err);
@@ -247,6 +286,8 @@ export default function SealedPage() {
         sealedImportStarted={sealedImportStarted}
         baseColor={baseColor}
         setBaseColor={setBaseColor}
+        deckLeaders={deckLeaders}
+        deckCards={deckCards}
       />
       <Deck
         sealedStarted={sealedStarted}
