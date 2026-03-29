@@ -31,7 +31,7 @@ app.use(
         callback(new Error('Not allowed by CORS'));
       }
     },
-  }),
+  })
 );
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
@@ -41,30 +41,179 @@ app.use(helmet());
 // routes
 app.get('/api/leader', async (req, res) => {
   const set = req.query.set?.toUpperCase();
+  const sealedPool = req.query.sealedPool === 'true';
+  const draftPack = req.query.draftPack === 'true';
+  const count = Number.parseInt(req.query.count, 10);
 
   if (!set) {
     return res.status(400).json({ error: 'Set parameter is required' });
   }
 
-  try {
-    const rareLeaderChance = Math.random() < 0.2;
-    const leaderRarity = rareLeaderChance ? 'Rare' : 'Common';
-
+  const sampleRandomLeader = async (match) => {
     const leaderArr = await Card.aggregate([
-      {
-        $match: {
+      { $match: match },
+      { $sample: { size: 1 } },
+    ]);
+    return leaderArr[0] || null;
+  };
+
+  const chooseLeaderRarity = () => (Math.random() < 0.2 ? 'Rare' : 'Common');
+
+  const shuffle = (arr) => {
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  };
+
+  try {
+    if (sealedPool && count === 6) {
+      const poolRoll = Math.random();
+      let uniqueTarget = 6;
+
+      if (poolRoll < 0.5) {
+        uniqueTarget = 6;
+      } else if (poolRoll < 0.95) {
+        uniqueTarget = 5;
+      } else {
+        uniqueTarget = 4;
+      }
+
+      const uniqueLeaders = [];
+      const seenLeaderIds = new Set();
+      let attempts = 0;
+      const maxAttempts = 100;
+
+      while (uniqueLeaders.length < uniqueTarget && attempts < maxAttempts) {
+        attempts++;
+        const leaderRarity = chooseLeaderRarity();
+
+        let leader = await sampleRandomLeader({
           Set: set,
           Type: 'Leader',
           VariantType: 'Normal',
           Rarity: leaderRarity,
-        },
-      },
-      { $sample: { size: 1 } },
-    ]);
-    if (!leaderArr.length) {
+        });
+
+        // Fallback in case set data doesn't support the selected rarity.
+        if (!leader) {
+          leader = await sampleRandomLeader({
+            Set: set,
+            Type: 'Leader',
+            VariantType: 'Normal',
+          });
+        }
+
+        if (!leader || seenLeaderIds.has(String(leader._id))) {
+          continue;
+        }
+
+        uniqueLeaders.push(leader);
+        seenLeaderIds.add(String(leader._id));
+      }
+
+      if (uniqueLeaders.length < uniqueTarget) {
+        return res
+          .status(404)
+          .json({ error: 'Not enough leaders found for pool' });
+      }
+
+      let leaderPool = [...uniqueLeaders];
+
+      if (uniqueTarget === 5) {
+        const dupIdx = Math.floor(Math.random() * uniqueLeaders.length);
+        leaderPool.push(uniqueLeaders[dupIdx]);
+      } else if (uniqueTarget === 4) {
+        const tripleOneLeader = Math.random() < 0.5;
+
+        if (tripleOneLeader) {
+          const dupIdx = Math.floor(Math.random() * uniqueLeaders.length);
+          leaderPool.push(uniqueLeaders[dupIdx], uniqueLeaders[dupIdx]);
+        } else {
+          const firstIdx = Math.floor(Math.random() * uniqueLeaders.length);
+          let secondIdx = Math.floor(Math.random() * uniqueLeaders.length);
+          while (secondIdx === firstIdx) {
+            secondIdx = Math.floor(Math.random() * uniqueLeaders.length);
+          }
+          leaderPool.push(uniqueLeaders[firstIdx], uniqueLeaders[secondIdx]);
+        }
+      }
+
+      leaderPool = shuffle(leaderPool);
+      return res.json({ cardsData: leaderPool });
+    }
+
+    if (draftPack && count === 3) {
+      const poolRoll = Math.random();
+      const uniqueTarget = poolRoll < 0.9 ? 3 : 2;
+
+      const uniqueLeaders = [];
+      const seenLeaderIds = new Set();
+      let attempts = 0;
+      const maxAttempts = 100;
+
+      while (uniqueLeaders.length < uniqueTarget && attempts < maxAttempts) {
+        attempts++;
+        const leaderRarity = chooseLeaderRarity();
+
+        let leader = await sampleRandomLeader({
+          Set: set,
+          Type: 'Leader',
+          VariantType: 'Normal',
+          Rarity: leaderRarity,
+        });
+
+        // Fallback in case set data doesn't support the selected rarity.
+        if (!leader) {
+          leader = await sampleRandomLeader({
+            Set: set,
+            Type: 'Leader',
+            VariantType: 'Normal',
+          });
+        }
+
+        if (!leader || seenLeaderIds.has(String(leader._id))) {
+          continue;
+        }
+
+        uniqueLeaders.push(leader);
+        seenLeaderIds.add(String(leader._id));
+      }
+
+      if (uniqueLeaders.length < uniqueTarget) {
+        return res
+          .status(404)
+          .json({ error: 'Not enough leaders found for draft' });
+      }
+
+      const leaderPool = [...uniqueLeaders];
+
+      // With uniqueTarget = 2, this produces exactly one duplicate (2+1),
+      // guaranteeing no leader appears 3 times in a draft leader pack.
+      if (uniqueTarget === 2) {
+        const dupIdx = Math.floor(Math.random() * uniqueLeaders.length);
+        leaderPool.push(uniqueLeaders[dupIdx]);
+      }
+
+      return res.json({ cardsData: shuffle(leaderPool) });
+    }
+
+    const rareLeaderChance = Math.random() < 0.2;
+    const leaderRarity = rareLeaderChance ? 'Rare' : 'Common';
+
+    const randomLeader = await sampleRandomLeader({
+      Set: set,
+      Type: 'Leader',
+      VariantType: 'Normal',
+      Rarity: leaderRarity,
+    });
+
+    if (!randomLeader) {
       return res.status(404).json({ error: 'No leader found' });
     }
-    const randomLeader = leaderArr[0];
+
     res.json({ cardData: randomLeader });
   } catch (error) {
     console.error('Error fetching leader:', error);

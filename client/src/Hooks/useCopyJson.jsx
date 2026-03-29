@@ -2,6 +2,7 @@ export function useCopyJson({
   deckLeaders,
   sortedDeckCards,
   sideboardCards,
+  sealedPoolRemainingCards,
   leaderPacks,
   sortedCardPacks,
   base,
@@ -28,15 +29,20 @@ export function useCopyJson({
       count,
     }));
 
-    // Process sideboard cards
+    // Process sideboard cards (draft: sideboard; sealed: cards still in pool, excluding leaders)
     const sideboardCountMap = new Map();
-    if (sideboardCards) {
-      for (const card of sideboardCards) {
+    const sideboardSource =
+      sealedPoolRemainingCards?.length > 0
+        ? sealedPoolRemainingCards.flat()
+        : sideboardCards;
+    if (sideboardSource) {
+      for (const card of sideboardSource) {
         const set = card?.cardData?.Set;
         let num = card?.cardData?.Number;
         if (!set || !num) continue;
 
-        if (num >= 537 && num <= 774) num = (num - 510).toString();
+        if (num >= 265 && num <= 528) num = (num - 264).toString();
+        else if (num >= 537 && num <= 774) num = (num - 510).toString();
         else if (num >= 767 && num <= 1004) num = (num - 740).toString();
 
         num = num.toString().padStart(3, '0');

@@ -49,7 +49,10 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function ExportDropdown({
+  deckLeaders,
+  sortedDeckCards,
   leaderPacks,
+  cardPacks,
   sortedCardPacks,
   base,
   setBase,
@@ -121,8 +124,10 @@ export default function ExportDropdown({
         </MenuItem>
         <MenuItem onClick={handleClose} disableRipple>
           <CopySealedPool
+            deckLeaders={deckLeaders}
+            sortedDeckCards={sortedDeckCards}
             leaderPacks={leaderPacks}
-            sortedCardPacks={sortedCardPacks}
+            cardPacks={cardPacks}
             base={base}
             setBase={setBase}
             onSnackbar={handleSnackbar}

@@ -14,7 +14,7 @@ export function useCreatePacks() {
   const fetchCard = async (rarity, seenIds = null) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/${rarity}?set=${currentSet}`,
+        `${import.meta.env.VITE_API_URL}/api/${rarity}?set=${currentSet}`
       );
       const data = await res.json();
 
@@ -51,15 +51,62 @@ export function useCreatePacks() {
     }
     if (errorCount > 0) {
       alert(
-        `${errorCount} ${rarity} card${errorCount > 1 ? 's' : ''} failed to load.`,
+        `${errorCount} ${rarity} card${errorCount > 1 ? 's' : ''} failed to load.`
       );
     }
     return cards;
   }
 
-  async function generateLeaderPack(numLeaders = 3) {
+  async function generateLeaderPack(numLeaders = 3, options = {}) {
     setIsLoading(true);
-    const leaderPack = await generateCards(numLeaders, 'leader');
+    let leaderPack = [];
+
+    if (options.sealedPool && numLeaders === 6) {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/leader?set=${currentSet}&sealedPool=true&count=6`
+        );
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to fetch sealed leader pool');
+        }
+
+        leaderPack = (data.cardsData || []).map((cardData) => ({
+          cardData,
+          id: uuid(),
+        }));
+      } catch (error) {
+        errorCount++;
+        console.error('Error fetching sealed leader pool', error);
+      }
+    } else if (numLeaders === 3) {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/leader?set=${currentSet}&draftPack=true&count=3`
+        );
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to fetch draft leader pack');
+        }
+
+        leaderPack = (data.cardsData || []).map((cardData) => ({
+          cardData,
+          id: uuid(),
+        }));
+      } catch (error) {
+        errorCount++;
+        console.error('Error fetching draft leader pack', error);
+      }
+    } else {
+      leaderPack = await generateCards(numLeaders, 'leader');
+    }
+
+    // console.log(leaderPack);
+    if (leaderPack[0]?.cardData?._id) {
+      console.log(leaderPack[0].cardData._id);
+    }
     if (leaderPack.length === numLeaders) {
       setLeaderPacks((prev) => [...prev, leaderPack]);
     }
@@ -94,7 +141,7 @@ export function useCreatePacks() {
     const uncommonCards = await generateCards(
       2,
       'uncommon',
-      uncommonIdsRef.current,
+      uncommonIdsRef.current
     );
     const commonCards = await generateCards(9, 'common', commonIdsRef.current);
     const foilSlot = await generateCards(1, 'foil');

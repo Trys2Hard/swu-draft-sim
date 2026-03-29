@@ -266,6 +266,9 @@ export default function Deck({
             deckLeaders={deckLeaders}
             sortedDeckCards={sortedDeckCards}
             sideboardCards={sideboardCards}
+            sealedPoolRemainingCards={
+              sealedStarted || sealedImportStarted ? cardPacks : undefined
+            }
             base={base}
             setBase={setBase}
             onSnackbar={handleSnackbar}

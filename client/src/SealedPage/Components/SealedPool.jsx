@@ -26,6 +26,7 @@ export default function SealedPool({
   handleImportSealedPool,
   sealedImportStarted,
   deckLeaders,
+  deckCards,
   baseColor,
   setBaseColor,
 }) {
@@ -221,7 +222,14 @@ export default function SealedPool({
               onHoverClose={handlePopoverClose}
             />
             <ExportDropdown
+              deckLeaders={deckLeaders}
+              sortedDeckCards={[...deckCards].sort(
+                (a, b) =>
+                  (a.cardData?.Cost ?? 0) - (b.cardData?.Cost ?? 0) ||
+                  a.cardData?.Name?.localeCompare(b.cardData?.Name),
+              )}
               leaderPacks={leaderPacks}
+              cardPacks={cardPacks}
               sortedCardPacks={sortedCardPacks}
               base={base}
               setBase={setBase}
