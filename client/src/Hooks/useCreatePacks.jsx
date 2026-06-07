@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import { useState, useRef } from 'react';
 
 export function useCreatePacks() {
-  const [currentSet, setCurrentSet] = useState('law');
+  const [currentSet, setCurrentSet] = useState('ash');
   const [leaderPacks, setLeaderPacks] = useState([]);
   const [cardPacks, setCardPacks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +14,7 @@ export function useCreatePacks() {
   const fetchCard = async (rarity, seenIds = null) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/${rarity}?set=${currentSet}`
+        `${import.meta.env.VITE_API_URL}/api/${rarity}?set=${currentSet}`,
       );
       const data = await res.json();
 
@@ -51,7 +51,7 @@ export function useCreatePacks() {
     }
     if (errorCount > 0) {
       alert(
-        `${errorCount} ${rarity} card${errorCount > 1 ? 's' : ''} failed to load.`
+        `${errorCount} ${rarity} card${errorCount > 1 ? 's' : ''} failed to load.`,
       );
     }
     return cards;
@@ -64,7 +64,7 @@ export function useCreatePacks() {
     if (options.sealedPool && numLeaders === 6) {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/leader?set=${currentSet}&sealedPool=true&count=6`
+          `${import.meta.env.VITE_API_URL}/api/leader?set=${currentSet}&sealedPool=true&count=6`,
         );
         const data = await res.json();
 
@@ -83,7 +83,7 @@ export function useCreatePacks() {
     } else if (numLeaders === 3) {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/leader?set=${currentSet}&draftPack=true&count=3`
+          `${import.meta.env.VITE_API_URL}/api/leader?set=${currentSet}&draftPack=true&count=3`,
         );
         const data = await res.json();
 
@@ -141,7 +141,7 @@ export function useCreatePacks() {
     const uncommonCards = await generateCards(
       2,
       'uncommon',
-      uncommonIdsRef.current
+      uncommonIdsRef.current,
     );
     const commonCards = await generateCards(9, 'common', commonIdsRef.current);
     const foilSlot = await generateCards(1, 'foil');
