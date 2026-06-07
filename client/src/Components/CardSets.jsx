@@ -14,6 +14,10 @@ export default function CardSets({ handleSetChange, currentSet }) {
       name: 'law',
       logo: '/law_logo.png',
     },
+    {
+      name: 'ash',
+      logo: '/ash_logo.png',
+    },
   ];
 
   //Styles
