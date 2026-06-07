@@ -33,7 +33,9 @@ export default function StartCard({
             ? 'url(/LOF_box_art_card.jpg)'
             : cardSet === 'law'
               ? 'url(/law_box_art_card.jpg)'
-              : 'none',
+              : cardSet === 'ash'
+                ? 'url(/ash_box_art_card.jpg)'
+                : 'none',
       backgroundSize: 'contain',
       backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',
