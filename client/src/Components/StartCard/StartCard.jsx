@@ -27,15 +27,17 @@ export default function StartCard({
       m: '0 auto 1rem auto',
       // backgroundImage: !draftStarted ? 'url(/LOF_box_art_card.jpg)' : 'url(/LOF_box_art_full.jpg)',
       backgroundImage:
-        cardSet === 'sec'
-          ? 'url(/SEC_box_art_card.jpg)'
-          : cardSet === 'lof'
-            ? 'url(/LOF_box_art_card.jpg)'
-            : cardSet === 'law'
-              ? 'url(/law_box_art_card.jpg)'
-              : cardSet === 'ash'
-                ? 'url(/ash_box_art_card.jpg)'
-                : 'none',
+        cardSet === 'sor'
+          ? 'url(/sor_box_art_card.jpg)'
+          : cardSet === 'sec'
+            ? 'url(/SEC_box_art_card.jpg)'
+            : cardSet === 'lof'
+              ? 'url(/LOF_box_art_card.jpg)'
+              : cardSet === 'law'
+                ? 'url(/law_box_art_card.jpg)'
+                : cardSet === 'ash'
+                  ? 'url(/ash_box_art_card.jpg)'
+                  : 'none',
       backgroundSize: 'contain',
       backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',
