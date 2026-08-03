@@ -20,7 +20,9 @@ async function createHyperspaceCardData() {
     const db = client.db(process.env.DB_NAME);
     const collection = db.collection(process.env.COLLECTION_NAME);
 
-    const cards = await collection.find({ Set: 'LAW' }).toArray();
+    const cards = await collection
+      .find({ Set: 'SOR', Type: { $ne: 'Unit' } })
+      .toArray();
 
     console.log(`Found ${cards.length} cards to duplicate`);
 
@@ -39,7 +41,7 @@ async function createHyperspaceCardData() {
           continue;
         }
 
-        const newNumber = (oldNumber + 264).toString().padStart(3, '0');
+        const newNumber = (oldNumber + 266).toString().padStart(3, '0');
 
         const escapedNumber = card.Number.replace(
           /[.*+?^${}()|[\]\\]/g,

@@ -11,14 +11,14 @@ async function updateLeaderArt() {
     const collection = db.collection(process.env.COLLECTION_NAME);
 
     // Select which documents to update
-    const cursor = collection.find({ Set: 'ASH', Type: 'Leader' });
+    const cursor = collection.find({ Set: 'SOR', Type: 'Leader' });
 
     while (await cursor.hasNext()) {
       const doc = await cursor.next();
       const cardNumber = doc.Number;
 
       if (cardNumber) {
-        const set = doc.Set || 'ASH';
+        const set = doc.Set || 'SOR';
         const newFrontArtUrl = `https://cdn.swudraftsim.com/${set}/${cardNumber}-front.webp`;
         const newBackArtUrl = `https://cdn.swudraftsim.com/${set}/${cardNumber}-back.webp`;
 

@@ -3,6 +3,10 @@ import { Box, List, ListItem } from '@mui/material';
 export default function CardSets({ handleSetChange, currentSet }) {
   const cardSets = [
     {
+      name: 'sor',
+      logo: '/sor_logo.png',
+    },
+    {
       name: 'lof',
       logo: '/lof_logo.png',
     },
