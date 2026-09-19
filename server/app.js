@@ -350,7 +350,9 @@ app.get('/api/foil', async (req, res) => {
         ? 'Foil'
         : set === 'ASH'
           ? 'Normal'
-          : 'Hyperspace';
+          : set === 'HMW'
+            ? 'Normal'
+            : 'Hyperspace';
 
   try {
     // Determine rarity based on odds (similar to leader endpoint)

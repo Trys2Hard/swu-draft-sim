@@ -113,9 +113,9 @@ export default function SelectBase({
             <MenuItem
               key={b.Number}
               value={`${b.Set}_${b.Number}`}
-              onClick={() => setBaseColor(aspectColorMap.get(b.Aspects[0]))}
+              onClick={() => setBaseColor(aspectColorMap.get(b.Aspects?.[0]))}
               sx={{
-                color: aspectColorMap.get(b.Aspects[0]),
+                color: aspectColorMap.get(b.Aspects?.[0]),
                 '&:hover': { backgroundColor: 'rgba(70, 70, 70, 0.4)' },
               }}
             >

@@ -58,7 +58,9 @@ export default function DraftPack({
               ? 'url(/SEC_box_art_full.jpg)'
               : currentSet === 'law'
                 ? 'url(law_box_art_full.jpg)'
-                : 'url(ash_box_art_full.jpg)',
+                : currentSet === 'ash'
+                  ? 'url(ash_box_art_full.jpg)'
+                  : 'url(hmw_box_art_full.png)',
       backgroundSize: 'cover',
       backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',
