@@ -119,12 +119,8 @@ export default function SelectBase({
                 '&:hover': { backgroundColor: 'rgba(70, 70, 70, 0.4)' },
               }}
             >
-              {b.Name}{' '}
-              {b.Rarity === 'Rare'
-                ? '(R)'
-                : b.Rarity === 'Special'
-                  ? '(S)'
-                  : null}
+              {b.Name} ({b.Subtitle}){' '}
+              {b.Rarity === 'Rare' ? 'R' : b.Rarity === 'Special' ? 'S' : null}
             </MenuItem>
           ))}
         </Select>
