@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import { useState, useRef } from 'react';
 
 export function useCreatePacks() {
-  const [currentSet, setCurrentSet] = useState('ash');
+  const [currentSet, setCurrentSet] = useState('hmw');
   const [leaderPacks, setLeaderPacks] = useState([]);
   const [cardPacks, setCardPacks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

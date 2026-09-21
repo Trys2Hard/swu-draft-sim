@@ -22,6 +22,10 @@ export default function CardSets({ handleSetChange, currentSet }) {
       name: 'ash',
       logo: '/ash_logo.png',
     },
+    {
+      name: 'hmw',
+      logo: '/hmw_logo.png',
+    },
   ];
 
   //Styles
