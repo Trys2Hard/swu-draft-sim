@@ -10,6 +10,7 @@ export default function CopyJsonButton({
   leaderPacks,
   sortedCardPacks,
   base,
+  normalCards,
   children,
   onSnackbar,
 }) {
@@ -21,17 +22,17 @@ export default function CopyJsonButton({
     leaderPacks,
     sortedCardPacks,
     base,
+    normalCards,
   });
 
-  const handleClick = () => {
-    const result = handleCopyJson();
+  const handleClick = async () => {
+    const result = await handleCopyJson();
 
     if (onSnackbar && result) {
       onSnackbar(result.text, result.status);
     }
   };
 
-  //Styles
   const styles = {
     copyJsonButton: {
       ...(sortedCardPacks && {
