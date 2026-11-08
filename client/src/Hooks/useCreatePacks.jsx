@@ -1,15 +1,55 @@
 import { v4 as uuid } from 'uuid';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export function useCreatePacks() {
   const [currentSet, setCurrentSet] = useState('hmw');
   const [leaderPacks, setLeaderPacks] = useState([]);
   const [cardPacks, setCardPacks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [normalCards, setNormalCards] = useState([]);
 
   let errorCount = 0;
   const commonIdsRef = useRef([]);
   const uncommonIdsRef = useRef([]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function fetchNormalCards() {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/cards?set=${currentSet}`,
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to fetch Normal cards');
+        }
+
+        if (isActive) {
+          // Match the cardData structure expected by useCopyJson
+          setNormalCards(
+            (data.cardsData || []).map((cardData) => ({
+              cardData,
+            })),
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching Normal cards:', error);
+
+        if (isActive) {
+          setNormalCards([]);
+        }
+      }
+    }
+
+    fetchNormalCards();
+
+    return () => {
+      isActive = false;
+    };
+  }, [currentSet]);
 
   const fetchCard = async (rarity, seenIds = null) => {
     try {
@@ -181,5 +221,6 @@ export function useCreatePacks() {
     isLoading,
     setIsLoading,
     resetSeenIds,
+    normalCards,
   };
 }

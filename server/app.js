@@ -453,6 +453,28 @@ app.get('/api/bases/:set', async (req, res) => {
   }
 });
 
+app.get('/api/cards', async (req, res) => {
+  const set = req.query.set?.toUpperCase();
+
+  if (!set) {
+    return res.status(400).json({ error: 'Set parameter is required' });
+  }
+
+  try {
+    const cards = await Card.find({
+      Set: set,
+      VariantType: 'Normal',
+    })
+      .select('Set Number Name Type Rarity FrontText VariantType')
+      .lean();
+
+    res.json({ cardsData: cards });
+  } catch (error) {
+    console.error('Error fetching Normal cards:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // React Router fallback
 app.get('/*splat', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));

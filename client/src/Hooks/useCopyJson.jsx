@@ -362,7 +362,12 @@ export function useCopyJson({
       cards: Array.from(countMap, ([id, count]) => ({
         id,
         count,
-      })),
+      })).sort((a, b) => {
+        const numberA = Number(a.id.split('_')[1]);
+        const numberB = Number(b.id.split('_')[1]);
+
+        return numberA - numberB;
+      }),
       failedCards,
     };
   };
@@ -497,5 +502,6 @@ export function useCopyJson({
 
   return {
     handleCopyJson,
+    cardToId,
   };
 }
