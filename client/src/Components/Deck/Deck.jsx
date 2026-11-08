@@ -27,6 +27,7 @@ export default function Deck({
   sealedImportStarted,
   baseColor,
   setBaseColor,
+  normalCards,
 }) {
   const { anchorEl, hoveredCard, handlePopoverOpen, handlePopoverClose } =
     useCardHoverPopover();
@@ -271,6 +272,7 @@ export default function Deck({
             }
             base={base}
             setBase={setBase}
+            normalCards={normalCards}
             onSnackbar={handleSnackbar}
           >
             JSON

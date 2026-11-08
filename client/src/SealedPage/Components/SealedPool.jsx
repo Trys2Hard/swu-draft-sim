@@ -29,6 +29,7 @@ export default function SealedPool({
   deckCards,
   baseColor,
   setBaseColor,
+  normalCards,
 }) {
   const [sortBy, setSortBy] = useState('Number');
   const [sortedCardPacks, setSortedCardPacks] = useState([]);
@@ -233,6 +234,7 @@ export default function SealedPool({
               sortedCardPacks={sortedCardPacks}
               base={base}
               setBase={setBase}
+              normalCards={normalCards}
             />
           </Box>
         </Box>

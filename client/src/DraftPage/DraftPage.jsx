@@ -41,6 +41,7 @@ export default function DraftPage() {
     resetCardPacks,
     resetSeenIds,
     setIsLoading,
+    normalCards,
   } = useCreatePacks('');
 
   const currentPack = isTransitioningRef.current
@@ -267,6 +268,7 @@ export default function DraftPage() {
         baseColor={baseColor}
         setBaseColor={setBaseColor}
         currentSet={currentSet}
+        normalCards={normalCards}
       />
       <Sideboard
         sideboardLeaders={sideboardLeaders}

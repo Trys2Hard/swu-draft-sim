@@ -28,6 +28,7 @@ export default function SealedPage() {
     setCardPacks,
     isLoading,
     setIsLoading,
+    normalCards,
   } = useCreatePacks();
 
   let errorCount = 0;
@@ -56,14 +57,14 @@ export default function SealedPage() {
 
     if (errorCount > 0) {
       alert(
-        `${errorCount} leader${errorCount > 1 ? 's' : ''}/card${errorCount > 1 ? 's' : ''} failed to load.`
+        `${errorCount} leader${errorCount > 1 ? 's' : ''}/card${errorCount > 1 ? 's' : ''} failed to load.`,
       );
     }
   }
 
   const fetchCardById = async (cardId) => {
     const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/card/${cardId}`
+      `${import.meta.env.VITE_API_URL}/api/card/${cardId}`,
     );
     const data = await res.json();
 
@@ -75,7 +76,7 @@ export default function SealedPage() {
   const fetchBaseData = async (baseId) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/card/${baseId}`
+        `${import.meta.env.VITE_API_URL}/api/card/${baseId}`,
       );
       const data = await res.json();
 
@@ -150,7 +151,9 @@ export default function SealedPage() {
         return ids;
       });
 
-      const poolCardsData = await Promise.all(poolIds.map((id) => fetchCardById(id)));
+      const poolCardsData = await Promise.all(
+        poolIds.map((id) => fetchCardById(id)),
+      );
 
       const idCards = poolCardsData.map((card) => ({
         id: uuid(),
@@ -181,7 +184,7 @@ export default function SealedPage() {
 
       if (leaderIds.length > 0) {
         const leaders = await Promise.all(
-          leaderIds.map((id) => fetchCardById(id))
+          leaderIds.map((id) => fetchCardById(id)),
         );
 
         const idLeaders = leaders.map((leader) => ({
@@ -288,6 +291,7 @@ export default function SealedPage() {
         setBaseColor={setBaseColor}
         deckLeaders={deckLeaders}
         deckCards={deckCards}
+        normalCards={normalCards}
       />
       <Deck
         sealedStarted={sealedStarted}
@@ -304,6 +308,7 @@ export default function SealedPage() {
         sealedImportStarted={sealedImportStarted}
         baseColor={baseColor}
         setBaseColor={setBaseColor}
+        normalCards={normalCards}
       />
     </>
   );

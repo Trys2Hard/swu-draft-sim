@@ -51,11 +51,14 @@ const StyledMenu = styled((props) => (
 export default function ExportDropdown({
   deckLeaders,
   sortedDeckCards,
+  sideboardCards,
+  sealedPoolRemainingCards,
   leaderPacks,
   cardPacks,
   sortedCardPacks,
   base,
   setBase,
+  normalCards,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -80,7 +83,13 @@ export default function ExportDropdown({
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          width: '100%',
+        }}
+      >
         <Button
           id='export-button'
           aria-controls={open ? 'export-menu' : undefined}
@@ -93,7 +102,9 @@ export default function ExportDropdown({
           endIcon={<KeyboardArrowDownIcon />}
           sx={{
             backgroundColor: 'var(--button-gray)',
-            '&:hover': { filter: 'brightness(1.2)' },
+            '&:hover': {
+              filter: 'brightness(1.2)',
+            },
           }}
         >
           Export
@@ -113,23 +124,32 @@ export default function ExportDropdown({
       >
         <MenuItem onClick={handleClose} disableRipple>
           <CopyJsonButton
+            deckLeaders={deckLeaders}
+            sortedDeckCards={sortedDeckCards}
+            sideboardCards={sideboardCards}
+            sealedPoolRemainingCards={sealedPoolRemainingCards}
             leaderPacks={leaderPacks}
             sortedCardPacks={sortedCardPacks}
             base={base}
-            setBase={setBase}
+            normalCards={normalCards}
             onSnackbar={handleSnackbar}
           >
             JSON (One Leader)
           </CopyJsonButton>
         </MenuItem>
+
         <MenuItem onClick={handleClose} disableRipple>
           <CopySealedPool
             deckLeaders={deckLeaders}
             sortedDeckCards={sortedDeckCards}
+            sideboardCards={sideboardCards}
+            sealedPoolRemainingCards={sealedPoolRemainingCards}
             leaderPacks={leaderPacks}
             cardPacks={cardPacks}
+            sortedCardPacks={sortedCardPacks}
             base={base}
             setBase={setBase}
+            normalCards={normalCards}
             onSnackbar={handleSnackbar}
           />
         </MenuItem>
