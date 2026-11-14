@@ -29,17 +29,19 @@ export default function StartCard({
       backgroundImage:
         cardSet === 'sor'
           ? 'url(/sor_box_art_card.jpg)'
-          : cardSet === 'sec'
-            ? 'url(/SEC_box_art_card.jpg)'
-            : cardSet === 'lof'
-              ? 'url(/LOF_box_art_card.jpg)'
-              : cardSet === 'law'
-                ? 'url(/law_box_art_card.jpg)'
-                : cardSet === 'ash'
-                  ? 'url(/ash_box_art_card.jpg)'
-                  : cardSet === 'hmw'
-                    ? 'url(/hmw_box_art_card.jpg)'
-                    : 'none',
+          : cardSet === 'shd'
+            ? 'url(shd_box_art_card.jpg)'
+            : cardSet === 'sec'
+              ? 'url(/SEC_box_art_card.jpg)'
+              : cardSet === 'lof'
+                ? 'url(/LOF_box_art_card.jpg)'
+                : cardSet === 'law'
+                  ? 'url(/law_box_art_card.jpg)'
+                  : cardSet === 'ash'
+                    ? 'url(/ash_box_art_card.jpg)'
+                    : cardSet === 'hmw'
+                      ? 'url(/hmw_box_art_card.jpg)'
+                      : 'none',
       backgroundSize: 'contain',
       backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',

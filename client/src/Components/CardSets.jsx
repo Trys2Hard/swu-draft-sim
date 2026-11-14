@@ -7,6 +7,10 @@ export default function CardSets({ handleSetChange, currentSet }) {
       logo: '/sor_logo.png',
     },
     {
+      name: 'shd',
+      logo: '/shd_logo.png',
+    },
+    {
       name: 'lof',
       logo: '/lof_logo.png',
     },
