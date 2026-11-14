@@ -52,15 +52,17 @@ export default function DraftPack({
       backgroundImage:
         currentSet === 'sor'
           ? 'url(sor_box_art_full.jpg)'
-          : currentSet === 'lof'
-            ? 'url(lof_box_wide.png)'
-            : currentSet === 'sec'
-              ? 'url(/SEC_box_art_full.jpg)'
-              : currentSet === 'law'
-                ? 'url(law_box_art_full.jpg)'
-                : currentSet === 'ash'
-                  ? 'url(ash_box_art_full.jpg)'
-                  : 'url(hmw_box_art_full.png)',
+          : currentSet === 'shd'
+            ? 'url(shd_box_art_full.jpg)'
+            : currentSet === 'lof'
+              ? 'url(lof_box_wide.png)'
+              : currentSet === 'sec'
+                ? 'url(/SEC_box_art_full.jpg)'
+                : currentSet === 'law'
+                  ? 'url(law_box_art_full.jpg)'
+                  : currentSet === 'ash'
+                    ? 'url(ash_box_art_full.jpg)'
+                    : 'url(hmw_box_art_full.png)',
       backgroundSize: 'cover',
       backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',
